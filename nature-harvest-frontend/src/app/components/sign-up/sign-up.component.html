@@ -1,0 +1,98 @@
+<app-header></app-header>
+<div class="container">
+  <div class="row justify-content-center" style="margin-top: 180px">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="title">
+          <h3 class="text-center my-4">Sign up</h3>
+        </div>
+        <div class="title text-center">
+          Do you already have an account ?
+          <a routerLink="/login" style="text-decoration: underline">
+            Login here</a
+          >
+        </div>
+        <div class="card-body">
+          <form>
+            <mat-form-field class="example-full-width mt-3">
+              <mat-label class="font-size-14">Name</mat-label>
+              <input
+                type="text"
+                matInput
+                [formControl]="nameFormControl"
+                [errorStateMatcher]="matcher"
+              />
+              @if (nameFormControl.hasError('email') &&
+              !nameFormControl.hasError('required')) {
+              <mat-error>Please enter a valid name</mat-error>
+              } @if (nameFormControl.hasError('required')) {
+              <mat-error>Name is <strong>required</strong></mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width mt-3">
+              <mat-label class="font-size-14">Email</mat-label>
+              <input
+                type="email"
+                matInput
+                [formControl]="emailFormControl"
+                [errorStateMatcher]="matcher"
+                placeholder="Ex. pat@example.com"
+              />
+              @if (emailFormControl.hasError('email') &&
+              !emailFormControl.hasError('required')) {
+              <mat-error>Please enter a valid email address</mat-error>
+              } @if (emailFormControl.hasError('required')) {
+              <mat-error>Email is <strong>required</strong></mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width mt-3">
+              <mat-label class="font-size-14">Password</mat-label>
+              <input
+                type="password"
+                matInput
+                [formControl]="passwordFormControl"
+                [errorStateMatcher]="matcher"
+              />
+              @if (passwordFormControl.hasError('email') &&
+              !passwordFormControl.hasError('required')) {
+              <mat-error>Please enter a valid password</mat-error>
+              } @if (passwordFormControl.hasError('required')) {
+              <mat-error>Password is <strong>required</strong></mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width mt-3">
+              <mat-label class="font-size-14">Confirm Password</mat-label>
+              <input
+                type="password"
+                matInput
+                [formControl]="confirmPasswordFormControl"
+                [errorStateMatcher]="matcher"
+              />
+              @if (confirmPasswordFormControl.hasError('email') &&
+              !confirmPasswordFormControl.hasError('required')) {
+              <mat-error>Please enter a valid confirm password</mat-error>
+              } @if (confirmPasswordFormControl.hasError('required')) {
+              <mat-error
+                >Confirm password is <strong>required</strong></mat-error
+              >
+              }
+            </mat-form-field>
+            <div class="d-grid my-4">
+              <button
+                mat-flat-button
+                style="background-color: brown"
+                (click)="signUp()"
+              >
+                Sign up
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

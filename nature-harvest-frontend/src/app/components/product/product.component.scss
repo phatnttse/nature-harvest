@@ -1,0 +1,238 @@
+.card > * {
+  flex-shrink: 0;
+}
+.card .card-footer {
+  padding: 1.5rem;
+}
+.card-xl .card-body,
+.card-xl .card-footer {
+  padding: 2.5rem;
+}
+.card-lg .card-body,
+.card-lg .card-footer {
+  padding: 2rem;
+}
+.card-sm .card-body,
+.card-sm .card-footer {
+  padding: 1.25rem;
+}
+.card-body {
+  flex: 0 0 auto;
+}
+.card-footer {
+  background-color: transparent;
+}
+.card-img-overlay {
+  display: flex;
+}
+.card-img-overlay > * {
+  flex: 1;
+}
+a.card-img-overlay {
+  color: inherit;
+}
+a.card-img-overlay:hover {
+  text-decoration: none;
+}
+.card-img-overlay-hover {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+.card:hover .card-img-overlay-hover {
+  opacity: 1;
+}
+.card-img {
+  position: relative;
+}
+.card-img-hover {
+  display: block;
+}
+.card-img-hover > * {
+  float: left;
+}
+.card-img-hover .card-img-top {
+  transition: opacity 0.2s ease-in-out;
+}
+.card-img-hover .card-img-back {
+  opacity: 0;
+}
+.card-img-hover .card-img-front {
+  margin-left: -100%;
+}
+.card-img:hover .card-img-hover .card-img-back {
+  opacity: 1;
+}
+.card-img:hover .card-img-hover .card-img-front {
+  opacity: 0;
+}
+.card-bg {
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.card-bg ~ * {
+  z-index: 1;
+}
+.card-bg-img {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: all 0.2s ease-in-out;
+  transition-property: transform;
+  width: calc(100% + 0.25rem);
+}
+.card:hover > .card-bg > .card-bg-img {
+  transform: translateX(-0.25rem);
+}
+.card-circle {
+  align-items: center;
+  background-color: #ff6f61;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 70px;
+  justify-content: center;
+  position: absolute;
+  top: 1.25rem;
+  width: 70px;
+  z-index: 1;
+}
+.card-circle-lg {
+  height: 96px;
+  width: 96px;
+}
+.card-circle-sm {
+  height: 34px;
+  width: 34px;
+}
+.card-circle-left {
+  left: 1.25rem;
+}
+.card-circle-end {
+  right: 1.25rem;
+}
+.card-circle-top-end {
+  right: 0;
+  top: 0;
+}
+.card-badge {
+  position: absolute;
+  top: 1.25rem;
+  z-index: 1;
+}
+.card-badge-start {
+  left: 0;
+}
+.card-badge-end {
+  right: 0;
+}
+.card-price {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+}
+.card-price-start {
+  left: 0;
+}
+.card-price-end {
+  right: 0;
+}
+.card-price-end + .card-badge-end,
+.card-price-start + .card-badge-start {
+  top: 3.75rem;
+}
+.card-actions {
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding: 1.25rem;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+.card-actions .card-action {
+  left: 0;
+  opacity: 0;
+  position: relative;
+  right: 0;
+  top: 0;
+  transform: translateY(0.5rem);
+  transition: all 0.1s ease-in-out;
+  transition-property: transform, opacity;
+}
+.card-actions .card-action:nth-child(2) {
+  transition-delay: 75ms;
+}
+.card-actions .card-action:nth-child(3) {
+  transition-delay: 0.15s;
+}
+.card-actions .card-action + .card-action {
+  margin-left: 0.5rem;
+}
+.card-img:hover .card-actions .card-action {
+  opacity: 1;
+  transform: translateY(0);
+}
+.card-action {
+  position: absolute;
+  top: 1.25rem;
+  z-index: 1;
+}
+.card-acton-start {
+  left: 1.25rem;
+}
+.card-action-end {
+  right: 1.25rem;
+}
+.card-btn {
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  transition: opacity 0.2s ease-in-out;
+}
+.card-img:hover .card-btn {
+  opacity: 1;
+}
+.card-collapse {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+}
+.card-collapse:not(.collapsing):not(.show) {
+  display: block !important;
+  height: 0;
+  overflow: hidden;
+}
+.card-collapse-parent {
+  position: relative;
+  transition: transform 0.35s ease;
+}
+.btn-white-primary {
+  background-color: #fff;
+  color: #1f1f1f;
+}
+.btn-white-primary:focus,
+.btn-white-primary:hover {
+  background-color: #ff6f61;
+  border-color: #ff6f61;
+  color: #fff;
+}
+.btn-white-primary[data-toggle="button"]:focus,
+.btn-white-primary[data-toggle="button"]:hover {
+  color: #fff;
+}
+.btn-white-primary[data-toggle="button"].active {
+  background-color: #fff;
+  border-color: #fff;
+  color: #ff6f61;
+}
+mat-slider {
+  max-width: 100%;
+  min-width: 200px;
+}

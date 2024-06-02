@@ -1,0 +1,250 @@
+<app-header></app-header>
+
+<section class="section-pagetop bg" style="margin-top: 180px">
+  <div class="container">
+    <h2 class="title-page">Category products</h2>
+    <nav>
+      <ol class="breadcrumb text-white">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Best category</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Great articles
+        </li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section-content padding-y">
+  <div class="container">
+    <div class="row">
+      <aside class="col-md-3">
+        <div class="card" style="margin-top: 60px">
+          <article class="filter-group">
+            <header class="card-header">
+              <a href="#" class="">
+                <h6 class="title">Product type</h6>
+              </a>
+            </header>
+            <div class="filter-content collapse show">
+              <div class="card-body">
+                <mat-accordion>
+                  <mat-expansion-panel
+                    (opened)="panelOpenState = true"
+                    (closed)="panelOpenState = false"
+                  >
+                    <mat-expansion-panel-header>
+                      <mat-panel-title> Type </mat-panel-title>
+                      <mat-panel-description> </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+            </div>
+          </article>
+          <article class="filter-group">
+            <header class="card-header">
+              <a href="#" class="">
+                <h6 class="title">Brands</h6>
+              </a>
+            </header>
+            <div class="filter-content collapse show" id="collapse_2">
+              <div class="card-body">
+                <mat-accordion>
+                  <mat-expansion-panel
+                    (opened)="panelOpenState = true"
+                    (closed)="panelOpenState = false"
+                  >
+                    <mat-expansion-panel-header>
+                      <mat-panel-title> Type </mat-panel-title>
+                      <mat-panel-description> </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+            </div>
+          </article>
+          <article class="filter-group">
+            <header class="card-header">
+              <a href="#" class="">
+                <h6 class="title">Price range</h6>
+              </a>
+            </header>
+            <div class="filter-content collapse show" id="collapse_3">
+              <div class="card-body">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label>Filter</label>
+                    <mat-slider
+                      min="0"
+                      max="100000"
+                      step="1000"
+                      showTickMarks
+                      discrete
+                      [displayWith]="formatLabel"
+                    >
+                      <input value="300" matSliderStartThumb />
+                      <input value="400" matSliderEndThumb />
+                    </mat-slider>
+                  </div>
+                </div>
+                <button style="color: white" class="btn btn-primary">
+                  Apply
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </aside>
+      <main class="col-md-9">
+        <header class="border-bottom my-2 text-end">
+          <button mat-icon-button [matMenuTriggerFor]="menu" class="mb-2">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <button mat-icon-button [matMenuTriggerFor]="menu" class="mb-2">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+              <span>Redial</span>
+            </button>
+            <button mat-menu-item disabled>
+              <span>Check voice mail</span>
+            </button>
+            <button mat-menu-item>
+              <span>Disable alerts</span>
+            </button>
+          </mat-menu>
+        </header>
+
+        <div class="tab-content">
+          <div class="tab-pane fade show p-0 active">
+            <div class="row g-4">
+              <div class="col-lg-12">
+                <div class="row g-4">
+                  @for (product of products; track $index) {
+                  <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card mb-4">
+                      <!-- Badge -->
+                      <!-- <div
+                          class="badge bg-dark card-badge card-badge-start text-uppercase"
+                        >
+                          Sale
+                        </div> -->
+
+                      <!-- Image -->
+                      <div class="card-img">
+                        <!-- Image -->
+                        <a class="card-img-hover" href="#">
+                          <img
+                            class="card-img-top card-img-back"
+                            [src]="product.thumbnail"
+                            alt="..."
+                          />
+                          <img
+                            class="card-img-top card-img-front"
+                            [src]="product.thumbnail"
+                            alt="..."
+                          />
+                        </a>
+
+                        <!-- Actions -->
+                        <div class="card-actions">
+                          <span class="card-action">
+                            <button
+                              class="btn btn-xs btn-circle btn-white-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target="#modalProduct"
+                            >
+                              <i style="color: #81c408" class="fas fa-eye"></i>
+                            </button>
+                          </span>
+                          <span class="card-action">
+                            <button
+                              class="btn btn-xs btn-circle btn-white-primary"
+                              data-toggle="button"
+                            >
+                              <i
+                                style="color: #81c408"
+                                class="fas fa-shopping-cart"
+                              ></i>
+                            </button>
+                          </span>
+                          <span class="card-action">
+                            <button
+                              class="btn btn-xs btn-circle btn-white-primary"
+                              data-toggle="button"
+                            >
+                              <i
+                                style="color: #81c408"
+                                class="fas fa-heart"
+                              ></i>
+                            </button>
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Body -->
+                      <div class="card-body px-0">
+                        <!-- Category -->
+                        <div class="fs-xs"></div>
+
+                        <!-- Title -->
+                        <div class="fw-bold text-center">
+                          <a class="text-body" href="#">
+                            {{ product.title }}
+                          </a>
+                        </div>
+
+                        <div class="fx-bold">
+                          <p class="text-center" style="font-size: 14px">
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit sed do eiusmod te incididunt
+                          </p>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="fw-bold text-center">
+                          <span
+                            class="fs-xs text-gray-350 text-decoration-line-through"
+                            style="padding: 10px"
+                            >$79.00</span
+                          >
+                          <span class="text-primary">{{ product.price }}</span>
+                        </div>
+                        <div
+                          class="align-items-center justify-content-center text-center mt-2"
+                        >
+                          <a
+                            href="#"
+                            class="btn border border-secondary rounded-pill px-3 text-primary"
+                            ><i
+                              class="fa fa-shopping-bag me-2 text-primary"
+                            ></i>
+                            Add to cart</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <nav class="mt-4">
+          <mat-paginator
+            [length]="200"
+            [pageSizeOptions]="[10, 50, 100]"
+            aria-label="Select page"
+          >
+          </mat-paginator>
+        </nav>
+      </main>
+    </div>
+  </div>
+</section>
+<app-footer></app-footer>

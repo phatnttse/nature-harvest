@@ -1,0 +1,75 @@
+<app-header></app-header>
+<div class="container">
+  <div class="row justify-content-center" style="margin-top: 180px">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="title">
+          <h3 class="text-center my-4">Login</h3>
+        </div>
+        <div class="title text-center">
+          Do not have an account ?
+          <a style="text-decoration: underline" routerLink="/signup"
+            >Register here</a
+          >
+        </div>
+
+        <div class="card-body">
+          <form>
+            <mat-form-field class="example-full-width mt-5">
+              <mat-label class="font-size-14">Email</mat-label>
+              <input
+                type="email"
+                matInput
+                [formControl]="emailFormControl"
+                [errorStateMatcher]="matcher"
+                placeholder="Ex. pat@example.com"
+              />
+              @if (emailFormControl.hasError('email') &&
+              !emailFormControl.hasError('required')) {
+              <mat-error>Please enter a valid email address</mat-error>
+              } @if (emailFormControl.hasError('required')) {
+              <mat-error>Email is <strong>required</strong></mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width mt-4">
+              <mat-label class="font-size-14">Password</mat-label>
+              <input
+                type="password"
+                matInput
+                [formControl]="passwordFormControl"
+                [errorStateMatcher]="matcher"
+              />
+              @if (passwordFormControl.hasError('email') &&
+              !passwordFormControl.hasError('required')) {
+              <mat-error>Please enter a valid password</mat-error>
+              } @if (passwordFormControl.hasError('required')) {
+              <mat-error>Password is <strong>required</strong></mat-error>
+              }
+            </mat-form-field>
+            <div class="text-end">
+              <a routerLink="/login" style="font-size: 12px">
+                Forgot password ?</a
+              >
+            </div>
+            <div class="d-grid mt-4">
+              <button
+                mat-flat-button
+                style="background-color: rgb(173, 70, 70)"
+                (click)="login()"
+              >
+                Login
+              </button>
+            </div>
+            <div class="divider text-center mt-4">OR</div>
+            <div
+              class="align-items-center d-flex justify-content-center my-4 d-grid"
+              id="google-btn"
+            ></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>
