@@ -22,9 +22,7 @@ public interface IUserService {
             throws InvalidPasswordException, DataNotFoundException;
     public void blockOrEnable(String userId, Boolean active) throws DataNotFoundException;
     Page<User> findAll(String keyword, Pageable pageable) throws Exception;
-
-    verify
-
+    boolean verifyUser(final String token) throws Exception;
 
 
 }

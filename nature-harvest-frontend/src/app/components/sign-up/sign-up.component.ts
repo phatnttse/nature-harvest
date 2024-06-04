@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
 import { UserService } from '../../services/user.service';
@@ -18,7 +18,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -52,22 +52,24 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   ],
 })
 export class SignUpComponent {
-  emailFormControl = new FormControl('', [
+  emailFormControl = new FormControl('phat19102003@gmail.com', [
     Validators.required,
     Validators.email,
   ]);
-  nameFormControl = new FormControl('', [
+  nameFormControl = new FormControl('Nguyen Tran Tan Phat', [
     Validators.required,
     Validators.minLength(2),
     Validators.maxLength(50),
   ]);
-  passwordFormControl = new FormControl('', [Validators.required]);
-  confirmPasswordFormControl = new FormControl('', [Validators.required]);
+  passwordFormControl = new FormControl('123', [Validators.required]);
+  confirmPasswordFormControl = new FormControl('123', [Validators.required]);
   matcher = new MyErrorStateMatcher();
 
   constructor(
     private userService: UserService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   signUp() {
@@ -87,16 +89,11 @@ export class SignUpComponent {
       this.userService.signUp(signUpDto).subscribe({
         next: (response: SignUpResponse) => {
           debugger;
-          this.toastr.success(response.message, 'Signup Success', {
-            closeButton: true,
-            timeOut: 2000,
-            easeTime: 500,
-            positionClass: 'toast-top-right',
-            progressBar: true,
-          });
+          this.router.navigate(['/verify-email']);
         },
         error: (error: any) => {
-          this.toastr.show(error?.error?.message, 'Signup Fail', {
+          console.log(error);
+          this.toastr.warning(error?.error?.message, 'Signup Fail', {
             closeButton: true,
             timeOut: 2000,
             easeTime: 600,

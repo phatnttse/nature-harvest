@@ -6,13 +6,14 @@ import { CategoryProductCountResponse } from '../../responses/category/category-
 import { ProductListResponse } from '../../responses/product/product-list.response';
 import { ProductService } from '../../services/product.service';
 import { ProductResponse } from '../../responses/product/product.response';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  imports: [HeaderComponent, FooterComponent],
+  imports: [HeaderComponent, FooterComponent, RouterModule],
 })
 export class HomeComponent implements OnInit {
   categoryProductCounts: CategoryProductCountResponse[] = [];
@@ -29,7 +30,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
-    private productService: ProductService
+    private productService: ProductService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -43,16 +45,16 @@ export class HomeComponent implements OnInit {
       Number(this.localStorage?.getItem('currentProductPage')) || 0;
   }
 
-  getCategoryProductCounts() {
-    this.categoryService.getCategoryProductCounts().subscribe({
-      next: (response: CategoryProductCountResponse[]) => {
-        this.categoryProductCounts = response;
-      },
-      error: (error: any) => {
-        throw error;
-      },
-    });
-  }
+  // getCategoryProductCounts() {
+  //   this.categoryService.getCategoryProductCounts().subscribe({
+  //     next: (response: CategoryProductCountResponse[]) => {
+  //       this.categoryProductCounts = response;
+  //     },
+  //     error: (error: any) => {
+  //       throw error;
+  //     },
+  //   });
+  // }
 
   searchProducts() {
     this.currentPage = 0;
@@ -119,5 +121,9 @@ export class HomeComponent implements OnInit {
     return new Array(endPage - startPage + 1)
       .fill(0)
       .map((_, index) => startPage + index);
+  }
+  onProductClick(productId: number) {
+    debugger;
+    this.router.navigate(['product-detail', productId]);
   }
 }

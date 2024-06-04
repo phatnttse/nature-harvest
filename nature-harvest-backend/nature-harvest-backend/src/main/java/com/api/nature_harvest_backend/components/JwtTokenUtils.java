@@ -12,8 +12,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.keygen.BytesKeyGenerator;
+import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.Charset;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.util.*;
@@ -24,6 +27,9 @@ import java.util.function.Function;
 public class JwtTokenUtils {
     @Value("${jwt.expiration}")
     private int expiration; //save to an environment variable
+
+    @Value("${jwt.expiration-email}")
+    private int expirationEmail;
 
     @Value("${jwt.expiration-refresh-token}")
     private int expirationRefreshToken;
@@ -81,6 +87,9 @@ public class JwtTokenUtils {
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", String.class));
+    }
     public boolean validateToken(String token, User userDetails) {
         try {
             String email = extractEmail(token);
@@ -105,4 +114,24 @@ public class JwtTokenUtils {
 
         return false;
     }
+
+    public String generateTokenEmail(com.api.nature_harvest_backend.models.User user) throws Exception{
+        //properties => claims
+        Map<String, Object> claims = new HashMap<>();
+        //this.generateSecretKey();
+        claims.put("email", user.getEmail());
+        claims.put("userId", user.getId());
+        try {
+            String token = Jwts.builder()
+                    .setClaims(claims) //how to extract claims from this ?
+                    .setSubject(user.getEmail())
+                    .setExpiration(new Date(System.currentTimeMillis() + expirationEmail * 1000L))
+                    .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                    .compact();
+            return token;
+        }catch (Exception e) {
+            throw new InvalidParamException("Cannot create jwt token, error: "+e.getMessage());
+        }
+    }
+
 }

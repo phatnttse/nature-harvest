@@ -137,10 +137,7 @@ CREATE TABLE `carts` (
     `cart_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `user_id` VARCHAR(255) NOT NULL,
     `product_id` INT NOT NULL,
-    `title` VARCHAR(255) NOT NULL,
-    `thumbnail` VARCHAR(255) NOT NULL,
-    `quantity` INT NOT NULL,
-    `price` INT NOT NULL
+    `quantity` INT NOT NULL
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 

@@ -6,13 +6,16 @@ import com.api.nature_harvest_backend.dtos.UpdateUserDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.ExpiredTokenException;
 import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
+import com.api.nature_harvest_backend.models.EmailConfirmation;
 import com.api.nature_harvest_backend.models.Role;
 import com.api.nature_harvest_backend.models.Token;
 import com.api.nature_harvest_backend.models.User;
+import com.api.nature_harvest_backend.repositories.EmailConfirmationRepository;
 import com.api.nature_harvest_backend.repositories.RoleRepository;
 import com.api.nature_harvest_backend.repositories.TokenRepository;
 import com.api.nature_harvest_backend.repositories.UserRepository;
 import com.api.nature_harvest_backend.responses.user.LoginResponse;
+import com.api.nature_harvest_backend.services.email.IEmailService;
 import com.api.nature_harvest_backend.services.token.ITokenService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -32,6 +35,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -40,10 +45,12 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final TokenRepository tokenRepository;
+    private final EmailConfirmationRepository emailConfirmationRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
     private final ITokenService tokenService;
+    private final IEmailService emailService;
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String GOOGLE_CLIENT_ID;
 
@@ -51,7 +58,7 @@ public class UserService implements IUserService {
     @Transactional
     public User createUser(SignUpDto signUpDTO) throws Exception {
 
-        if(userRepository.existsByEmail(signUpDTO.getEmail())) {
+        if(userRepository.existsByEmailAndGoogleIdIsNull(signUpDTO.getEmail())) {
             throw new DataIntegrityViolationException("Email already exists");
         }
         Role role = roleRepository.findByName("User");
@@ -60,18 +67,22 @@ public class UserService implements IUserService {
         User newUser = User.builder()
                 .id(UUID.randomUUID().toString())
                 .email(signUpDTO.getEmail())
-                .emailVerified(true)
+                .emailVerified(false)
                 .name(signUpDTO.getName())
                 .password(signUpDTO.getPassword())
                 .role(role)
                 .active(true)
                 .build();
 
-            String encodedPassword = passwordEncoder.encode(signUpDTO.getPassword());
-            newUser.setPassword(encodedPassword);
+        String encodedPassword = passwordEncoder.encode(signUpDTO.getPassword());
+        newUser.setPassword(encodedPassword);
 
-        return userRepository.save(newUser);
+         userRepository.save(newUser);
+         String token = jwtTokenUtil.generateTokenEmail(newUser);
+         emailService.sendConfirmationEmail(newUser, token);
+         return newUser;
     }
+
 
     @Override
     public LoginResponse login(String email, String password, String userAgent) throws Exception {
@@ -125,10 +136,11 @@ public class UserService implements IUserService {
         }
 
         Payload payload = idToken.getPayload();
-        String googleId = payload.getSubject();
         String email = payload.getEmail();
-        String name = (String) payload.get("name");
+
+        String googleId = payload.getSubject();
         String pictureUrl = (String) payload.get("picture");
+        String name = (String) payload.get("name");
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty()) {
@@ -170,6 +182,21 @@ public class UserService implements IUserService {
                     .id(optionalUser.get().getId())
                     .build();
         }
+    }
+
+    @Override
+    public boolean verifyUser(String token) throws Exception {
+        if(jwtTokenUtil.isTokenExpired(token)) {
+            throw new ExpiredTokenException("Token is expired");
+        }
+        String email = jwtTokenUtil.extractEmail(token);
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            user.get().setEmailVerified(true);
+            userRepository.save(user.get());
+            return true;
+        }
+        return false;
     }
 
     @Override

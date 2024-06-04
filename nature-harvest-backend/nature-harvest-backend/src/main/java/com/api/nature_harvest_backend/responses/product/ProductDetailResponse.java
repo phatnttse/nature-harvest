@@ -2,15 +2,16 @@ package com.api.nature_harvest_backend.responses.product;
 
 import com.api.nature_harvest_backend.models.Category;
 import com.api.nature_harvest_backend.models.Product;
+import com.api.nature_harvest_backend.models.ProductImage;
 import lombok.*;
 import java.math.BigDecimal;
-
+import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductResponse {
+public class ProductDetailResponse {
     private Long id;
     private String title;
     private int price;
@@ -21,10 +22,10 @@ public class ProductResponse {
     private int purchases;
     private BigDecimal averageRating;
     private Category category;
-//    private Long subCategoryId;
-    private int totalPages;
-    public static ProductResponse fromProduct(Product product) {
-        ProductResponse productResponse = ProductResponse.builder()
+    private List<ProductImage> productImages;
+
+    public static ProductDetailResponse fromProductDetail(Product product) {
+        ProductDetailResponse productDetailResponse = ProductDetailResponse.builder()
                 .id(product.getId())
                 .title(product.getTitle())
                 .price(product.getPrice())
@@ -35,8 +36,8 @@ public class ProductResponse {
                 .purchases(product.getPurchases())
                 .averageRating(product.getAverageRating())
                 .category(product.getCategory())
-//                .subCategoryId(product.getSubcategory().getId())
+                .productImages(product.getProductImages())
                 .build();
-        return productResponse;
+        return productDetailResponse;
     }
 }

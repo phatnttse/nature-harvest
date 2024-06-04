@@ -6,11 +6,13 @@ import { HttpUtilService } from './http.util.service';
 import { ProductListResponse } from '../responses/product/product-list.response';
 import { ProductResponse } from '../responses/product/product.response';
 import { ProductDetailResponse } from '../responses/product/product-detail.response';
+import { CartResponse } from '../responses/cart/cart.response';
+import { CartDto } from '../dtos/cart/cart.dto';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProductService {
+export class CartService {
   private apiBaseUrl = environment.apiBaseUrl;
 
   private apiConfig = {
@@ -22,27 +24,13 @@ export class ProductService {
     private httpUtilService: HttpUtilService
   ) {}
 
-  getProducts(
-    keyword: string,
-    categoryId: number,
-    page: number,
-    limit: number
-  ): Observable<ProductListResponse> {
-    const params = {
-      keyword: keyword,
-      categoryId: categoryId.toString(),
-      // subcategoryId: subcategoryId?.toString() || null,
-      page: page.toString(),
-      limit: limit.toString(),
-    };
-    return this.http.get<ProductListResponse>(`${this.apiBaseUrl}/products`, {
-      params,
-    });
+  getCart(token: string): Observable<CartResponse[]> {
+    return this.http.get<CartResponse[]>(`${this.apiBaseUrl}/cart`);
   }
-
-  getDetailProduct(productId: number): Observable<ProductDetailResponse> {
-    return this.http.get<ProductDetailResponse>(
-      `${this.apiBaseUrl}/products/${productId}`
-    );
+  addProductToCart(cartDto: CartDto): Observable<CartResponse[]> {
+    return this.http.get<CartResponse[]>(`${this.apiBaseUrl}/cart/add`);
+  }
+  removeProductToCart(cartDto: CartDto): Observable<CartResponse[]> {
+    return this.http.get<CartResponse[]>(`${this.apiBaseUrl}/cart/remove`);
   }
 }

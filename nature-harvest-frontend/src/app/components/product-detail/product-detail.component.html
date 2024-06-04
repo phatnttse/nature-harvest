@@ -1,0 +1,99 @@
+<app-header></app-header>
+<div class="container" style="margin-top: 180px">
+  <div class="intro-section">
+    <h1>Đây là trang chi tiết sản phẩm</h1>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          @for(image of product?.productImages; track image.imageUrl;let i =
+          $index;) {
+          <div
+            class="carousel-item"
+            [ngClass]="{ active: i === currentImageIndex }"
+          >
+            <div class="square-image">
+              <img
+                [src]="image.imageUrl"
+                class="product-image rounded"
+                alt="Product Image"
+              />
+            </div>
+          </div>
+          }
+        </div>
+        <div class="carousel-inner"></div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExample"
+          data-bs-slide="prev"
+          (click)="previousImage()"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExample"
+          data-bs-slide="next"
+          (click)="nextImage()"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <div class="row">
+        <div class="thumbnail-container">
+          @for(image of product?.productImages; track image.imageUrl; let i =
+          $index) {
+          <div
+            class="thumbnail-item"
+            [ngClass]="{ active: i === currentImageIndex }"
+            (click)="thumbnailClick(i)"
+          >
+            <img
+              [src]="image.imageUrl"
+              class="thumbnail-image rounded"
+              alt="Thumbnail Image"
+            />
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="">
+        <p class="text-primary" style="font-weight: bold; font-size: 36px">
+          {{ product?.title }}
+        </p>
+        <p class="p-2">{{ product?.description }}</p>
+        <p class="p-2">Price: ${{ product?.price | number : "1.2-2" }}</p>
+        <p class="p-2">Quantity: {{ quantity }}</p>
+        <p class="p-2">
+          Total Price: ${{ getTotalPrice() | number : "1.2-2" }}
+        </p>
+        <div class="product-actions mt-5">
+          <button
+            mat-flat-button
+            class="btn"
+            (click)="addProductToCart(product?.id)"
+          >
+            Thêm vào giỏ hàng
+          </button>
+          <button mat-flat-button class="btn">Mua ngay</button>
+        </div>
+        <div class="product-quantity">
+          <div class="border-wrapper">
+            <button (click)="decreaseQuantity()">-</button>
+            <input type="text" [value]="quantity" />
+            <button (click)="increaseQuantity()">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

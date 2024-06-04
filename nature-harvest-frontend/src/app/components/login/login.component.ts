@@ -90,9 +90,9 @@ export class LoginComponent implements OnInit {
       google.accounts.id.renderButton(document.getElementById('google-btn'), {
         theme: 'filled_blue',
         size: 'large',
-        shape: 'rectangle',
+        shape: 'rectangular',
         with: '350',
-        logo_alignment: 'center',
+        logo_alignment: 'left',
       });
     }
   }

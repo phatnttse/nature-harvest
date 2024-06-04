@@ -18,9 +18,12 @@ export class UserService {
   private apiLoginGoogle = `${environment.apiBaseUrl}/users/login-google`;
   private apiSignup = `${environment.apiBaseUrl}/users/signup`;
   private apiUserDetails = `${environment.apiBaseUrl}/users/details`;
+  private apiConfirmEmail = `${environment.apiBaseUrl}/users/confirm-email`;
   localStorage?: Storage;
   private userResponseSubject = new BehaviorSubject<UserResponse | null>(null);
   userResponse$ = this.userResponseSubject.asObservable();
+  private verifiedSubject = new BehaviorSubject<boolean | null>(null);
+  verifiedSubject$ = this.verifiedSubject.asObservable();
 
   private apiConfig = {
     headers: this.httpUtilService.createHeaders(),
@@ -64,6 +67,12 @@ export class UserService {
         }),
       }
     );
+  }
+
+  verifyEmail(token: string): Observable<SignUpResponse> {
+    return this.http.get<SignUpResponse>(this.apiConfirmEmail, {
+      params: { token },
+    });
   }
 
   getUserDetails(token: string): Observable<UserResponse> {

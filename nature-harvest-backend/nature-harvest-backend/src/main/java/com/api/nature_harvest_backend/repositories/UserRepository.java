@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
     boolean existsByEmail(String email);
+    boolean existsByEmailAndGoogleIdIsNull(String email);
     Optional<User> findByEmail(String email) throws Exception;
     Optional<User> findByGoogleId(String googleId) throws Exception;
     @Query("SELECT o FROM User o WHERE o.active = true AND (:keyword IS NULL OR :keyword = '' OR " +

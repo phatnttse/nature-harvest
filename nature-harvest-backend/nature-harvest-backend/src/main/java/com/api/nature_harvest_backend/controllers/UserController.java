@@ -12,7 +12,6 @@ import com.api.nature_harvest_backend.responses.user.LoginResponse;
 import com.api.nature_harvest_backend.responses.user.SignUpResponse;
 import com.api.nature_harvest_backend.responses.user.UserListResponse;
 import com.api.nature_harvest_backend.responses.user.UserResponse;
-import com.api.nature_harvest_backend.services.cloudinary.ICloudinaryService;
 import com.api.nature_harvest_backend.services.token.ITokenService;
 import com.api.nature_harvest_backend.services.user.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,8 +39,6 @@ import java.util.UUID;
 public class UserController {
     private final IUserService userService;
     private final ITokenService tokenService;
-    private final ICloudinaryService cloudinaryService;
-
     @PostMapping("/signup")
     public ResponseEntity<SignUpResponse> signUp(
             @Valid @RequestBody SignUpDto signUpDto,
@@ -71,6 +68,20 @@ public class UserController {
         } catch (Exception e) {
             signUpResponse.setMessage(e.getMessage());
             return ResponseEntity.badRequest().body(signUpResponse);
+        }
+    }
+    @GetMapping("/confirm-email")
+    public ResponseEntity<SignUpResponse> confirmEmail(@RequestParam("token") String token) {
+        try {
+            if (userService.verifyUser(token))
+                return ResponseEntity.ok(SignUpResponse.builder()
+                    .message("Sign up successfully. Login to shopping now!")
+                    .build());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(SignUpResponse.builder()
+                    .message(e.getMessage())
+                    .build());
         }
     }
 
@@ -231,7 +242,5 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
 
 }

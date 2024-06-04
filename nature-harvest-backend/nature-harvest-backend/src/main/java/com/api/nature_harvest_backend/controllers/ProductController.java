@@ -1,7 +1,10 @@
 package com.api.nature_harvest_backend.controllers;
 
 import com.api.nature_harvest_backend.dtos.ProductDto;
+import com.api.nature_harvest_backend.dtos.ProductImageDto;
 import com.api.nature_harvest_backend.models.Product;
+import com.api.nature_harvest_backend.models.ProductImage;
+import com.api.nature_harvest_backend.responses.product.ProductDetailResponse;
 import com.api.nature_harvest_backend.responses.product.ProductListResponse;
 import com.api.nature_harvest_backend.responses.product.ProductResponse;
 import com.api.nature_harvest_backend.services.product.IProductService;
@@ -131,14 +134,27 @@ public class ProductController {
 //    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(
+    public ResponseEntity<ProductDetailResponse> getProductById(
             @PathVariable("id") Long productId
     ) {
         try {
             Product existingProduct = productService.getProductById(productId);
-            return ResponseEntity.ok(existingProduct);
+            return ResponseEntity.ok(ProductDetailResponse.fromProductDetail(existingProduct));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(null);
+        }
+
+    }
+
+    @PostMapping("create-images/{id}")
+    public ResponseEntity<List<ProductImage>> createImages(
+            @PathVariable("id") Long productId,
+            @RequestBody ProductImageDto productImageDto) {
+        try {
+          List<ProductImage> productImages =  productService.createProductImage(productId, productImageDto.getUrls());
+          return ResponseEntity.ok(productImages);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
         }
 
     }

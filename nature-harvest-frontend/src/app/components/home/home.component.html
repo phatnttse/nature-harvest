@@ -215,7 +215,10 @@
                     <!-- Image -->
                     <div class="card-img">
                       <!-- Image -->
-                      <a class="card-img-hover" href="#">
+                      <a
+                        class="card-img-hover"
+                        routerLink="product-detail/{{ product.id }}"
+                      >
                         <img
                           class="card-img-top card-img-back"
                           [src]="product.thumbnail"
