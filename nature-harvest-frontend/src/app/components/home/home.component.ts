@@ -7,6 +7,12 @@ import { ProductListResponse } from '../../responses/product/product-list.respon
 import { ProductService } from '../../services/product.service';
 import { ProductResponse } from '../../responses/product/product.response';
 import { Router, RouterModule } from '@angular/router';
+import { CartService } from '../../services/cart.service';
+import { CartDto } from '../../dtos/cart/cart.dto';
+import { UserService } from '../../services/user.service';
+import { CartResponse } from '../../responses/cart/cart.response';
+import { ToastrService } from 'ngx-toastr';
+import { CartListResponse } from '../../responses/cart/cart-list.response';
 
 @Component({
   selector: 'app-home',
@@ -31,7 +37,10 @@ export class HomeComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private cartService: CartService,
+    private userService: UserService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -125,5 +134,29 @@ export class HomeComponent implements OnInit {
   onProductClick(productId: number) {
     debugger;
     this.router.navigate(['product-detail', productId]);
+  }
+
+  addProductToCart(productId: number) {
+    debugger;
+    const user = this.userService.getUserResponseFromLocalStorage();
+    const cartDto: CartDto = {
+      userId: user?.id ?? '',
+      productId: productId,
+      quantity: 1,
+    };
+    this.cartService.addProductToCart(cartDto).subscribe({
+      next: (response: CartListResponse) => {
+        debugger;
+        this.cartService.updateCartState(response);
+        this.toastr.success('Add product to cart success', '', {
+          closeButton: true,
+          timeOut: 2000,
+          easeTime: 600,
+        });
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
   }
 }

@@ -1,158 +1,296 @@
 <app-header></app-header>
-
-<section class="bg-primary padding-y-sm" style="margin-top: 220px">
-  <div class="container">
-    <ol class="breadcrumb ondark mb-0">
-      <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
-      <li class="breadcrumb-item active text-white">Shopping cart</li>
-    </ol>
-  </div>
-</section>
-
-<section class="padding-y bg-light mt-3">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-9">
-        <div class="card">
-          <div class="content-body">
-            <h4 class="card-title mb-4">Your shopping cart</h4>
-            <article class="row gy-3 mb-4">
-              <div class="col-lg-5">
-                <figure class="itemside me-lg-5">
-                  <div class="aside">
-                    <img
-                      src="assets/images/items/11.webp"
-                      class="img-sm img-thumbnail"
-                    />
-                  </div>
-                  <figcaption class="info">
-                    <a href="#" class="title">Winter jacket for men and lady</a>
-                    <p class="text-muted">Yellow, Jeans</p>
-                  </figcaption>
-                </figure>
-              </div>
-              <div class="col-auto">
-                <select style="width: 100px" class="form-select">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                </select>
-              </div>
-              <div class="col-lg-2 col-sm-4 col-6">
-                <div class="price-wrap lh-sm">
-                  <var class="price h6">$1156.00</var> <br />
-                  <small class="text-muted"> $460.00 / per item </small>
-                </div>
-              </div>
-              <div class="col-lg col-sm-4">
-                <div class="float-lg-end">
-                  <a href="#" class="btn btn-light">
-                    <i class="fa fa-heart"></i
-                  ></a>
-                  <a href="#" class="btn btn-light text-danger"> Remove</a>
-                </div>
-              </div>
-            </article>
-          </div>
-
-          <div class="content-body border-top">
-            <p>
-              <i class="me-2 text-muted fa-lg fa fa-truck"></i> Free Delivery
-              within 1-2 weeks
-            </p>
-            <p class="text-muted">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip
-            </p>
-          </div>
+<app-breadcrumb></app-breadcrumb>
+<section class="main-cart-page main-container col1-layout">
+  <div class="main container cartpcstyle">
+    <div
+      class="wrap_background_aside margin-bottom-40"
+      style="display: inline-block; width: 100%"
+    >
+      <div class="header-cart d-none">
+        <div class="title-block-page">
+          <h1 class="title_cart">
+            <span>Giỏ hàng của bạn</span>
+          </h1>
         </div>
       </div>
-      <aside class="col-lg-3">
-        <div class="card mb-3">
-          <div class="card-body">
-            <form>
-              <div class="form-group">
-                <label class="form-label">Have coupon?</label>
-                <div class="input-group">
+      <div class="row">
+        <div class="col-xl-8 col-lg-8 col-12 col-cart-left">
+          <div class="cart-page d-xl-block d-none">
+            <div class="drawer__inner">
+              <div class="CartPageContainer">
+                <form
+                  action="/cart"
+                  method="post"
+                  novalidate=""
+                  class="cart ajaxcart cartpage"
+                >
+                  <div class="cart-header-info">
+                    <div>Thông tin sản phẩm</div>
+                    <div>Đơn giá</div>
+                    <div>Số lượng</div>
+                    <div>Thành tiền</div>
+                  </div>
+                  <div
+                    class="ajaxcart__inner ajaxcart__inner--has-fixed-footer cart_body items"
+                  >
+                    @for (item of cart; track $index) {
+                    <div class="ajaxcart__row">
+                      <div class="ajaxcart__product cart_product" data-line="1">
+                        <a
+                          href=""
+                          class="ajaxcart__product-image cart_image"
+                          [title]="item.product.title"
+                          ><img
+                            [src]="item.product.thumbnail"
+                            [alt]="item.product.title"
+                        /></a>
+                        <div class="grid__item cart_info">
+                          <div class="ajaxcart__product-name-wrapper cart_name">
+                            <a
+                              href="/kiwi-vang-zespri"
+                              class="ajaxcart__product-name h4"
+                              title="Kiwi vàng Zespri"
+                              >{{ item.product.title }}</a
+                            >
+                            <a
+                              class="cart__btn-remove remove-item-cart ajaxifyCart--remove"
+                              href="javascript:;"
+                              (click)="removeProductFromCart(item.product.id)"
+                              data-line="1"
+                              >Xóa</a
+                            >
+                          </div>
+                          <div class="grid">
+                            <div
+                              class="grid__item one-half text-right cart_prices"
+                            >
+                              <span class="cart-price"
+                                >{{
+                                  item.product.price | number : "1.0"
+                                }}₫</span
+                              >
+                            </div>
+                          </div>
+                          <div class="grid">
+                            <div class="grid__item one-half cart_select">
+                              <div class="ajaxcart__qty input-group-btn">
+                                <button
+                                  type="button"
+                                  class="ajaxcart__qty-adjust ajaxcart__qty--minus items-count"
+                                  data-id=""
+                                  data-qty="0"
+                                  data-line="1"
+                                  aria-label="-"
+                                  (click)="
+                                    decrementQuantity(
+                                      item.product.id,
+                                      item.quantity
+                                    )
+                                  "
+                                >
+                                  -
+                                </button>
+                                <input
+                                  type="text"
+                                  name="updates[]"
+                                  class="ajaxcart__qty-num number-sidebar"
+                                  maxlength="3"
+                                  [value]="item.quantity"
+                                  min="0"
+                                  data-id=""
+                                  data-line="1"
+                                  aria-label="quantity"
+                                  pattern="[0-9]*"
+                                />
+                                <button
+                                  type="button"
+                                  class="ajaxcart__qty-adjust ajaxcart__qty--plus items-count"
+                                  data-id=""
+                                  data-line="1"
+                                  data-qty="2"
+                                  aria-label="+"
+                                  (click)="
+                                    incrementQuantity(
+                                      item.product.id,
+                                      item.quantity
+                                    )
+                                  "
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="grid">
+                            <div
+                              class="grid__item one-half text-right cart_prices"
+                            >
+                              <span class="cart-price"
+                                >{{
+                                  item.product.price * item.quantity
+                                    | number : "1.0"
+                                }}₫</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    }
+                  </div>
+                  <div
+                    class="ajaxcart__footer ajaxcart__footer--fixed cart-footer"
+                  >
+                    <div class="row">
+                      <div
+                        class="col-lg-4 col-12 offset-md-8 offset-lg-8 offset-xl-8"
+                      >
+                        <div class="ajaxcart__subtotal">
+                          <div class="cart__subtotal">
+                            <div class="cart__col-6">Tổng tiền:</div>
+                            <div class="text-right cart__totle">
+                              <span class="total-price"
+                                >{{ getTotalPrice() | number : "1.0" }}₫</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cart__btn-proceed-checkout-dt">
+                          <button
+                            onclick="goToCheckout(event)"
+                            type="button"
+                            class="button btn btn-default cart__btn-proceed-checkout"
+                            id="btn-proceed-checkout"
+                            title="Thanh toán"
+                          >
+                            Thanh toán
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="cart-mobile-page d-block d-xl-none">
+            <div class="CartMobileContainer"></div>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-12 col-cart-right">
+          <form method="post" novalidate="" class="formVAT">
+            <h4>Thời gian giao hàng</h4>
+            <div class="timedeli-modal">
+              <fieldset class="input_group date_pick">
+                <input
+                  type="text"
+                  placeholder="Chọn ngày"
+                  readonly=""
+                  id="date"
+                  name="attributes[shipdate]"
+                  class="date_picker"
+                  required=""
+                />
+              </fieldset>
+              <fieldset class="input_group date_time">
+                <select name="time" class="timeer timedeli-cta">
+                  <option selected="">Chọn thời gian</option>
+
+                  <option value="08h00 - 12h00">08h00 - 12h00</option>
+
+                  <option value=" 14h00 - 18h00">14h00 - 18h00</option>
+
+                  <option value=" 19h00 - 21h00">19h00 - 21h00</option>
+                </select>
+              </fieldset>
+            </div>
+
+            <div class="r-bill">
+              <div class="checkbox">
+                <input
+                  type="hidden"
+                  name="attributes[invoice]"
+                  id="re-checkbox-bill"
+                  value="không"
+                />
+                <input
+                  type="checkbox"
+                  id="checkbox-bill"
+                  name="attributes[invoice]"
+                  value="có"
+                  class="regular-checkbox"
+                />
+                <label for="checkbox-bill" class="box"></label>
+                <label for="checkbox-bill" class="title"
+                  >Xuất hóa đơn công ty</label
+                >
+              </div>
+              <div class="bill-field">
+                <div class="form-group">
+                  <label>Tên công ty</label>
                   <input
                     type="text"
-                    class="form-control"
-                    name=""
-                    placeholder="Coupon code"
+                    class="form-control val-f"
+                    name="attributes[company_name]"
+                    value=""
+                    placeholder="Tên công ty"
                   />
-                  <button class="btn btn-success">Apply</button>
+                </div>
+                <div class="form-group">
+                  <label>Mã số thuế</label>
+                  <input
+                    type="number"
+                    class="form-control val-f val-n"
+                    name="attributes[tax_code]"
+                    value=""
+                    placeholder="Mã số thuế"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Địa chỉ công ty</label>
+                  <textarea
+                    class="form-control val-f"
+                    name="attributes[company_address]"
+                    placeholder="Nhập địa chỉ công ty (bao gồm Phường/Xã, Quận/Huyện, Tỉnh/Thành phố nếu có)"
+                  ></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Email nhận hoá đơn</label>
+                  <input
+                    type="email"
+                    class="form-control val-f val-email"
+                    name="attributes[invoice_email]"
+                    value=""
+                    placeholder="Email nhận hoá đơn"
+                  />
                 </div>
               </div>
-            </form>
-          </div>
-        </div>
+            </div>
+          </form>
 
-        <div class="card">
-          <div class="card-body">
-            <dl class="dlist-align">
-              <dt>Total price:</dt>
-              <dd class="text-end">$329.00</dd>
-            </dl>
-            <dl class="dlist-align">
-              <dt>Discount:</dt>
-              <dd class="text-end text-success">- $60.00</dd>
-            </dl>
-            <dl class="dlist-align">
-              <dt>TAX:</dt>
-              <dd class="text-end">$14.00</dd>
-            </dl>
-            <hr />
-            <dl class="dlist-align">
-              <dt>Total:</dt>
-              <dd class="text-end text-dark h5">$357.90</dd>
-            </dl>
-
-            <div class="d-grid gap-2 my-3">
-              <a href="#" class="btn btn-success w-100"> Make Purchase </a>
-              <a href="#" class="btn btn-light w-100"> Back to shop </a>
+          <div class="clearfix"></div>
+          <div class="product-coupon__wrapper my-3">
+            <strong class="d-block mb-2"
+              >Các mã giảm giá có thể áp dụng:
+            </strong>
+            <div class="product-coupons coupon-toggle-btn">
+              <div class="coupon_item lite">
+                <div class="coupon_content">BEA50</div>
+              </div>
+              <div class="coupon_item lite">
+                <div class="coupon_content">BEA15</div>
+              </div>
+              <div class="coupon_item lite">
+                <div class="coupon_content">BEAN99K</div>
+              </div>
+              <div class="coupon_item lite">
+                <div class="coupon_content">FREESHIP</div>
+              </div>
             </div>
           </div>
         </div>
-      </aside>
-    </div>
-
-    <br /><br />
-  </div>
-</section>
-
-<section class="padding-y border-top">
-  <div class="container">
-    <header class="section-heading">
-      <h4 class="section-title">Recommended items</h4>
-    </header>
-
-    <div class="row">
-      <div class="col-lg-3 col-sm-6 col-12">
-        <figure class="card card-product-grid">
-          <div class="img-wrap">
-            <span class="topbar">
-              <a href="#" class="float-end"
-                ><i class="fa fa-lg fa-heart"></i
-              ></a>
-            </span>
-            <a href="#"><img src="assets/images/items/10.webp" /></a>
-          </div>
-          <figcaption class="info-wrap border-top">
-            <a href="#" class="title text-truncate"
-              >Mens T-shirt Cotton Base Layer Slim fit
-            </a>
-            <div class="price-wrap mb-3">
-              <strong class="price">$13.90</strong>
-            </div>
-            <a href="#" class="btn btn-outline-primary w-100">Add to cart</a>
-          </figcaption>
-        </figure>
       </div>
     </div>
   </div>
 </section>
-
 <app-footer></app-footer>

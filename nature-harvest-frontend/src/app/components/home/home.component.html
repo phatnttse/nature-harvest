@@ -223,11 +223,15 @@
                           class="card-img-top card-img-back"
                           [src]="product.thumbnail"
                           alt="..."
+                          width="350"
+                          height="250"
                         />
                         <img
                           class="card-img-top card-img-front"
                           [src]="product.thumbnail"
                           alt="..."
+                          width="350"
+                          height="250"
                         />
                       </a>
 
@@ -291,12 +295,13 @@
                         <span class="text-primary">{{ product.price }}</span>
                       </div>
                       <div>
-                        <a
-                          href="#"
+                        <button
+                          (click)="addProductToCart(product.id)"
                           class="btn border border-secondary rounded-pill px-3 text-primary my-2"
-                          ><i class="fa fa-shopping-bag me-2 text-primary"></i>
-                          Add to cart</a
                         >
+                          <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                          Add to cart
+                        </button>
                       </div>
                     </div>
                   </div>

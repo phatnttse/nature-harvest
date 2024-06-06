@@ -35,11 +35,20 @@
             <mat-form-field class="example-full-width mt-4">
               <mat-label class="font-size-14">Password</mat-label>
               <input
-                type="password"
                 matInput
                 [formControl]="passwordFormControl"
                 [errorStateMatcher]="matcher"
+                [type]="hide ? 'password' : 'text'"
               />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="clickEvent($event)"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide"
+              >
+                <i class="fas fa-eye" style="font-size: small"> </i>
+              </button>
               @if (passwordFormControl.hasError('email') &&
               !passwordFormControl.hasError('required')) {
               <mat-error>Please enter a valid password</mat-error>

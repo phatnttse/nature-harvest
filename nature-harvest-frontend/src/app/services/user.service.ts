@@ -120,13 +120,11 @@ export class UserService {
       console.error('Error removing user data from local storage:', error);
     }
   }
-
   setUserResponse(userResponse: UserResponse) {
     debugger;
     this.userResponseSubject.next(userResponse);
     this.saveUserResponseToLocalStorage(userResponse);
   }
-
   clearUserResponse() {
     debugger;
     this.userResponseSubject.next(null);

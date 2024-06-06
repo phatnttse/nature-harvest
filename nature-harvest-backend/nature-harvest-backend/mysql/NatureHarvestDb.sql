@@ -254,41 +254,41 @@ VALUES (UUID(), 'admin123@gmail.com', '$2a$10$wNGqMyi/jy8aURA1Bbm8.e6l90CY5A6FU0
 
 INSERT INTO products (title, description, quantity, price, category_id, thumbnail) VALUES 
 ('Apple', 'Apples come in various varieties such as Gala, Fuji, Granny Smith, and Honeycrisp. They have thin skin with colors ranging from red, yellow, to green, and a crisp, sweet, or tart flesh.',
- 200, 50000, 2, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215700/ZnJ1aXRlLWl0ZW0tNl9mZHowbHc=/template_primary/dF9B'),
+ 200, 50000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215698/best-product-6_w8j3ua.jpg'),
  
 ('Grapes', 'Grapes are small, juicy fruits that come in various colors such as red, green, and purple. They can be eaten fresh, made into wine, or dried into raisins.',
- 200, 80000, 2, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215700/ZnJ1aXRlLWl0ZW0tNV9zZHB0OWY=/template_primary/dF9B'),
+ 200, 80000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/fruite-item-5_sdpt9f.jpg'),
  
 ('Banana', 'Bananas are tropical fruits with yellow skin when ripe, and soft, sweet flesh. They are easy to peel and can be eaten raw or used in various dishes.', 
 200, 30000, 2, 
-'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215700/ZnJ1aXRlLWl0ZW0tM19qOGFrYWI=/drilldown'),
+'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/fruite-item-3_j8akab.jpg'),
 
 ('Oranges', 'Oranges have thick orange skin, juicy flesh, and a sweet or tart taste. They are often eaten fresh or juiced.', 
-200, 60000, 2, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215699/ZnJ1aXRlLWl0ZW0tMV9zZnpkdmE=/drilldown'),
+200, 60000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/fruite-item-1_sfzdva.jpg'),
 
 ('Apricots', 'Apricots are small, golden-orange fruits with a velvety skin and flesh. They have a slightly tart and sweet flavor, with a texture similar to a peach but firmer and less juicy', 
-200, 35000, 2, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215700/ZnJ1aXRlLWl0ZW0tNF92MmgzbW8=/drilldown'),
+200, 35000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/fruite-item-4_v2h3mo.jpg'),
 
 ('Raspberries', 'Raspberries are small, delicate fruits that come in various colors, including red, black, purple, and golden', 
-200, 720000, 2, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215699/ZnJ1aXRlLWl0ZW0tMl9rNHJ1c2U=/drilldown'),
+200, 720000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/fruite-item-2_k4ruse.jpg'),
 
 ('Strawberry', 'Strawberries are bright red, juicy fruits with a sweet or tart flavor. They are often eaten fresh, made into jam, or used in desserts.', 
-200, 90000, 2, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215699/ZmVhdHVyLTJfc3ZuNnV0/template_primary/dF9B'),
+200, 90000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/featur-2_svn6ut.jpg'),
 
 ('Tomato', 'Tomatoes are versatile fruits (often considered vegetables in culinary contexts) that come in various shapes, sizes, and colors, including red, yellow, green, and purple..', 
-200, 30000, 2, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215698/dmVnZXRhYmxlLWl0ZW0tMV9hOXMybHI=/template_primary/dF9B'),
+200, 30000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215698/vegetable-item-1_a9s2lr.jpg'),
 
 ('Broccoli', 'Broccoli is a green vegetable belonging to the cruciferous family. It has a tree-like appearance with thick, edible stems and clusters of small, tight green florets.', 
-200, 40000, 2, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215700/dmVnZXRhYmxlLWl0ZW0tNl9uZjl6OGE=/template_primary/dF9B'),
+200, 40000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/featur-3_ofqx8w.jpg'),
 
 ('Potato', 'Potatoes are starchy tuberous vegetables that come in various shapes, sizes, and colors, including white, yellow, red, and purple.', 
-200, 20000, 1, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215699/dmVnZXRhYmxlLWl0ZW0tNV9haHBsZXA=/template_primary/dF9B'),
+200, 20000, 1, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/vegetable-item-5_ahplep.jpg'),
 
 ('Bell Pepper', 'They come in various colors, including red, yellow, orange, green, and even purple, and have a crunchy texture and a sweet, mildly tangy flavor', 
-200, 20000, 1, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215699/dmVnZXRhYmxlLWl0ZW0tNF9waXN6eXQ=/template_primary/dF9B'),
+200, 20000, 1, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/vegetable-item-4_piszyt.jpg'),
 
 ('Cilantro', 'Cilantro is rich in vitamins A, C, and K, as well as antioxidants, fiber, and essential oils.', 
-200, 10000, 1, 'https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215699/ZmVhdHVyLTNfb2ZxeDh3/template_primary/dF9B');
+200, 10000, 1, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/vegetable-item-6_nf9z8a.jpg');
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

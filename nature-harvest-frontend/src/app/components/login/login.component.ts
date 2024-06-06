@@ -25,6 +25,8 @@ import { LoginResponse } from '../../responses/user/login.response';
 import { Router, RouterModule } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { UserResponse } from '../../responses/user/user.response';
+import { MatIconModule } from '@angular/material/icon';
+
 declare var google: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -56,16 +58,22 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     ReactiveFormsModule,
     MatButtonModule,
     RouterModule,
+    MatIconModule,
   ],
 })
 export class LoginComponent implements OnInit {
-  emailFormControl = new FormControl('phat123@gmail.com', [
+  emailFormControl = new FormControl('phat19102003@gmail.com', [
     Validators.required,
     Validators.email,
   ]);
   passwordFormControl = new FormControl('123', [Validators.required]);
   matcher = new MyErrorStateMatcher();
   userResponse?: UserResponse;
+  hide = true;
+  clickEvent(event: MouseEvent) {
+    this.hide = !this.hide;
+    event.stopPropagation();
+  }
 
   constructor(
     private userService: UserService,

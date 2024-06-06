@@ -14,10 +14,8 @@ import java.util.Optional;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
     List<Cart> findByUser(User user) throws Exception;
-
     Optional<Cart> findByUserAndProduct(User user, Product product) throws Exception;
-
-//    @Query("DELETE c FROM Cart  WHERE c.userId = :userId AND c.productId = :productId")
-//    @Modifying
     void deleteByUserAndProduct(User user, Product product) throws Exception;
+    @Query("SELECT SUM(c.quantity) FROM Cart c WHERE c.user = :user")
+    Integer findCartSizeByUser(User user) throws Exception;
 }

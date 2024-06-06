@@ -1,99 +1,348 @@
 <app-header></app-header>
-<div class="container" style="margin-top: 180px">
-  <div class="intro-section">
-    <h1>Đây là trang chi tiết sản phẩm</h1>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          @for(image of product?.productImages; track image.imageUrl;let i =
-          $index;) {
-          <div
-            class="carousel-item"
-            [ngClass]="{ active: i === currentImageIndex }"
-          >
-            <div class="square-image">
-              <img
-                [src]="image.imageUrl"
-                class="product-image rounded"
-                alt="Product Image"
-              />
+<app-breadcrumb></app-breadcrumb>
+<section class="product layout-product">
+  <div class="container">
+    <div class="details-product">
+      <div class="row">
+        <div
+          class="product-detail-left product-images col-12 col-md-12 col-lg-6"
+        >
+          <div class="box_pro_img carousel slide" data-bs-ride="carousel">
+            <div class="product-image-block relative">
+              <div class="">
+                <div>
+                  <div class="carousel-inner">
+                    @for(image of product?.productImages; track
+                    image.imageUrl;let i = $index;) {
+                    <div
+                      class="carousel-item"
+                      [ngClass]="{ active: i === currentImageIndex }"
+                    >
+                      <div class="">
+                        <img
+                          [src]="image.imageUrl"
+                          class="product-image rounded"
+                          alt="Product Image"
+                        />
+                      </div>
+                    </div>
+                    }
+                    <button
+                      class="carousel-control-prev"
+                      type="button"
+                      data-bs-target="#carouselExample"
+                      data-bs-slide="prev"
+                      (click)="previousImage()"
+                    >
+                      <span
+                        class="carousel-control-prev-icon"
+                        aria-hidden="true"
+                      ></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button
+                      class="carousel-control-next"
+                      type="button"
+                      data-bs-target="#carouselExample"
+                      data-bs-slide="next"
+                      (click)="nextImage()"
+                    >
+                      <span
+                        class="carousel-control-next-icon"
+                        data-bs-target="#carouselExample"
+                        data-bs-slide="next"
+                        aria-hidden="true"
+                        (click)="nextImage()"
+                      ></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="product-percent">
+                  <span class="label_product">- 15% </span><span>OFF </span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="thumbnail-container">
+                  @for(image of product?.productImages; track image.imageUrl;
+                  let i = $index) {
+                  <div
+                    class="thumbnail-item"
+                    [ngClass]="{ active: i === currentImageIndex }"
+                    (click)="thumbnailClick(i)"
+                  >
+                    <img
+                      [src]="image.imageUrl"
+                      class="thumbnail-image rounded-3"
+                      alt="Thumbnail Image"
+                    />
+                  </div>
+                  }
+                </div>
+              </div>
             </div>
           </div>
-          }
         </div>
-        <div class="carousel-inner"></div>
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#carouselExample"
-          data-bs-slide="prev"
-          (click)="previousImage()"
-        >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#carouselExample"
-          data-bs-slide="next"
-          (click)="nextImage()"
-        >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+        <div class="col-12 col-md-12 col-lg-6">
+          <div class="details-pro">
+            <h1 class="title-product">{{ product?.title }}</h1>
+
+            <div class="reviews_details_product">
+              <div
+                class="sapo-product-reviews-badge sapo-product-reviews-badge-detail"
+                data-id="35394343"
+              ></div>
+            </div>
+
+            <div class="inventory_quantity">
+              <div class="thump-break">
+                <span class="mb-break">
+                  <span class="stock-brand-title">Thương hiệu:</span>
+                  <span class="text-primary"> Nature's Harvest </span>
+                </span>
+                <span class="line">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                <span class="mb-break inventory">
+                  <span class="stock-brand-title">Tình trạng:</span>
+
+                  <span class="a-stock"> Còn hàng </span>
+                </span>
+              </div>
+            </div>
+            <div class="price-box clearfix">
+              <span class="special-price">
+                Giá:
+                <span class="price product-price"
+                  >{{ product?.price | number : "1.0" }}₫</span
+                >
+              </span>
+              <!-- Giá Khuyến mại -->
+              <span class="old-price">
+                Giá thị trường:
+                <del class="price product-price-old"> 55.000₫ </del>
+              </span>
+              <!-- Giás gốc -->
+              <span class="save-price"
+                >Tiết kiệm:
+                <span class="price product-price-save">8.000₫</span> so với giá
+                thị trường
+              </span>
+              <!-- Tiết kiệm -->
+            </div>
+
+            <div class="motangan">
+              <div class="rte">
+                <p>
+                  {{ product?.description }}
+                </p>
+              </div>
+            </div>
+            <div class="form-product">
+              <div class="clearfix form-group">
+                <div class="flex-quantity">
+                  <div class="custom custom-btn-number show">
+                    <div class="input_number_product">
+                      <button
+                        class="btn_num num_1 button button_qty"
+                        (click)="decreaseQuantity()"
+                      >
+                        −
+                      </button>
+                      <input
+                        type="text"
+                        id="quantity"
+                        name="quantity"
+                        [value]="quantity"
+                        maxlength="3"
+                        class="form-control prd_quantity"
+                      />
+                      <button
+                        class="btn_num num_2 button button_qty"
+                        (click)="increaseQuantity()"
+                      >
+                        <span>+</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex-btntity">
+                    <div class="btn-mua button_actions clearfix">
+                      <div style="display: flex; flex-wrap: wrap; width: 100%">
+                        <button
+                          class="btn btn_base normal_button btn_add_cart add_to_cart btn-cart"
+                          (click)="addProductToCart(product?.id)"
+                        >
+                          <span class="txt-main text_1">Thêm vào giỏ</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ul class="chinhsach-pro margin-top-15">
+              <li>
+                <img
+                  width="32"
+                  height="32"
+                  src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/chinhsach_1.jpg?1716945232631"
+                  alt="Miễn phí vận chuyển tại TP.HCM"
+                />
+                <span>Miễn phí vận chuyển tại TP.HCM</span>
+              </li>
+
+              <li>
+                <img
+                  width="32"
+                  height="32"
+                  src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/chinhsach_2.jpg?1716945232631"
+                  alt="Bảo hành chính hãng toàn quốc"
+                />
+                <span>Bảo hành chính hãng toàn quốc</span>
+              </li>
+
+              <li>
+                <img
+                  width="32"
+                  height="32"
+                  src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/chinhsach_3.jpg?1716945232631"
+                  alt="Cam kết chính hãng 100%"
+                />
+                <span>Cam kết chính hãng 100%</span>
+              </li>
+
+              <li>
+                <img
+                  width="32"
+                  height="32"
+                  src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/chinhsach_4.jpg?1716945232631"
+                  alt="1 đổi 1 nếu sản phẩm lỗi"
+                />
+                <span>1 đổi 1 nếu sản phẩm lỗi</span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="row">
-        <div class="thumbnail-container">
-          @for(image of product?.productImages; track image.imageUrl; let i =
-          $index) {
-          <div
-            class="thumbnail-item"
-            [ngClass]="{ active: i === currentImageIndex }"
-            (click)="thumbnailClick(i)"
-          >
-            <img
-              [src]="image.imageUrl"
-              class="thumbnail-image rounded"
-              alt="Thumbnail Image"
-            />
-          </div>
-          }
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="">
-        <p class="text-primary" style="font-weight: bold; font-size: 36px">
-          {{ product?.title }}
-        </p>
-        <p class="p-2">{{ product?.description }}</p>
-        <p class="p-2">Price: ${{ product?.price | number : "1.2-2" }}</p>
-        <p class="p-2">Quantity: {{ quantity }}</p>
-        <p class="p-2">
-          Total Price: ${{ getTotalPrice() | number : "1.2-2" }}
-        </p>
-        <div class="product-actions mt-5">
-          <button
-            mat-flat-button
-            class="btn"
-            (click)="addProductToCart(product?.id)"
-          >
-            Thêm vào giỏ hàng
-          </button>
-          <button mat-flat-button class="btn">Mua ngay</button>
-        </div>
-        <div class="product-quantity">
-          <div class="border-wrapper">
-            <button (click)="decreaseQuantity()">-</button>
-            <input type="text" [value]="quantity" />
-            <button (click)="increaseQuantity()">+</button>
+        <div class="col-12 col-sm-12 col-lg-9 col-col-md-9">
+          <div class="content-pro">
+            <div class="product-tab e-tabs not-dqtab" id="tab-product">
+              <ul class="tabs tabs-title clearfix">
+                <li class="tab-link active" data-tab="#tab-1">
+                  <h3>Mô tả sản phẩm</h3>
+                </li>
+
+                <li class="tab-link" data-tab="#tab-2">
+                  <h3>Hướng dẫn mua hàng</h3>
+                </li>
+
+                <li class="tab-link" data-tab="#tab-3">
+                  <h3>Đánh giá</h3>
+                </li>
+              </ul>
+              <div class="tab-float">
+                <div id="tab-1" class="tab-content content_extab active">
+                  <div class="rte product_getcontent content_coll active">
+                    <p>
+                      <strong>Chứng nhận/Canh tác:</strong
+                      ><span>&nbsp;</span>Canh tác theo hướng hữu cơ. Trang trại
+                      không sử dụng phân bón hóa học, không sử dụng thuốc diệt
+                      cỏ, không dùng bất cứ loại hóa chất bảo vệ thực vật nào.
+                      Chỉ sử dụng các loại phân gà đã có chứng nhận hữu cơ
+                      OMRILIST, sử dụng thêm các loại phân chuồng ủ hoai cùng
+                      thực vậy, các loại phân trùn quế tùy theo mùa. Tùy vào
+                      từng mùa trong năm, vườn có sử dụng thêm các chế phẩm sinh
+                      học được cho phép theo tiêu chuẩn canh tác hữu cơ USDA
+                      (Mỹ) phòng ngừa sâu bệnh và dịch hại. Canh tác trong vườn
+                      được ghi chép nhật ký để luân canh, xen canh, cải tạo đất.
+                    </p>
+                  </div>
+                </div>
+
+                <div id="tab-2" class="tab-content content_extab">
+                  <div class="rte">
+                    <p>
+                      <strong>Bước 1:</strong>&nbsp;Truy cập website và lựa chọn
+                      sản phẩm&nbsp;cần mua
+                    </p>
+                    <p>
+                      <strong>Bước 2:</strong>&nbsp;Click và sản phẩm muốn mua,
+                      màn hình hiển thị ra pop up với các lựa chọn sau
+                    </p>
+                    <p>
+                      Nếu bạn muốn tiếp tục mua hàng: Bấm vào phần tiếp tục mua
+                      hàng để lựa chọn thêm sản phẩm vào giỏ hàng
+                    </p>
+                    <p>
+                      Nếu bạn muốn xem giỏ hàng để cập nhật sản phẩm: Bấm vào
+                      xem giỏ hàng
+                    </p>
+                    <p>
+                      Nếu bạn muốn đặt hàng và thanh toán cho sản phẩm này vui
+                      lòng bấm vào: Đặt hàng và thanh toán
+                    </p>
+                    <p>
+                      <strong>Bước 3:</strong>&nbsp;Lựa chọn thông tin tài khoản
+                      thanh toán
+                    </p>
+                    <p>
+                      Nếu bạn đã có tài khoản vui lòng nhập thông tin tên đăng
+                      nhập là email và mật khẩu vào mục đã có tài khoản trên hệ
+                      thống
+                    </p>
+                    <p>
+                      Nếu bạn chưa có tài khoản và muốn đăng ký tài khoản vui
+                      lòng điền các thông tin cá nhân để tiếp tục đăng ký tài
+                      khoản. Khi có tài khoản bạn sẽ dễ dàng theo dõi được đơn
+                      hàng của mình
+                    </p>
+                    <p>
+                      Nếu bạn muốn mua hàng mà không cần tài khoản vui lòng nhấp
+                      chuột vào mục đặt hàng không cần tài khoản
+                    </p>
+                    <p>
+                      <strong>Bước 4:</strong>&nbsp;Điền các thông tin của bạn
+                      để nhận đơn hàng, lựa chọn hình thức thanh toán và vận
+                      chuyển cho đơn hàng của mình
+                    </p>
+                    <p>
+                      <strong>Bước 5:</strong>&nbsp;Xem lại thông tin đặt hàng,
+                      điền chú thích và gửi đơn hàng
+                    </p>
+                    <p>
+                      Sau khi nhận được đơn hàng bạn gửi chúng tôi sẽ liên hệ
+                      bằng cách gọi điện lại để xác nhận lại đơn hàng và địa chỉ
+                      của bạn.
+                    </p>
+                    <p>Trân trọng cảm ơn.</p>
+                  </div>
+                </div>
+
+                <div id="tab-3" class="tab-content content_extab">
+                  <div class="rte">
+                    <div
+                      class="alert alert-info alert-dismissible margin-top-15 section"
+                      role="alert"
+                      style="max-width: 100% !important"
+                    >
+                      Bạn tiến hàng mua và cài app
+                      <a
+                        style="color: red"
+                        target="_blank"
+                        href="https://apps.sapo.vn/danh-gia-san-pham-v2"
+                        title="Đánh giá sản phẩm"
+                        >Đánh giá sản phẩm</a
+                      >
+                      mới sử dụng được tính năng này!
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 <app-footer></app-footer>

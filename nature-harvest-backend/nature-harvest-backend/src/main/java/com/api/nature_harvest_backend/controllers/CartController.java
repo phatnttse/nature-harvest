@@ -4,6 +4,7 @@ import com.api.nature_harvest_backend.dtos.CartDto;
 import com.api.nature_harvest_backend.models.Cart;
 import com.api.nature_harvest_backend.responses.cart.CartListResponse;
 import com.api.nature_harvest_backend.responses.cart.CartResponse;
+import com.api.nature_harvest_backend.responses.cart.CartSizeResponse;
 import com.api.nature_harvest_backend.services.cart.ICartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +70,18 @@ public class CartController {
                     .cart(CartResponse.fromCart(cart))
                     .build());
         }catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+    @GetMapping("/cart-size")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<CartSizeResponse> getTotalQuantity(@RequestHeader("Authorization") String token) {
+        try {
+            Integer cartSize = cartService.getCartSizeByUserId(token);
+            return ResponseEntity.ok(CartSizeResponse.builder()
+                    .cartSize(cartSize)
+                    .build());
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }

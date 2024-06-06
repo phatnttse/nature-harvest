@@ -1,4 +1,3 @@
-import { ProductResponse } from './../../responses/product/product.response';
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
@@ -17,6 +16,8 @@ import { CartService } from '../../services/cart.service';
 import { CartResponse } from '../../responses/cart/cart.response';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user.service';
+import { CartListResponse } from '../../responses/cart/cart-list.response';
+import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-product-detail',
@@ -32,6 +33,7 @@ import { UserService } from '../../services/user.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    BreadcrumbComponent,
   ],
 })
 export class ProductDetailComponent implements OnInit {
@@ -113,7 +115,6 @@ export class ProductDetailComponent implements OnInit {
     }
   }
   increaseQuantity(): void {
-    debugger;
     this.quantity++;
   }
 
@@ -126,13 +127,13 @@ export class ProductDetailComponent implements OnInit {
     debugger;
     const user = this.userService.getUserResponseFromLocalStorage();
     const cartDto: CartDto = {
-      cartId: null,
       userId: user?.id ?? '',
       productId: productId!,
       quantity: this.quantity,
     };
     this.cartService.addProductToCart(cartDto).subscribe({
-      next: (response: CartResponse[]) => {
+      next: (response: CartListResponse) => {
+        this.cartService.updateCartState(response);
         debugger;
         this.toastr.success('Add product to cart successfully', '', {
           closeButton: true,

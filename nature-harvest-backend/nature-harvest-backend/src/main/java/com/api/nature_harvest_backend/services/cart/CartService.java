@@ -11,12 +11,14 @@ import com.api.nature_harvest_backend.repositories.ProductRepository;
 import com.api.nature_harvest_backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CartService implements ICartService{
+public class CartService implements ICartService {
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
@@ -31,13 +33,14 @@ public class CartService implements ICartService{
     }
 
     @Override
+    @Transactional
     public List<Cart> addProductToCart(CartDto cartDto) throws Exception {
         User user = userRepository.findById(cartDto.getUserId()).orElseThrow(()-> new DataNotFoundException("User not found"));
         Product product = productRepository.findById(cartDto.getProductId()).orElseThrow(()-> new DataNotFoundException("Product not found"));
         Optional<Cart> cart = cartRepository.findByUserAndProduct(user, product);
 
         if (cart.isPresent()) {
-            cart.get().setQuantity(cartDto.getQuantity());
+            cart.get().setQuantity(cart.get().getQuantity() + cartDto.getQuantity());
             cartRepository.save(cart.get());
         }else {
             Cart newCartItem = Cart.builder()
@@ -53,6 +56,7 @@ public class CartService implements ICartService{
     }
 
     @Override
+    @Transactional
     public List<Cart> removeProductToCart(CartDto cartDto) throws Exception {
         User user = userRepository.findById(cartDto.getUserId()).orElseThrow(()-> new DataNotFoundException("User not found"));
         Product product = productRepository.findById(cartDto.getProductId()).orElseThrow(()-> new DataNotFoundException("Product not found"));
@@ -62,15 +66,29 @@ public class CartService implements ICartService{
     }
 
     @Override
+    @Transactional
     public List<Cart> updateQuantity(CartDto cartDto) throws Exception {
         User user = userRepository.findById(cartDto.getUserId()).orElseThrow(()-> new DataNotFoundException("User not found"));
         Product product = productRepository.findById(cartDto.getProductId()).orElseThrow(()-> new DataNotFoundException("Product not found"));
         Optional<Cart> cart = cartRepository.findByUserAndProduct(user, product);
         if (cart.isPresent()) {
-            cart.get().setQuantity(cartDto.getQuantity());
-            cartRepository.save(cart.get());
+            if (cartDto.getQuantity() == 0) {
+                cartRepository.deleteByUserAndProduct(user, product);
+            }else {
+                cart.get().setQuantity(cartDto.getQuantity());
+                cartRepository.save(cart.get());
+            }
         }
         List<Cart> cartItems = cartRepository.findByUser(user);
         return cartItems;
+    }
+
+    @Override
+    public Integer getCartSizeByUserId(String token) throws Exception {
+        String extractedToken = token.substring(7);
+        String userId = jwtTokenUtils.extractUserId(extractedToken);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+        return cartRepository.findCartSizeByUser(user);
     }
 }

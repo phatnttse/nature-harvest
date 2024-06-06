@@ -1,3 +1,5 @@
+import { CategoryResponse } from '../category/category.response';
+
 export class ProductResponse {
   id: number;
   title: string;
@@ -8,7 +10,7 @@ export class ProductResponse {
   discount: number;
   purchases: number;
   averageRating: number;
-  categoryId: number;
+  category: CategoryResponse;
   // subCategoryId: number;
   totalPages: number;
 
@@ -22,7 +24,7 @@ export class ProductResponse {
     this.discount = data.discount;
     this.purchases = data.purchases;
     this.averageRating = data.averageRating;
-    this.categoryId = data.categoryId;
+    this.category = data.category;
     // this.subCategoryId = data.subCategoryId;
     this.totalPages = data.totalPages;
   }
