@@ -91,4 +91,11 @@ public class CartService implements ICartService {
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
         return cartRepository.findCartSizeByUser(user);
     }
+
+    @Override
+    @Transactional
+    public void clearCart(CartDto cartDto) throws Exception {
+        User user = userRepository.findById(cartDto.getUserId()).orElseThrow(()-> new DataNotFoundException("User not found"));
+        cartRepository.deleteAllByUser(user);
+    }
 }

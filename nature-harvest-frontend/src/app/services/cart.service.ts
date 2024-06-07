@@ -69,4 +69,12 @@ export class CartService {
   updateCartState(cartData: CartListResponse): void {
     this.cartSubject.next(cartData);
   }
+
+  clearCart(cartDto: CartDto): Observable<any> {
+    return this.http.post(
+      `${this.apiBaseUrl}/cart/clear-cart`,
+      cartDto,
+      this.apiConfig
+    );
+  }
 }

@@ -85,4 +85,14 @@ public class CartController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+    @PostMapping("/clear-cart")
+//    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<?> clearCart(@RequestBody CartDto cartDto) {
+        try {
+            cartService.clearCart(cartDto);
+            return ResponseEntity.ok("Clear cart successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

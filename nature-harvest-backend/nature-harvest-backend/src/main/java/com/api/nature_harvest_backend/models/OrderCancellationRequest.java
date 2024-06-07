@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "request_cancellations")
+@Table(name = "order_cancellation_requests")
 @Getter
 @Setter
 @AllArgsConstructor

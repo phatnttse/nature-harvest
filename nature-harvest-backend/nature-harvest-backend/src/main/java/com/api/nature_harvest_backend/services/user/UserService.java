@@ -6,11 +6,9 @@ import com.api.nature_harvest_backend.dtos.UpdateUserDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.ExpiredTokenException;
 import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
-import com.api.nature_harvest_backend.models.EmailConfirmation;
 import com.api.nature_harvest_backend.models.Role;
 import com.api.nature_harvest_backend.models.Token;
 import com.api.nature_harvest_backend.models.User;
-import com.api.nature_harvest_backend.repositories.EmailConfirmationRepository;
 import com.api.nature_harvest_backend.repositories.RoleRepository;
 import com.api.nature_harvest_backend.repositories.TokenRepository;
 import com.api.nature_harvest_backend.repositories.UserRepository;
@@ -33,7 +31,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 
 import java.time.LocalDateTime;
@@ -45,7 +42,6 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final TokenRepository tokenRepository;
-    private final EmailConfirmationRepository emailConfirmationRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
     private final AuthenticationManager authenticationManager;

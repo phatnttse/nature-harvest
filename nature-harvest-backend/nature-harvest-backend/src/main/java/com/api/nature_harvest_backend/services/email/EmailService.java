@@ -1,24 +1,17 @@
 package com.api.nature_harvest_backend.services.email;
 
 import com.api.nature_harvest_backend.models.User;
-import com.api.nature_harvest_backend.repositories.EmailConfirmationRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.crypto.keygen.BytesKeyGenerator;
-import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
-import java.nio.charset.Charset;
 
 @Service
 @RequiredArgsConstructor
 public class EmailService implements  IEmailService {
-    private static final BytesKeyGenerator  DEFAULT_TOKEN_GENERATOR = KeyGenerators.secureRandom(15);
-    private static final Charset US_ASCII = Charset.forName("US-ASCII");
-    private final EmailConfirmationRepository emailConfirmationRepository;
     private  final JavaMailSender javaMailSender;
     @Value("${api.confirmEmail}")
     private String apiPrefix;

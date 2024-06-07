@@ -1,10 +1,9 @@
 package com.api.nature_harvest_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
-
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "orders")
@@ -15,8 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
+    @Column(name = "order_id", nullable = false)
     private String id;
 
     @ManyToOne
@@ -38,30 +36,34 @@ public class Order {
     @Column(name = "note", columnDefinition = "LONGTEXT")
     private String note;
 
-    @ManyToOne
-    @JoinColumn(name = "previous_status", nullable = false)
-    private OrderStatus previousStatus;
-
-    @ManyToOne
-    @JoinColumn(name = "current_status", nullable = false)
-    private OrderStatus currentStatus;
+    private String status;
 
     @Column(name = "payment_status", nullable = false)
-    private boolean paymentStatus;
+    private String paymentStatus;
 
     @Column(name = "payment_method", nullable = false)
     private String paymentMethod;
 
     @Column(name = "order_date", nullable = false, updatable = false)
-    private LocalDateTime orderDate;
+    private LocalDate orderDate;
 
     @Column(name = "delivery_date")
-    private LocalDateTime deliveryDate;
+    private LocalDate deliveryDate;
 
     @Column(name = "amount", nullable = false)
     private int amount;
 
+    @Column(name = "active", nullable = false)
     private boolean active;
 
+    @ManyToOne
+    @JoinColumn(name = "coupon_id")
+    @JsonBackReference
+    private Coupon coupon;
+
+    @PrePersist
+    protected void onCreate() {
+        orderDate = LocalDate.now();
+    }
 
 }

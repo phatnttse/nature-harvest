@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @Builder
 public class User extends BaseEntity implements UserDetails, OAuth2User {
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private String id;
 
     @Column(unique = true, nullable = false)

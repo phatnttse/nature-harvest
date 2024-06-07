@@ -1,5 +1,6 @@
 package com.api.nature_harvest_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,18 +26,12 @@ public class OrderDetail {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "title", nullable = false)
-    private String title;
-
-    @Column(name = "price", nullable = false)
-    private BigDecimal price;
-
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "thumbnail", nullable = false)
-    private String thumbnail;
+    @ManyToOne
+    @JoinColumn(name = "coupon_id")
+    @JsonBackReference
+    private Coupon coupon;
 
-    @Column(name = "total_money", nullable = false)
-    private int totalMoney;
 }

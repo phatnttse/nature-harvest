@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CartResponse } from '../../responses/cart/cart.response';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
@@ -26,12 +26,12 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
     HeaderComponent,
     FooterComponent,
     CommonModule,
-    CommonModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     FormsModule,
     BreadcrumbComponent,
+    RouterModule,
   ],
 })
 export class ViewCartComponent implements OnInit {

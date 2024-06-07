@@ -22,9 +22,9 @@
                 [formControl]="nameFormControl"
                 [errorStateMatcher]="matcher"
               />
-              <mat-error *ngIf="nameFormControl.hasError('required')">
-                Name is <strong>required</strong>
-              </mat-error>
+              @if (nameFormControl.hasError('required')) {
+              <mat-error> Name is <strong>required</strong> </mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field class="example-full-width mt-3">
@@ -36,17 +36,12 @@
                 [errorStateMatcher]="matcher"
                 placeholder="Ex. pat@example.com"
               />
-              <mat-error
-                *ngIf="
-                  emailFormControl.hasError('email') &&
-                  !emailFormControl.hasError('required')
-                "
-              >
-                Please enter a valid email address
-              </mat-error>
-              <mat-error *ngIf="emailFormControl.hasError('required')">
-                Email is <strong>required</strong>
-              </mat-error>
+              @if (emailFormControl.hasError('email') &&
+              !emailFormControl.hasError('required')) {
+              <mat-error> Please enter a valid email address </mat-error>
+              } @if (emailFormControl.hasError('required')) {
+              <mat-error> Email is <strong>required</strong> </mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field class="example-full-width mt-3">
@@ -57,9 +52,9 @@
                 [formControl]="passwordFormControl"
                 [errorStateMatcher]="matcher"
               />
-              <mat-error *ngIf="passwordFormControl.hasError('required')">
-                Password is <strong>required</strong>
-              </mat-error>
+              @if (passwordFormControl.hasError('required')) {
+              <mat-error> Password is <strong>required</strong> </mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field class="example-full-width mt-3">
@@ -70,11 +65,11 @@
                 [formControl]="confirmPasswordFormControl"
                 [errorStateMatcher]="matcher"
               />
-              <mat-error
-                *ngIf="confirmPasswordFormControl.hasError('required')"
-              >
+              @if (confirmPasswordFormControl.hasError('required') ) {
+              <mat-error>
                 Confirm password is <strong>required</strong>
               </mat-error>
+              }
             </mat-form-field>
             <div class="text-center my-4">
               <button mat-flat-button (click)="signUp()">Sign up</button>

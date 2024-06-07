@@ -40,17 +40,17 @@ CREATE TABLE `categories` (
     `name` VARCHAR(100) NOT NULL
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
-/**CREATE TABLE `subcategories` (
+CREATE TABLE `subcategories` (
     `subcategory_id` INT PRIMARY KEY AUTO_INCREMENT,
     `category_id` INT NOT NULL,
     `name` VARCHAR(100) NOT NULL,
     FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;**/
+) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 CREATE TABLE `products` (
     `product_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `category_id` INT NOT NULL,
-    /**--`subcategory_id` INT,**/
+    `subcategory_id` INT,
     `title` VARCHAR(255) NOT NULL,
     `price` INT NOT NULL,
     `quantity` INT NOT NULL,
@@ -60,8 +60,8 @@ CREATE TABLE `products` (
     `purchases` INT DEFAULT 0,
 	`average_rating` DECIMAL(2, 1) DEFAULT 0.0,
 	`active` BOOLEAN DEFAULT TRUE,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-     /**FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories` (`subcategory_id`)**/
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories` (`subcategory_id`)
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 CREATE TABLE product_images (
@@ -91,46 +91,31 @@ CREATE TABLE `wishlist` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
-CREATE TABLE `email_confirmation` (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `token` VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
-    `user_id` VARCHAR(255) NOT NULL,
-    `expired` DATETIME DEFAULT NULL,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 CREATE TABLE `orders` (
-    `order_id` VARCHAR(10) PRIMARY KEY NOT NULL,
+    `order_id` VARCHAR(100) PRIMARY KEY NOT NULL,
     `user_id` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `phone` VARCHAR(12) NOT NULL,
     `delivery_address` VARCHAR(255) NOT NULL,
     `note` LONGTEXT,
-    `previous_status` INT NOT NULL,
-    `current_status` INT NOT NULL,
-    `payment_status` BOOLEAN NOT NULL,
-    `payment_method` VARCHAR(50) NOT NULL,
+	`status` enum('pending','processing','shipped','delivered','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Trạng thái đơn hàng',
+    `payment_status` enum('paid','unpaid') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Trạng thái thanh toán',
+    `payment_method` VARCHAR(10) NOT NULL,
     `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `delivery_date` TIMESTAMP,
     `amount` INT NOT NULL,
-    `active` BOOLEAN DEFAULT TRUE
-)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
-
-CREATE TABLE `order_status` (
-    `status_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL
+    `coupon_id` INT,
+    `active` BOOLEAN DEFAULT TRUE NOT NULL
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 CREATE TABLE `order_details` (
     `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `order_id` VARCHAR(10) NOT NULL,
+    `order_id` VARCHAR(100) NOT NULL,
     `product_id` INT NOT NULL,
-    `title` VARCHAR(255) NOT NULL,
-    `price` INT NOT NULL,
     `quantity` INT NOT NULL,
-    `thumbnail` VARCHAR(255) NOT NULL,
-    `total_money` INT NOT NULL
+    `coupon_id` INT
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 CREATE TABLE `carts` (
@@ -163,40 +148,28 @@ CREATE TABLE `tokens` (
     `refresh_expiration_date` DATETIME DEFAULT NULL
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
+CREATE TABLE `coupons` (
+    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `code` VARCHAR(50) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
+    `active` BOOLEAN DEFAULT TRUE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
-DELIMITER $$
+CREATE TABLE `coupon_conditions` (
+    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `coupon_id` INT NOT NULL,
+    `attribute` VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
+    `operator` VARCHAR(10) NOT NULL,
+	`value` VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
+    `discount_amount` INT NOT NULL
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
-CREATE TRIGGER TR_Order_Update AFTER UPDATE ON orders 
-FOR EACH ROW
-BEGIN
-    DECLARE product_quantity INT;
-    DECLARE product_id_found INT;	
-
-    -- Kiểm tra nếu trạng thái đơn hàng đã được thay đổi từ 4 (Đang giao hàng) sang 5 (Giao hàng thành công)
-    IF OLD.current_status = 4 AND NEW.current_status = 5 THEN
-        -- Tìm kiếm product_id từ bảng order_details dựa trên order_id
-        SELECT od.product_id INTO product_id_found
-        FROM order_details od
-        WHERE od.order_id = NEW.order_id;
-
-        -- Kiểm tra xem product_id đã được tìm thấy hay không
-        IF product_id_found IS NOT NULL THEN
-            -- Nếu tìm thấy product_id, tiến hành lấy số lượng sản phẩm từ bảng order_details
-            SELECT od.quantity INTO product_quantity
-            FROM order_details od
-            WHERE od.order_id = NEW.order_id AND od.product_id = product_id_found;
-
-            -- Giảm số lượng sản phẩm trong kho và tăng lượt mua
-            UPDATE products 
-            SET quantity = quantity - product_quantity,
-                purchases = purchases + product_quantity
-            WHERE product_id = product_id_found;
-        END IF;
-    END IF;
-END$$
-
-DELIMITER ;
-
+CREATE TABLE `comments` (
+    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `product_id` INT NOT NULL,
+    `user_id` VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
+	`content` VARCHAR(255)CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 
 ALTER TABLE `users` ADD FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`);
@@ -208,7 +181,7 @@ ALTER TABLE `ratings` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`pro
 
 
 ALTER TABLE `orders` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-ALTER TABLE `orders` ADD FOREIGN KEY (`current_status`) REFERENCES `order_status` (`status_id`);
+ALTER TABLE `orders` ADD FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`id`);
 
 ALTER TABLE `carts` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 ALTER TABLE `carts` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
@@ -216,6 +189,7 @@ ALTER TABLE `carts` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`produ
 
 ALTER TABLE `order_details` ADD FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`);
 ALTER TABLE `order_details` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+ALTER TABLE `order_details` ADD FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`id`);
 
 
 ALTER TABLE `order_cancellation_requests` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
@@ -227,7 +201,10 @@ ALTER TABLE `wishlist`ADD FOREIGN KEY (`product_id`) REFERENCES `products`(`prod
 
 ALTER TABLE `tokens` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
-ALTER TABLE `email_confirmation` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+ALTER TABLE `comments` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+ALTER TABLE `comments` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+
+ALTER TABLE `coupon_conditions` ADD FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`id`);
 
 
 
@@ -237,8 +214,6 @@ INSERT INTO categories (name) VALUES
   ('Bread'),
   ('Meat');
 
-INSERT INTO `order_status` (`name`) VALUES
-  ('Pending');
   
 INSERT INTO roles (role_id, name) values
  (0,"USER"),
@@ -246,11 +221,11 @@ INSERT INTO roles (role_id, name) values
  (2,"ADMIN");
  
 
-INSERT INTO `users` (`user_id`, `email`, `password`, `name`, `phone`, `picture`, `address`,`role_id`) 
-VALUES (UUID(), 'staff123@gmail.com', '$2a$10$wNGqMyi/jy8aURA1Bbm8.e6l90CY5A6FU0gmqKdLWC7BmWDYkoPpG', 'Ng Tran Staff', '1234567890', 'picture_url1', 'Address1', 1);
+INSERT INTO `users` (`user_id`, `email`, `password`, `name`, `phone`, `picture`, `address`,`role_id`, `email_verified`) 
+VALUES (UUID(), 'staff123@gmail.com', '$2a$10$wNGqMyi/jy8aURA1Bbm8.e6l90CY5A6FU0gmqKdLWC7BmWDYkoPpG', 'Ng Tran Staff', '1234567890', 'picture_url1', 'Address1', 1, 1);
 
-INSERT INTO `users` (`user_id`, `email`, `password`, `name`, `phone`, `picture`, `address`,`role_id`) 
-VALUES (UUID(), 'admin123@gmail.com', '$2a$10$wNGqMyi/jy8aURA1Bbm8.e6l90CY5A6FU0gmqKdLWC7BmWDYkoPpG', 'Ng Tran Admin', '1234567890', 'picture_url2', 'Address2', 2);
+INSERT INTO `users` (`user_id`, `email`, `password`, `name`, `phone`, `picture`, `address`,`role_id`, `email_verified`) 
+VALUES (UUID(), 'admin123@gmail.com', '$2a$10$wNGqMyi/jy8aURA1Bbm8.e6l90CY5A6FU0gmqKdLWC7BmWDYkoPpG', 'Ng Tran Admin', '1234567890', 'picture_url2', 'Address2', 2, 1);
 
 INSERT INTO products (title, description, quantity, price, category_id, thumbnail) VALUES 
 ('Apple', 'Apples come in various varieties such as Gala, Fuji, Granny Smith, and Honeycrisp. They have thin skin with colors ranging from red, yellow, to green, and a crisp, sweet, or tart flesh.',

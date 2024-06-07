@@ -11,5 +11,6 @@ public interface ICartService {
     List<Cart> removeProductToCart(CartDto cartDto) throws Exception;
     List<Cart> updateQuantity(CartDto cartDto) throws Exception;
     Integer getCartSizeByUserId(String token) throws Exception;
+    void  clearCart(CartDto cartDto) throws Exception;
 
 }

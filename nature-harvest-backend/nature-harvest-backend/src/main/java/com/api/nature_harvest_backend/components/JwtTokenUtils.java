@@ -31,6 +31,9 @@ public class JwtTokenUtils {
     @Value("${jwt.expiration-email}")
     private int expirationEmail;
 
+    @Value("${jwt.expiration-order}")
+    private int expirationOrder;
+
     @Value("${jwt.expiration-refresh-token}")
     private int expirationRefreshToken;
 
@@ -38,7 +41,7 @@ public class JwtTokenUtils {
     private String secretKey;
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
     private final TokenRepository tokenRepository;
-    public String generateToken(com.api.nature_harvest_backend.models.User user) throws Exception{
+    public String generateToken(com.api.nature_harvest_backend.models.User user) throws Exception {
         //properties => claims
         Map<String, Object> claims = new HashMap<>();
         //this.generateSecretKey();
@@ -56,6 +59,21 @@ public class JwtTokenUtils {
             throw new InvalidParamException("Cannot create jwt token, error: "+e.getMessage());
         }
     }
+    public String generateOrderToken(Map<String, Object> claims) {
+        return  Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationOrder * 1000L))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+    public  Map<String, Object> decodeOrderToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
     private Key getSignInKey() {
         byte[] bytes = Decoders.BASE64.decode(secretKey);
         //Keys.hmacShaKeyFor(Decoders.BASE64.decode("TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI="));
@@ -68,7 +86,7 @@ public class JwtTokenUtils {
         String secretKey = Encoders.BASE64.encode(keyBytes);
         return secretKey;
     }
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()

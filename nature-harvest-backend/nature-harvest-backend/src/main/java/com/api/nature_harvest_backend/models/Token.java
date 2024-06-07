@@ -2,7 +2,6 @@ package com.api.nature_harvest_backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -41,4 +40,5 @@ public class Token {
 
     @Column(name = "refresh_expiration_date")
     private LocalDateTime refreshExpirationDate;
+
 }
