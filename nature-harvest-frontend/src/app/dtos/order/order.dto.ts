@@ -9,7 +9,6 @@ export class OrderDto {
   note: string;
   paymentMethod: string;
   amount: number;
-  cartItems: CartDto[];
 
   constructor(data: any) {
     this.userId = data.userId;
@@ -20,6 +19,5 @@ export class OrderDto {
     this.note = data.note;
     this.paymentMethod = data.paymentMethod;
     this.amount = data.amount;
-    this.cartItems = data.cartItems;
   }
 }

@@ -3,7 +3,6 @@ package com.api.nature_harvest_backend.dtos;
 import java.util.List;
 import lombok.*;
 
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

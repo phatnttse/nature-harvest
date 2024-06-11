@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-product',
@@ -26,6 +27,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatExpansionModule,
     MatSliderModule,
     MatPaginatorModule,
+    CommonModule,
   ],
 })
 export class ProductComponent implements OnInit {

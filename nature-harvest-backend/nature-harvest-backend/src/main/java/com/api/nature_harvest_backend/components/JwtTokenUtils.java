@@ -1,5 +1,7 @@
 package com.api.nature_harvest_backend.components;
 
+import com.api.nature_harvest_backend.configurations.VnpayConfig;
+import com.api.nature_harvest_backend.dtos.OrderDto;
 import com.api.nature_harvest_backend.exceptions.InvalidParamException;
 import com.api.nature_harvest_backend.models.User;
 import com.api.nature_harvest_backend.repositories.TokenRepository;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.Charset;
 import java.security.Key;
 import java.security.SecureRandom;
@@ -31,16 +34,15 @@ public class JwtTokenUtils {
     @Value("${jwt.expiration-email}")
     private int expirationEmail;
 
-    @Value("${jwt.expiration-order}")
-    private int expirationOrder;
-
     @Value("${jwt.expiration-refresh-token}")
     private int expirationRefreshToken;
 
     @Value("${jwt.secretKey}")
     private String secretKey;
-    private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
+
     private final TokenRepository tokenRepository;
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
+
     public String generateToken(com.api.nature_harvest_backend.models.User user) throws Exception {
         //properties => claims
         Map<String, Object> claims = new HashMap<>();
@@ -49,7 +51,7 @@ public class JwtTokenUtils {
         claims.put("userId", user.getId());
         try {
             String token = Jwts.builder()
-                    .setClaims(claims) //how to extract claims from this ?
+                    .setClaims(claims)
                     .setSubject(user.getEmail())
                     .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -59,26 +61,12 @@ public class JwtTokenUtils {
             throw new InvalidParamException("Cannot create jwt token, error: "+e.getMessage());
         }
     }
-    public String generateOrderToken(Map<String, Object> claims) {
-        return  Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expirationOrder * 1000L))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-    public  Map<String, Object> decodeOrderToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
     private Key getSignInKey() {
         byte[] bytes = Decoders.BASE64.decode(secretKey);
         //Keys.hmacShaKeyFor(Decoders.BASE64.decode("TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI="));
         return Keys.hmacShaKeyFor(bytes);
     }
+
     private String generateSecretKey() {
         SecureRandom random = new SecureRandom();
         byte[] keyBytes = new byte[32]; // 256-bit key

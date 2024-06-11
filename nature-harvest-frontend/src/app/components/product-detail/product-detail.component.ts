@@ -77,12 +77,7 @@ export class ProductDetailComponent implements OnInit {
       console.error('Invalid productId:', idParam);
     }
   }
-  getTotalPrice(): number {
-    if (this.product) {
-      return this.product.price * this.quantity;
-    }
-    return 0;
-  }
+
   thumbnailClick(index: number) {
     debugger;
     // Gọi khi một thumbnail được bấm
@@ -123,7 +118,7 @@ export class ProductDetailComponent implements OnInit {
       this.quantity--;
     }
   }
-  addProductToCart(productId?: number) {
+  addProductToCart(productId?: number, title?: string) {
     debugger;
     const user = this.userService.getUserResponseFromLocalStorage();
     const cartDto: CartDto = {
@@ -135,10 +130,11 @@ export class ProductDetailComponent implements OnInit {
       next: (response: CartListResponse) => {
         this.cartService.updateCartState(response);
         debugger;
-        this.toastr.success('Add product to cart successfully', '', {
+        this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
           closeButton: true,
-          timeOut: 2000,
+          timeOut: 5000,
           easeTime: 600,
+          progressBar: true,
         });
       },
     });

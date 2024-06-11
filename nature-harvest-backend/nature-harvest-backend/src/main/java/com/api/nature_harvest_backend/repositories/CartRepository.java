@@ -18,6 +18,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     void deleteByUserAndProduct(User user, Product product) throws Exception;
     @Query("SELECT SUM(c.quantity) FROM Cart c WHERE c.user = :user")
     Integer findCartSizeByUser(User user) throws Exception;
-
     void deleteAllByUser(User user) throws Exception;
+
 }

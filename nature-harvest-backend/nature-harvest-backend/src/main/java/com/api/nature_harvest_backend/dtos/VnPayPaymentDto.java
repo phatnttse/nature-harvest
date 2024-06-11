@@ -7,9 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PaymentDto {
-    private long amount;
+public class VnPayPaymentDto {
     private String bankCode;
     private String language;
-    private OrderDto oder;
+    private OrderDto order;
 }

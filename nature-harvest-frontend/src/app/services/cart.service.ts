@@ -8,6 +8,7 @@ import { CartDto } from '../dtos/cart/cart.dto';
 import { RemoveCartDto } from '../dtos/cart/remove-cart-item.dto';
 import { CartListResponse } from '../responses/cart/cart-list.response';
 import { CartSizeResponse } from '../responses/cart/cart-size.response';
+import { ClearCartDto } from '../dtos/cart/clear-cart.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -70,10 +71,10 @@ export class CartService {
     this.cartSubject.next(cartData);
   }
 
-  clearCart(cartDto: CartDto): Observable<any> {
+  clearCart(clearCartDto: ClearCartDto): Observable<any> {
     return this.http.post(
       `${this.apiBaseUrl}/cart/clear-cart`,
-      cartDto,
+      clearCartDto,
       this.apiConfig
     );
   }

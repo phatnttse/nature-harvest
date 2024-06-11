@@ -13,13 +13,15 @@ import { UserService } from '../../services/user.service';
 import { CartResponse } from '../../responses/cart/cart.response';
 import { ToastrService } from 'ngx-toastr';
 import { CartListResponse } from '../../responses/cart/cart-list.response';
+import { CommonModule } from '@angular/common';
+import { ProductDetailResponse } from '../../responses/product/product-detail.response';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  imports: [HeaderComponent, FooterComponent, RouterModule],
+  imports: [HeaderComponent, FooterComponent, RouterModule, CommonModule],
 })
 export class HomeComponent implements OnInit {
   categoryProductCounts: CategoryProductCountResponse[] = [];
@@ -33,6 +35,10 @@ export class HomeComponent implements OnInit {
   visiblePages: number[] = [];
   keyword: string = '';
   localStorage?: Storage;
+  product?: ProductDetailResponse | null = null;
+  modalStyle: boolean = false;
+  currentImage?: string = this.product?.thumbnail;
+  quantity: number = 1;
 
   constructor(
     private categoryService: CategoryService,
@@ -53,17 +59,6 @@ export class HomeComponent implements OnInit {
     this.currentPage =
       Number(this.localStorage?.getItem('currentProductPage')) || 0;
   }
-
-  // getCategoryProductCounts() {
-  //   this.categoryService.getCategoryProductCounts().subscribe({
-  //     next: (response: CategoryProductCountResponse[]) => {
-  //       this.categoryProductCounts = response;
-  //     },
-  //     error: (error: any) => {
-  //       throw error;
-  //     },
-  //   });
-  // }
 
   searchProducts() {
     this.currentPage = 0;
@@ -131,32 +126,59 @@ export class HomeComponent implements OnInit {
       .fill(0)
       .map((_, index) => startPage + index);
   }
-  onProductClick(productId: number) {
-    debugger;
-    this.router.navigate(['product-detail', productId]);
-  }
 
-  addProductToCart(productId: number) {
+  addProductToCart(productId: number, title: string) {
     debugger;
     const user = this.userService.getUserResponseFromLocalStorage();
     const cartDto: CartDto = {
       userId: user?.id ?? '',
       productId: productId,
-      quantity: 1,
+      quantity: this.quantity,
     };
     this.cartService.addProductToCart(cartDto).subscribe({
       next: (response: CartListResponse) => {
         debugger;
         this.cartService.updateCartState(response);
-        this.toastr.success('Add product to cart success', '', {
+        this.closeModal();
+        this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
           closeButton: true,
-          timeOut: 2000,
-          easeTime: 600,
+          timeOut: 5000,
+          easeTime: 400,
+          progressBar: true,
         });
       },
       error(err) {
         console.log(err);
       },
     });
+  }
+  quickViewProduct(productId: number) {
+    this.productService.getDetailProduct(productId).subscribe({
+      next: (response: ProductDetailResponse) => {
+        this.product = response;
+        this.currentImage = this.product.thumbnail;
+        this.modalStyle = true;
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
+  }
+  increaseQuantity(): void {
+    this.quantity++;
+  }
+
+  decreaseQuantity(): void {
+    if (this.quantity > 1) {
+      this.quantity--;
+    }
+  }
+
+  closeModal() {
+    this.modalStyle = false;
+  }
+  thumbnailClick(imageUrl: string) {
+    debugger;
+    this.currentImage = imageUrl;
   }
 }

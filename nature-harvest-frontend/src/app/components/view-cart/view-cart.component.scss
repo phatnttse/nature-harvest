@@ -1090,3 +1090,20 @@ form h4 {
   height: 18px;
   color: #008b4b;
 }
+.empty-cart {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.empty-cart-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  display: block;
+}
+
+.empty-cart-message {
+  font-size: 20px;
+  color: #666;
+  margin-top: 10px;
+}

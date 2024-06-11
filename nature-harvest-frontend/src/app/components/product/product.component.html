@@ -127,24 +127,25 @@
                   @for (product of products; track $index) {
                   <div class="col-6 col-md-4 col-lg-3">
                     <div class="card mb-4">
-                      <!-- Badge -->
-                      <!-- <div
-                          class="badge bg-dark card-badge card-badge-start text-uppercase"
-                        >
-                          Sale
-                        </div> -->
-                      <!-- Image -->
+                      <div
+                        class="badge bg-primary card-badge card-badge-start text-uppercase"
+                      >
+                        -{{ product.discount }}%
+                      </div>
                       <div class="card-img">
-                        <!-- Image -->
                         <a class="card-img-hover" href="#">
                           <img
                             class="card-img-top card-img-back"
                             [src]="product.thumbnail"
+                            width="260"
+                            height="140"
                             alt="..."
                           />
                           <img
                             class="card-img-top card-img-front"
                             [src]="product.thumbnail"
+                            width="260"
+                            height="140"
                             alt="..."
                           />
                         </a>
@@ -209,9 +210,15 @@
                           <span
                             class="fs-xs text-gray-350 text-decoration-line-through"
                             style="padding: 10px"
-                            >$79.00</span
+                            >{{
+                              product.price -
+                                (product.price * product.discount) / 100
+                                | number : "1.0"
+                            }}₫</span
                           >
-                          <span class="text-primary">{{ product.price }}</span>
+                          <span class="text-primary"
+                            >{{ product.price | number : "1.0" }}₫</span
+                          >
                         </div>
                         <div
                           class="align-items-center justify-content-center text-center mt-2"

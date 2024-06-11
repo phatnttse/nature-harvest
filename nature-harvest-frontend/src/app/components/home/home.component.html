@@ -18,8 +18,8 @@
         <div class="position-relative mx-auto">
           <input
             class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill"
-            type="number"
-            placeholder="Search"
+            type="text"
+            placeholder="Tìm kiếm"
           />
           <button
             type="submit"
@@ -39,20 +39,20 @@
           <div class="carousel-inner" role="listbox">
             <div class="carousel-item active rounded">
               <img
-                src="https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215697/aGVyby1pbWctMV94aHQwam8=/drilldown"
+                src="https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215697/hero-img-1_xht0jo.png"
                 class="img-fluid w-100 h-100 bg-secondary rounded"
                 alt="First slide"
               />
-              <a href="#" class="btn px-4 py-2 text-white rounded">Fruites</a>
+              <a href="#" class="btn px-4 py-2 text-white rounded">Fruits</a>
             </div>
             <div class="carousel-item rounded">
               <img
-                src="https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215697/aGVyby1pbWctMl94MnRoem8=/drilldown"
+                src="https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215697/hero-img-2_x2thzo.jpg"
                 class="img-fluid w-100 h-100 rounded"
                 alt="Second slide"
               />
               <a href="#" class="btn px-4 py-2 text-white rounded"
-                >Vesitables</a
+                >Vegetables</a
               >
             </div>
           </div>
@@ -91,8 +91,8 @@
             <i class="fas fa-car-side fa-3x text-white"></i>
           </div>
           <div class="featurs-content text-center">
-            <h5>Free Shipping</h5>
-            <p class="mb-0">Free on order over $300</p>
+            <h5>Miễn phí vận chuyển</h5>
+            <p class="mb-0">Miễn phí cho đơn hàng trên 500k</p>
           </div>
         </div>
       </div>
@@ -104,8 +104,8 @@
             <i class="fas fa-user-shield fa-3x text-white"></i>
           </div>
           <div class="featurs-content text-center">
-            <h5>Security Payment</h5>
-            <p class="mb-0">100% security payment</p>
+            <h5>Thanh toán bảo mật</h5>
+            <p class="mb-0">Thanh toán bảo đảm 100%</p>
           </div>
         </div>
       </div>
@@ -117,8 +117,8 @@
             <i class="fas fa-exchange-alt fa-3x text-white"></i>
           </div>
           <div class="featurs-content text-center">
-            <h5>30 Day Return</h5>
-            <p class="mb-0">30 day money guarantee</p>
+            <h5>Hoàn trả trong 30 ngày</h5>
+            <p class="mb-0">Đảm bảo hoàn trả trong 30 ngày</p>
           </div>
         </div>
       </div>
@@ -130,8 +130,8 @@
             <i class="fa fa-phone-alt fa-3x text-white"></i>
           </div>
           <div class="featurs-content text-center">
-            <h5>24/7 Support</h5>
-            <p class="mb-0">Support every time fast</p>
+            <h5>Hỗ trợ 24/7</h5>
+            <p class="mb-0">Hỗ trợ nhanh chóng mọi lúc</p>
           </div>
         </div>
       </div>
@@ -203,18 +203,14 @@
               <div class="row g-4">
                 @for (product of products; track $index) {
                 <div class="col-6 col-md-4 col-lg-3">
-                  <!-- Card -->
                   <div class="card mb-7">
-                    <!-- Badge -->
-                    <!-- <div
-                        class="badge bg-dark card-badge card-badge-start text-uppercase"
-                      >
-                        Sale
-                      </div> -->
+                    <div
+                      class="badge bg-primary card-badge card-badge-start text-uppercase"
+                    >
+                      -{{ product.discount }}%
+                    </div>
 
-                    <!-- Image -->
                     <div class="card-img">
-                      <!-- Image -->
                       <a
                         class="card-img-hover"
                         routerLink="product-detail/{{ product.id }}"
@@ -224,14 +220,14 @@
                           [src]="product.thumbnail"
                           alt="..."
                           width="350"
-                          height="250"
+                          height="200"
                         />
                         <img
                           class="card-img-top card-img-front"
                           [src]="product.thumbnail"
                           alt="..."
                           width="350"
-                          height="250"
+                          height="200"
                         />
                       </a>
 
@@ -240,10 +236,12 @@
                         <span class="card-action">
                           <button
                             class="btn btn-xs btn-circle btn-white-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalProduct"
                           >
-                            <i style="color: #81c408" class="fas fa-eye"></i>
+                            <i
+                              (click)="quickViewProduct(product.id)"
+                              style="color: #81c408"
+                              class="fas fa-eye"
+                            ></i>
                           </button>
                         </span>
                         <span class="card-action">
@@ -275,11 +273,16 @@
 
                       <!-- Title -->
                       <div class="fw-bold">
-                        <a class="text-body" href="#"> {{ product.title }} </a>
+                        <a
+                          class="text-body"
+                          routerLink="product-detail/{{ product.id }}"
+                        >
+                          {{ product.title }}
+                        </a>
                       </div>
 
                       <div class="fx-bold">
-                        <p class="text-body">
+                        <p class="text-center">
                           Lorem ipsum dolor sit amet consectetur adipisicing
                           elit sed do eiusmod te incididunt
                         </p>
@@ -290,17 +293,23 @@
                         <span
                           class="fs-xs text-gray-350 text-decoration-line-through"
                           style="padding: 10px"
-                          >$79.00</span
+                          >{{
+                            product.price -
+                              (product.price * product.discount) / 100
+                              | number : "1.0"
+                          }}₫</span
                         >
-                        <span class="text-primary">{{ product.price }}</span>
+                        <span class="text-primary"
+                          >{{ product.price | number : "1.0" }}₫</span
+                        >
                       </div>
                       <div>
                         <button
-                          (click)="addProductToCart(product.id)"
+                          (click)="addProductToCart(product.id, product.title)"
                           class="btn border border-secondary rounded-pill px-3 text-primary my-2"
                         >
                           <i class="fa fa-shopping-bag me-2 text-primary"></i>
-                          Add to cart
+                          Thêm vào giỏ
                         </button>
                       </div>
                     </div>
@@ -376,282 +385,7 @@
     </div>
   </div>
 </div>
-<!-- Featurs End -->
-<!-- Vesitable Shop Start-->
-<!-- <div class="container-fluid vesitable py-5">
-  <div class="container py-5">
-    <h1 class="mb-0">Fresh Organic Vegetables</h1>
-    <div class="owl-carousel vegetable-carousel justify-content-center">
-      <div
-        class="border border-primary rounded position-relative vesitable-item"
-      >
-        <div class="vesitable-img">
-          <img
-            src="assets/images/vegetable-item-6.jpg"
-            class="img-fluid w-100 rounded-top"
-            alt=""
-          />
-        </div>
-        <div
-          class="text-white bg-primary px-3 py-1 rounded position-absolute"
-          style="top: 10px; right: 10px"
-        >
-          Vegetable
-        </div>
-        <div class="p-4 rounded-bottom">
-          <h4>Parsely</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit sed do
-            eiusmod te incididunt
-          </p>
-          <div class="d-flex justify-content-between flex-lg-wrap">
-            <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
-            <a
-              href="#"
-              class="btn border border-secondary rounded-pill px-3 text-primary"
-              ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
-              cart</a
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        class="border border-primary rounded position-relative vesitable-item"
-      >
-        <div class="vesitable-img">
-          <img
-            src="assets/images/vegetable-item-1.jpg"
-            class="img-fluid w-100 rounded-top"
-            alt=""
-          />
-        </div>
-        <div
-          class="text-white bg-primary px-3 py-1 rounded position-absolute"
-          style="top: 10px; right: 10px"
-        >
-          Vegetable
-        </div>
-        <div class="p-4 rounded-bottom">
-          <h4>Parsely</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit sed do
-            eiusmod te incididunt
-          </p>
-          <div class="d-flex justify-content-between flex-lg-wrap">
-            <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
-            <a
-              href="#"
-              class="btn border border-secondary rounded-pill px-3 text-primary"
-              ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
-              cart</a
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        class="border border-primary rounded position-relative vesitable-item"
-      >
-        <div class="vesitable-img">
-          <img
-            src="assets/images/vegetable-item-3.png"
-            class="img-fluid w-100 rounded-top bg-light"
-            alt=""
-          />
-        </div>
-        <div
-          class="text-white bg-primary px-3 py-1 rounded position-absolute"
-          style="top: 10px; right: 10px"
-        >
-          Vegetable
-        </div>
-        <div class="p-4 rounded-bottom">
-          <h4>Banana</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit sed do
-            eiusmod te incididunt
-          </p>
-          <div class="d-flex justify-content-between flex-lg-wrap">
-            <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-            <a
-              href="#"
-              class="btn border border-secondary rounded-pill px-3 text-primary"
-              ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
-              cart</a
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        class="border border-primary rounded position-relative vesitable-item"
-      >
-        <div class="vesitable-img">
-          <img
-            src="assets/images/vegetable-item-4.jpg"
-            class="img-fluid w-100 rounded-top"
-            alt=""
-          />
-        </div>
-        <div
-          class="text-white bg-primary px-3 py-1 rounded position-absolute"
-          style="top: 10px; right: 10px"
-        >
-          Vegetable
-        </div>
-        <div class="p-4 rounded-bottom">
-          <h4>Bell Papper</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit sed do
-            eiusmod te incididunt
-          </p>
-          <div class="d-flex justify-content-between flex-lg-wrap">
-            <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-            <a
-              href="#"
-              class="btn border border-secondary rounded-pill px-3 text-primary"
-              ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
-              cart</a
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        class="border border-primary rounded position-relative vesitable-item"
-      >
-        <div class="vesitable-img">
-          <img
-            src="assets/images/vegetable-item-5.jpg"
-            class="img-fluid w-100 rounded-top"
-            alt=""
-          />
-        </div>
-        <div
-          class="text-white bg-primary px-3 py-1 rounded position-absolute"
-          style="top: 10px; right: 10px"
-        >
-          Vegetable
-        </div>
-        <div class="p-4 rounded-bottom">
-          <h4>Potatoes</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit sed do
-            eiusmod te incididunt
-          </p>
-          <div class="d-flex justify-content-between flex-lg-wrap">
-            <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-            <a
-              href="#"
-              class="btn border border-secondary rounded-pill px-3 text-primary"
-              ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
-              cart</a
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        class="border border-primary rounded position-relative vesitable-item"
-      >
-        <div class="vesitable-img">
-          <img
-            src="assets/images/vegetable-item-6.jpg"
-            class="img-fluid w-100 rounded-top"
-            alt=""
-          />
-        </div>
-        <div
-          class="text-white bg-primary px-3 py-1 rounded position-absolute"
-          style="top: 10px; right: 10px"
-        >
-          Vegetable
-        </div>
-        <div class="p-4 rounded-bottom">
-          <h4>Parsely</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit sed do
-            eiusmod te incididunt
-          </p>
-          <div class="d-flex justify-content-between flex-lg-wrap">
-            <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-            <a
-              href="#"
-              class="btn border border-secondary rounded-pill px-3 text-primary"
-              ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
-              cart</a
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        class="border border-primary rounded position-relative vesitable-item"
-      >
-        <div class="vesitable-img">
-          <img
-            src="assets/images/vegetable-item-5.jpg"
-            class="img-fluid w-100 rounded-top"
-            alt=""
-          />
-        </div>
-        <div
-          class="text-white bg-primary px-3 py-1 rounded position-absolute"
-          style="top: 10px; right: 10px"
-        >
-          Vegetable
-        </div>
-        <div class="p-4 rounded-bottom">
-          <h4>Potatoes</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit sed do
-            eiusmod te incididunt
-          </p>
-          <div class="d-flex justify-content-between flex-lg-wrap">
-            <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-            <a
-              href="#"
-              class="btn border border-secondary rounded-pill px-3 text-primary"
-              ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
-              cart</a
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        class="border border-primary rounded position-relative vesitable-item"
-      >
-        <div class="vesitable-img">
-          <img
-            src="assets/images/vegetable-item-6.jpg"
-            class="img-fluid w-100 rounded-top"
-            alt=""
-          />
-        </div>
-        <div
-          class="text-white bg-primary px-3 py-1 rounded position-absolute"
-          style="top: 10px; right: 10px"
-        >
-          Vegetable
-        </div>
-        <div class="p-4 rounded-bottom">
-          <h4>Parsely</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit sed do
-            eiusmod te incididunt
-          </p>
-          <div class="d-flex justify-content-between flex-lg-wrap">
-            <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-            <a
-              href="#"
-              class="btn border border-secondary rounded-pill px-3 text-primary"
-              ><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
-              cart</a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
-<!-- Vesitable Shop End -->
 
-<!-- Banner Section Start-->
 <div class="container-fluid banner bg-secondary my-5">
   <div class="container py-5">
     <div class="row g-4 align-items-center">
@@ -897,11 +631,190 @@
     </div>
   </div>
 </div>
-<!-- Tastimonial End -->
 <app-footer></app-footer>
-<!-- Back to Top -->
 <a
   href="#"
   class="btn btn-primary border-3 border-primary rounded-circle back-to-top"
   ><i class="fa fa-arrow-up"></i
 ></a>
+
+<div
+  id="quick-view-product"
+  class="quickview-product"
+  [style.display]="modalStyle ? 'block' : 'none'"
+>
+  <div
+    class="quickview-overlay fancybox-overlay fancybox-overlay-fixed"
+    (click)="closeModal()"
+  ></div>
+  <div class="quick-view-product">
+    <div class="block-quickview primary_block details-product">
+      <div class="row">
+        <div
+          class="product-left-column product-images col-xs-12 col-sm-4 col-md-4 col-lg-5 col-xl-5"
+        >
+          <div class="image-block large-image col_large_default">
+            <span class="view_full_size">
+              <a class="img-product" title="" href="javascript:;">
+                <img
+                  [src]="currentImage"
+                  id="product-featured-image-quickview"
+                  class="img-responsive product-featured-image-quickview"
+                  alt="quickview"
+                />
+              </a>
+            </span>
+            <div class="loading-imgquickview" style="display: none"></div>
+          </div>
+          <div class="more-view-wrapper clearfix">
+            <div
+              class="thumbs_quickview owl_nav_custome1 swiper-container thumbs_list_quickview swiper-container-initialized swiper-container-horizontal swiper-container-pointer-events"
+              id="thumbs_list_quickview"
+            >
+              <ul
+                class="product-photo-thumbs quickview-more-views-owlslider not-thuongdq swiper-wrapper"
+                id="thumblist_quickview"
+                style="
+                  transition-duration: 0ms;
+                  transform: translate3d(0px, 0px, 0px);
+                "
+              >
+                @for (image of product?.productImages; track image.imageUrl; let
+                i = $index;) {
+                <li
+                  class="swiper-slide"
+                  style="width: 77.5px; margin-right: 15px"
+                >
+                  <a href="javascript:void(0)"
+                    ><img
+                      [src]="image.imageUrl"
+                      alt="Zomart"
+                      style="max-width: 120px; max-height: 120px"
+                      (click)="thumbnailClick(image.imageUrl)"
+                  /></a>
+                </li>
+                }
+              </ul>
+              <div class="swiper-button-prev swiper-button-disabled"></div>
+              <div class="swiper-button-next swiper-button-disabled"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="product-center-column product-info product-item col-xs-12 col-sm-6 col-md-8 col-lg-7 col-xl-7 details-pro style_product style_border"
+          id="product-35655314"
+        >
+          <div class="head-qv group-status">
+            <h3 class="qwp-name title-product">
+              <a class="text2line">{{ product?.title }}</a>
+            </h3>
+            <div class="vend-qv group-status">
+              <div class="left_vend">
+                <div class="first_status">
+                  Tình trạng:
+                  <span class="soluong status_name">Còn hàng</span>
+                </div>
+                <div class="top_sku first_status">
+                  Mã sản phẩm:
+                  <span class="sku_ status_name"
+                    ><span>Đang cập nhật</span></span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="quickview-info">
+            <span class="prices price-box">
+              <span class="price product-price sale-price"
+                >{{
+                  product?.price! - (product?.price! * product?.discount!) / 100
+                    | number : "1.0"
+                }}₫</span
+              >
+              <del class="old-price"
+                >{{ product?.price | number : "1.0" }}₫</del
+              >
+            </span>
+          </div>
+
+          <div class="product-description product-summary">
+            <div class="rte">
+              <p>
+                {{ product?.description }}
+              </p>
+            </div>
+          </div>
+
+          <form
+            class="quick_option variants form-ajaxtocart form-product"
+            id="product-actions-35655314"
+          >
+            <div class="form_product_content">
+              <div class="count_btn_style quantity_wanted_p">
+                <div class="soluong1 clearfix">
+                  <span class="soluong_h">Số lượng:</span>
+                  <div class="sssssscustom input_number_product">
+                    <button
+                      type="button"
+                      (click)="decreaseQuantity()"
+                      class="btn_num num_1 button button_qty"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      id="quantity-detail"
+                      name="quantity"
+                      [value]="quantity"
+                      maxlength="3"
+                      class="form-control prd_quantity"
+                    />
+                    <button
+                      type="button"
+                      (click)="increaseQuantity()"
+                      class="btn_num num_2 button button_qty"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div class="button_actions clearfix">
+                  <button
+                    (click)="addProductToCart(product?.id!, product?.title!)"
+                    type="button"
+                    class="btn_cool btn btn_base fix_add_to_cart ajax_addtocart btn_add_cart btn-cart add_to_cart add_to_cart_detail"
+                  >
+                    <span class="btn-content text_1">Thêm vào giỏ</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <a
+      title="Close"
+      class="quickview-close close-window"
+      (click)="closeModal()"
+      href="javascript:;"
+    >
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        data-prefix="far"
+        data-icon="times"
+        role="img"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 320 512"
+        class="svg-inline--fa fa-times fa-w-10"
+      >
+        <path
+          fill="currentColor"
+          d="M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z"
+          class=""
+        ></path>
+      </svg>
+    </a>
+  </div>
+</div>

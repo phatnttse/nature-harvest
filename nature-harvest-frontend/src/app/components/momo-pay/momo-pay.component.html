@@ -1,0 +1,99 @@
+<div class="app">
+  <div class="layout">
+    <!-- Page Container START -->
+    <div class="page-container">
+      <!-- Content Wrapper START -->
+      <div class="main-content">
+        <div class="container">
+          <p class="text-center" style="font-size: 20px; font-weight: 600">
+            Thanh toán đơn hàng qua Momo
+          </p>
+          <img
+            src="https://test-payment.momo.vn/v2/gateway/images/logo-momo.png"
+            alt=""
+          />
+
+          <div class="container" style="background-color: #d82d8b; width: 100%">
+            <img
+              class=""
+              width="200px"
+              src="https://developers.momo.vn/v3/assets/images/home-e564c227d2511997a3189f9d913901d9.png"
+            />
+          </div>
+
+          <div class="table-responsive">
+            <form (ngSubmit)="submitForm()" #frmCreateOrder="ngForm">
+              <div class="form-group">
+                <p style="font-weight: 600">
+                  Tổng giá trị đơn hàng:
+                  {{ orderInfo?.amount | number : "1.0" }}₫
+                  <span style="color: rgb(67, 67, 218)"></span>
+                </p>
+              </div>
+              <p style="font-weight: 600">Chọn phương thức thanh toán:</p>
+              <div class="form-group">
+                <input
+                  type="radio"
+                  id="vimomo"
+                  name="requestType"
+                  value="captureWallet"
+                  [(ngModel)]="requestType"
+                />
+                <label for="vimomo">Ví MoMo</label><br />
+
+                <input
+                  type="radio"
+                  id="momobank"
+                  name="requestType"
+                  value="payWithATM"
+                  [(ngModel)]="requestType"
+                />
+                <label for="momobank"
+                  >Thanh toán qua thẻ ATM/Tài khoản nội địa</label
+                ><br />
+
+                <!-- <input
+                  type="radio"
+                  id="intcard"
+                  name="bankCode"
+                  value="payWithATM"
+                  [(ngModel)]="requestType"
+                />
+                <label for="intcard">Thanh toán qua thẻ quốc tế</label><br /> -->
+              </div>
+              <div class="form-group">
+                <p style="font-weight: 600">
+                  Chọn ngôn ngữ giao diện thanh toán:
+                </p>
+                <input
+                  type="radio"
+                  id="vn"
+                  name="language"
+                  value="vi"
+                  [(ngModel)]="lang"
+                />
+                <label for="vn">Tiếng việt</label><br />
+                <input
+                  type="radio"
+                  id="en"
+                  name="language"
+                  value="en"
+                  [(ngModel)]="lang"
+                />
+                <label for="en">Tiếng anh</label><br />
+              </div>
+              <button type="submit" class="btn btn-primary text-center">
+                Thanh toán
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- Content Wrapper END -->
+
+      <!-- Footer START -->
+      <!-- Footer END -->
+    </div>
+    <!-- Page Container END -->
+  </div>
+</div>

@@ -15,7 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.*;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -81,16 +82,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/subcategories/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/details", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/confirm-email**", apiPrefix), "GET"),
-
+                Pair.of(String.format("%s/payment/**", apiPrefix), "GET"),
 
                 //swagger
-                Pair.of("/api-docs","GET"),
-                Pair.of("/api-docs/**","GET"),
-                Pair.of("/swagger-resources","GET"),
-                Pair.of("/swagger-resources/**","GET"),
-                Pair.of("/configuration/ui","GET"),
-                Pair.of("/configuration/security","GET"),
-                Pair.of("/swagger-ui/**","GET"),
+                Pair.of("/api-docs", "GET"),
+                Pair.of("/api-docs/**", "GET"),
+                Pair.of("/swagger-resources", "GET"),
+                Pair.of("/swagger-resources/**", "GET"),
+                Pair.of("/configuration/ui", "GET"),
+                Pair.of("/configuration/security", "GET"),
+                Pair.of("/swagger-ui/**", "GET"),
                 Pair.of("/swagger-ui.html", "GET"),
                 Pair.of("/swagger-ui/index.html", "GET"),
                 Pair.of("/v3/api-docs/**", "GET"),

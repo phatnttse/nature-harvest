@@ -1,1 +1,82 @@
-<p>order-success works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-content">
+      <div class="icon-circle-check">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon"
+        >
+          <path d="M9 11l3 3L22 4"></path>
+          <path d="M22 4L12 14.01 9 11 4 16"></path>
+        </svg>
+      </div>
+      <h1 class="title">Order Successful</h1>
+      <p class="message">
+        Your order has been successfully processed. Please check your email for
+        more details.
+      </p>
+    </div>
+    <div class="card-header">
+      <p class="card-title mt-2 text-center">Đơn hàng của bạn</p>
+    </div>
+    <div class="card-content row">
+      <div class="detail">
+        <span class="label">Mã đơn hàng:</span>
+        <span class="value"> {{ order?.id }}</span>
+      </div>
+      <div class="detail">
+        <span class="label">Họ và tên:</span>
+        <span class="value"> {{ order?.name }}</span>
+      </div>
+      <div class="detail">
+        <span class="label">Số điện thoại: </span>
+        <span class="value"> {{ order?.phone }}</span>
+      </div>
+      <div class="detail">
+        <span class="label">Địa chỉ đặt hàng: </span>
+        <span class="value"> {{ order?.deliveryAddress }}</span>
+      </div>
+      <div class="detail">
+        <span class="label">Ngày đặt hàng: </span>
+        <span class="value"> {{ order?.orderDate | date : "dd-MM-yyyy" }}</span>
+      </div>
+      <div class="detail">
+        <span class="label">Ngày dự kiến giao: </span>
+        <span class="value">
+          {{ order?.deliveryDate | date : "dd-MM-yyyy" }}</span
+        >
+      </div>
+
+      <div class="product-list mt-2">
+        @for (item of orderDetails; track $index) {
+        <div class="product-item">
+          <img [src]="item.thumbnail" class="product-image" />
+          <div class="product-details">
+            <span class="product-name">{{ item.productName }}</span>
+            <span class="product-quantity">x{{ item.quantity }}</span>
+            <span class="product-price"
+              >{{ item.price | number : "1.0" }}₫</span
+            >
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    <div class="card-footer">
+      <a routerLink="/" class="button">Quay lại trang chủ</a>
+      <span
+        class="text-icon-group text-icon-group--large icon-print"
+        onclick="window.print()"
+      >
+        <i class="fa fa-print"></i>
+        <span>In </span>
+      </span>
+    </div>
+  </div>
+</div>

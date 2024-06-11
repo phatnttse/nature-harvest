@@ -98,7 +98,7 @@
               <div class="thump-break">
                 <span class="mb-break">
                   <span class="stock-brand-title">Thương hiệu:</span>
-                  <span class="text-primary"> Nature's Harvest </span>
+                  <span style="color: #008b4b"> Nature's Harvest </span>
                 </span>
                 <span class="line">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
                 <span class="mb-break inventory">
@@ -108,7 +108,7 @@
                 </span>
               </div>
             </div>
-            <div class="price-box clearfix">
+            <div class="price-box clearfix mt-4">
               <span class="special-price">
                 Giá:
                 <span class="price product-price"
@@ -129,14 +129,14 @@
               <!-- Tiết kiệm -->
             </div>
 
-            <div class="motangan">
+            <div class="motangan mt-4">
               <div class="rte">
                 <p>
                   {{ product?.description }}
                 </p>
               </div>
             </div>
-            <div class="form-product">
+            <div class="form-product mt-5">
               <div class="clearfix form-group">
                 <div class="flex-quantity">
                   <div class="custom custom-btn-number show">
@@ -168,7 +168,9 @@
                       <div style="display: flex; flex-wrap: wrap; width: 100%">
                         <button
                           class="btn btn_base normal_button btn_add_cart add_to_cart btn-cart"
-                          (click)="addProductToCart(product?.id)"
+                          (click)="
+                            addProductToCart(product?.id, product?.title)
+                          "
                         >
                           <span class="txt-main text_1">Thêm vào giỏ</span>
                         </button>
@@ -179,7 +181,7 @@
               </div>
             </div>
 
-            <ul class="chinhsach-pro margin-top-15">
+            <ul class="chinhsach-pro mt-5">
               <li>
                 <img
                   width="32"

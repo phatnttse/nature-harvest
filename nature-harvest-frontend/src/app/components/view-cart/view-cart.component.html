@@ -1,5 +1,6 @@
 <app-header></app-header>
 <app-breadcrumb></app-breadcrumb>
+@if (cart.length > 0) {
 <section class="main-cart-page main-container col1-layout">
   <div class="main container cartpcstyle">
     <div
@@ -275,13 +276,13 @@
             </strong>
             <div class="product-coupons coupon-toggle-btn">
               <div class="coupon_item lite">
-                <div class="coupon_content">BEA50</div>
+                <div class="coupon_content">FREESHIP15k</div>
               </div>
               <div class="coupon_item lite">
-                <div class="coupon_content">BEA15</div>
+                <div class="coupon_content">FREESHIP20k</div>
               </div>
               <div class="coupon_item lite">
-                <div class="coupon_content">BEAN99K</div>
+                <div class="coupon_content">FREESHIP30k</div>
               </div>
               <div class="coupon_item lite">
                 <div class="coupon_content">FREESHIP</div>
@@ -293,4 +294,31 @@
     </div>
   </div>
 </section>
+}@else {
+<section>
+  <div class="empty-cart mt-5">
+    <!-- SVG Giỏ trái cây -->
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      class="empty-cart-icon"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M4 4h16v2H4z"></path>
+      <path d="M4 6l2 10h12l2-10"></path>
+      <circle cx="9" cy="20" r="1"></circle>
+      <circle cx="15" cy="20" r="1"></circle>
+      <path d="M4 8h16v2H4z"></path>
+      <path d="M8 10c1.5 2 4 2 5 0"></path>
+      <path d="M12 10c1.5 2 4 2 5 0"></path>
+    </svg>
+    <!-- Thông báo giỏ hàng trống -->
+    <p class="empty-cart-message">Bạn chưa có sản phẩm nào trong giỏ hàng</p>
+  </div>
+</section>
+}
 <app-footer></app-footer>

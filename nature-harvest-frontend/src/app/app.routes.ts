@@ -9,6 +9,9 @@ import { ProductDetailComponent } from './components/product-detail/product-deta
 import { ViewCartComponent } from './components/view-cart/view-cart.component';
 import { OrderComponent } from './components/order/order.component';
 import { PaymentComponent } from './components/payment/payment.component';
+import { VnPayPayComponent } from './components/vn-pay-pay/vn-pay-pay.component';
+import { OrderSuccessComponent } from './components/order-success/order-success.component';
+import { MomoPayComponent } from './components/momo-pay/momo-pay.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -21,4 +24,8 @@ export const routes: Routes = [
   { path: 'view-cart', component: ViewCartComponent },
   { path: 'order', component: OrderComponent },
   { path: 'payment', component: PaymentComponent },
+  { path: 'vnpay-pay', component: VnPayPayComponent },
+  { path: 'momo-pay', component: MomoPayComponent },
+  { path: 'order-success', component: OrderSuccessComponent },
+  { path: 'order-success/:id', component: OrderSuccessComponent },
 ];

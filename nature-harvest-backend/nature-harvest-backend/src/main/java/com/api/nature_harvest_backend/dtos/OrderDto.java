@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderDto {
+    private String id;
     private String userId;
     private String email;
     private String name;
@@ -18,6 +19,4 @@ public class OrderDto {
     private String note;
     private String paymentMethod;
     private int amount;
-    private List<CartDto> cartItems;
-
 }

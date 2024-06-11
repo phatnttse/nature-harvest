@@ -1,5 +1,5 @@
 <div data-tg-refresh="checkout" id="checkout" class="content">
-  <form id="checkoutForm" method="post">
+  <form [formGroup]="orderForm" (ngSubmit)="placeOrder()">
     <input type="hidden" name="_method" value="patch" />
     <div class="wrap">
       <main class="main">
@@ -21,8 +21,15 @@
                     >
                       Thông tin nhận hàng
                     </h2>
-
-                    <span class="text-primary">{{ userResponse?.name }}</span>
+                    <span
+                      class=""
+                      style="
+                        font-size: 14px;
+                        color: rgb(188, 5, 5);
+                        font-weight: 600;
+                      "
+                      >{{ userResponse?.name }}
+                    </span>
                   </div>
                 </div>
                 <div class="section__content">
@@ -33,11 +40,23 @@
                           Email <span style="color: red"> *</span></label
                         >
                         <input
-                          name="email"
                           id="email"
                           type="email"
                           class="field__input"
+                          formControlName="email"
+                          required
+                          [class.is-invalid]="
+                            orderForm.get('email')!.invalid &&
+                            orderForm.get('email')!.touched
+                          "
                         />
+                        @if(orderForm.get('email')!.invalid &&
+                        orderForm.get('email')!.touched) {
+                        <mat-error style="color: red">
+                          Email là trường <strong>bắt buộc</strong> và
+                          <strong>đúng định dạng</strong>
+                        </mat-error>
+                        }
                       </div>
                     </div>
 
@@ -47,11 +66,22 @@
                           >Họ và tên <span style="color: red"> *</span></label
                         >
                         <input
-                          name="billingName"
                           id="billingName"
                           type="text"
                           class="field__input"
+                          formControlName="name"
+                          required
+                          [class.is-invalid]="
+                            orderForm.get('name')!.invalid &&
+                            orderForm.get('name')!.touched
+                          "
                         />
+                        @if(orderForm.get('name')!.invalid &&
+                        orderForm.get('name')!.touched) {
+                        <mat-error style="color: red">
+                          Họ và tên là trường <strong>bắt buộc</strong>
+                        </mat-error>
+                        }
                       </div>
                     </div>
 
@@ -61,11 +91,22 @@
                           Số điện thoại <span style="color: red"> *</span>
                         </label>
                         <input
-                          name="billingPhone"
                           id="billingPhone"
                           type="tel"
                           class="field__input"
+                          required
+                          formControlName="phone"
+                          [class.is-invalid]="
+                            orderForm.get('phone')!.invalid &&
+                            orderForm.get('phone')!.touched
+                          "
                         />
+                        @if(orderForm.get('phone')!.invalid &&
+                        orderForm.get('phone')!.touched) {
+                        <mat-error style="color: red">
+                          Số điện thoại là trường <strong>bắt buộc</strong>
+                        </mat-error>
+                        }
                       </div>
                     </div>
 
@@ -75,11 +116,23 @@
                           Địa chỉ nhận hàng <span style="color: red"> *</span>
                         </label>
                         <input
-                          name="billingAddress"
                           id="billingAddress"
                           type="text"
                           class="field__input"
+                          required
+                          formControlName="deliveryAddress"
+                          [class.is-invalid]="
+                            orderForm.get('deliveryAddress')!.invalid &&
+                            orderForm.get('deliveryAddress')!.touched
+                          "
                         />
+                        @if(orderForm.get('deliveryAddress')!.invalid &&
+                        orderForm.get('deliveryAddress')!.touched) {
+                        <mat-error style="color: red">
+                          Địa chỉ là trường
+                          <strong>bắt buộc và ít nhất 5 ký tự.</strong>
+                        </mat-error>
+                        }
                       </div>
                     </div>
                   </div>
@@ -124,6 +177,12 @@
                     >
                       Thanh toán
                     </h2>
+                    @if(orderForm.get('paymentMethod')!.invalid &&
+                    orderForm.get('paymentMethod')!.touched) {
+                    <mat-error style="color: red">
+                      Vui lòng chọn phương thức thanh toán
+                    </mat-error>
+                    }
                   </div>
                 </div>
                 <div class="section__content">
@@ -135,9 +194,14 @@
                             id="cod"
                             name="paymentMethod"
                             type="radio"
-                            value="Thu hộ (COD)"
+                            value="COD"
                             class="input-radio"
                             required
+                            formControlName="paymentMethod"
+                            [class.is-invalid]="
+                              orderForm.get('paymentMethod')!.invalid &&
+                              orderForm.get('paymentMethod')!.touched
+                            "
                           />
                         </div>
                         <label for="cod" class="radio__label">
@@ -149,7 +213,7 @@
                               height="80px"
                               width="80px"
                               src="https://www.coolmate.me/images/COD.svg"
-                              alt="VNPAY"
+                              alt="COD"
                             />
                           </span>
                         </label>
@@ -163,19 +227,54 @@
                             id="vnpay"
                             name="paymentMethod"
                             type="radio"
-                            value="vnPay"
+                            value="VNPAY"
                             class="input-radio"
                             required
+                            formControlName="paymentMethod"
+                            [class.is-invalid]="
+                              orderForm.get('paymentMethod')!.invalid &&
+                              orderForm.get('paymentMethod')!.touched
+                            "
                           />
                         </div>
                         <label for="vnpay" class="radio__label">
-                          <span class="radio__label__primary">VNPAY</span>
+                          <span class="radio__label__primary">VnPay</span>
                           <span class="radio__label__accessory">
                             <img
                               height="80px"
                               width="80px"
                               src="https://s-vnba-cdn.aicms.vn/vnba-media/23/8/16/vnpay-logo_64dc3da9d7a11.jpg"
                               alt="VNPAY"
+                            />
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="content-box__row">
+                      <div class="radio-wrapper">
+                        <div class="radio__input">
+                          <input
+                            id="momo"
+                            name="paymentMethod"
+                            type="radio"
+                            value="MOMO"
+                            class="input-radio"
+                            required
+                            formControlName="paymentMethod"
+                            [class.is-invalid]="
+                              orderForm.get('paymentMethod')!.invalid &&
+                              orderForm.get('paymentMethod')!.touched
+                            "
+                          />
+                        </div>
+                        <label for="momo" class="radio__label">
+                          <span class="radio__label__primary">MoMo</span>
+                          <span class="radio__label__accessory">
+                            <img
+                              height="80px"
+                              width="80px"
+                              src="https://test-payment.momo.vn/v2/gateway/images/logo-momo.png"
+                              alt="Momo"
                             />
                           </span>
                         </label>
@@ -196,16 +295,16 @@
               </svg>
             </button>
 
-            <a href="/cart" class="previous-link">
+            <a href="/cart" class="text-primary" style="color: #81c408">
               <i class="previous-link__arrow">❮</i>
-              <span class="previous-link__content">Quay về giỏ hàng</span>
+              <span class="" style="color: #81c408">Quay về giỏ hàng</span>
             </a>
           </div>
         </div>
       </main>
       <aside class="sidebar">
         <div class="sidebar__header">
-          <p class="sidebar__title">Đơn hàng (1 sản phẩm)</p>
+          <p class="sidebar__title">Đơn hàng ({{ cart.length }} sản phẩm)</p>
         </div>
         <div class="sidebar__content">
           <div
@@ -241,17 +340,16 @@
                     <tr class="product">
                       <td class="product__image">
                         <div class="product-thumbnail">
-                          <div
-                            class="product-thumbnail__wrapper"
-                            data-tg-static=""
-                          >
+                          <div class="product-thumbnail__wrapper">
                             <img
                               [src]="item.product.thumbnail"
                               alt=""
                               class="product-thumbnail__image"
                             />
                           </div>
-                          <span class="product-thumbnail__quantity">1</span>
+                          <span class="product-thumbnail__quantity">{{
+                            item.quantity
+                          }}</span>
                         </div>
                       </td>
                       <th class="product__description">
@@ -292,7 +390,7 @@
                           />
                         </div>
                         <button
-                          class="field__input-btn btn spinner btn--disabled"
+                          class="field__input-btn btn btn-primary spinner btn--disabled"
                           type="button"
                           disabled=""
                         >
@@ -359,12 +457,6 @@
               >
                 <button type="submit" class="btn btn-checkout spinner">
                   <span class="spinner-label">ĐẶT HÀNG</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="spinner-loader"
-                  >
-                    <use href="#spinner"></use>
-                  </svg>
                 </button>
 
                 <a routerLink="/view-cart" class="previous-link">

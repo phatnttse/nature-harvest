@@ -1,17 +1,17 @@
-.user-logged .hover-text {
-  display: none;
-  position: absolute;
-  top: 73%;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-}
+// .user-logged .hover-text {
+//   display: none;
+//   position: absolute;
+//   top: 73%;
+//   background-color: white;
+//   border: 1px solid #ccc;
+//   border-radius: 3px;
+//   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+//   z-index: 1000;
+// }
 
-.user-logged:hover .hover-text {
-  display: block;
-}
+// .user-logged:hover .hover-text {
+//   display: block;
+// }
 
 .user-logged {
   border-radius: 3rem;

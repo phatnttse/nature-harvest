@@ -10,17 +10,20 @@ import { CartListResponse } from '../../responses/cart/cart-list.response';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
-  FormGroupDirective,
   FormsModule,
-  NgForm,
+  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { UserResponse } from '../../responses/user/user.response';
 import { OrderDto } from '../../dtos/order/order.dto';
 import { OrderResponse } from '../../responses/order/order.response';
-import { CartDto } from '../../dtos/cart/cart.dto';
+import { ClearCartDto } from '../../dtos/cart/clear-cart.dto';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { PaymentService } from '../../services/payment.service';
 
 @Component({
   selector: 'app-order',
@@ -33,12 +36,16 @@ import { CartDto } from '../../dtos/cart/cart.dto';
     RouterModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatButtonModule,
   ],
 })
 export class OrderComponent implements OnInit {
   private userService = inject(UserService);
   private cartService = inject(CartService);
   private orderService = inject(OrderService);
+  private paymentService = inject(PaymentService);
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
 
@@ -54,17 +61,17 @@ export class OrderComponent implements OnInit {
     note: '',
     paymentMethod: '',
     amount: 0,
-    cartItems: [],
   };
 
   constructor() {
     this.orderForm = this.formBuilder.group({
-      userId: ['', Validators.required],
-      name: ['', Validators.required],
-      email: ['', [Validators.email]],
-      phone: ['', [Validators.required, Validators.minLength(6)]],
-      deliveryAddress: ['', [Validators.required, Validators.minLength(5)]],
-      note: [''],
+      name: ['Nguyen Tran Tan Phat', Validators.required],
+      email: ['phatntt1923@gmail.com', [Validators.email, Validators.required]],
+      phone: ['0987654321', [Validators.required, Validators.minLength(6)]],
+      deliveryAddress: [
+        '32 TL, Q9',
+        [Validators.required, Validators.minLength(5)],
+      ],
       paymentMethod: ['', Validators.required],
     });
   }
@@ -92,29 +99,53 @@ export class OrderComponent implements OnInit {
     );
   }
 
-  order() {
+  placeOrder() {
     debugger;
-    if (this.orderForm.errors == null) {
-      this.orderData = {
-        ...this.orderData,
-        ...this.orderForm.value,
-      };
-      this.orderData.cartItems = this.cart.map((cartItem) => ({
-        userId: cartItem.userId,
-        productId: cartItem.product.id,
-        quantity: cartItem.quantity,
-      }));
-      this.orderData.amount = this.getTotalPrice();
-      this.orderService.order(this.orderData).subscribe({
+    if (this.orderForm.invalid) {
+      this.orderForm.markAllAsTouched();
+      return;
+    }
+
+    debugger;
+    this.orderData = {
+      ...this.orderData,
+      ...this.orderForm.value,
+    };
+    this.orderData.amount = this.getTotalPrice();
+    this.orderData.userId = this.userResponse?.id || '';
+
+    if (this.orderData.paymentMethod === 'VNPAY') {
+      this.paymentService.setOrderInfo(this.orderData);
+      this.router.navigate(['/vnpay-pay']);
+    } else if (this.orderData.paymentMethod === 'MOMO') {
+      this.paymentService.setOrderInfo(this.orderData);
+      this.router.navigate(['/momo-pay']);
+    } else {
+      this.orderService.placeOrder(this.orderData).subscribe({
         next: (response: OrderResponse) => {
           debugger;
-          const cartDto: any = {
-            userId: this.userResponse?.id || null,
-          };
-          this.cartService.clearCart(cartDto);
-          this.router.navigate(['/']);
+          this.clearCart();
+          this.orderService.setOrder(response);
+          this.router.navigate(['/order-success']);
+        },
+        error: (err) => {
+          console.log(err);
         },
       });
     }
+  }
+  clearCart() {
+    debugger;
+    const clearCartDto: ClearCartDto = {
+      userId: this.userResponse?.id || '',
+    };
+    this.cartService.clearCart(clearCartDto).subscribe({
+      next: (response: any) => {
+        debugger;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 }
