@@ -1,8 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
 import { UserService } from '../../services/user.service';
-import { CommonModule } from '@angular/common';
+import {
+  BrowserPlatformLocation,
+  CommonModule,
+  PlatformLocation,
+} from '@angular/common';
 import {
   FormControl,
   FormGroupDirective,
@@ -18,7 +22,14 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { UserResponse } from '../../responses/user/user.response';
+import { AuthService } from '../../services/auth.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { LoginResponse } from '../../responses/user/login.response';
+import { TokenService } from '../../services/token.service';
+import { filter } from 'rxjs';
+declare var google: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -49,8 +60,10 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     ReactiveFormsModule,
     MatButtonModule,
     RouterModule,
+    OAuthModule,
   ],
 })
+// implements OnInit, AfterViewInit, OnDestroy
 export class SignUpComponent {
   emailFormControl = new FormControl('phat19102003@gmail.com', [
     Validators.required,
@@ -64,13 +77,60 @@ export class SignUpComponent {
   passwordFormControl = new FormControl('123', [Validators.required]);
   confirmPasswordFormControl = new FormControl('123', [Validators.required]);
   matcher = new MyErrorStateMatcher();
+  userResponse?: UserResponse;
 
   constructor(
     private userService: UserService,
     private toastr: ToastrService,
-    private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private platformLocation: PlatformLocation,
+    private tokenService: TokenService
   ) {}
+
+  ngOnInit(): void {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        // Khởi tạo lại các thành phần tại đây
+        // Ví dụ: gọi lại hàm khởi tạo nút đăng nhập Google
+        this.initializeGoogleSignIn();
+      });
+    if (this.platformLocation instanceof BrowserPlatformLocation) {
+      // Chỉ chạy mã khi ở trong trình duyệt web
+      google.accounts.id.initialize({
+        client_id:
+          '719610777931-akg597p377ho29jabqje6749hegpvhfd.apps.googleusercontent.com',
+        callback: (response: any) => {
+          this.loginGoogle(response.credential);
+        },
+      });
+
+      google.accounts.id.renderButton(document.getElementById('google-btn2'), {
+        theme: 'filled_blue',
+        size: 'large',
+        shape: 'rectangular',
+        with: '350',
+        logo_alignment: 'center',
+      });
+    }
+  }
+  initializeGoogleSignIn() {
+    google.accounts.id.initialize({
+      client_id:
+        '719610777931-akg597p377ho29jabqje6749hegpvhfd.apps.googleusercontent.com',
+      callback: (response: any) => {
+        this.loginGoogle(response.credential);
+      },
+    });
+
+    google.accounts.id.renderButton(document.getElementById('google-btn'), {
+      theme: 'filled_blue',
+      size: 'large',
+      shape: 'rectangular',
+      with: '350',
+      logo_alignment: 'left',
+    });
+  }
 
   signUp() {
     debugger;
@@ -107,5 +167,32 @@ export class SignUpComponent {
         easeTime: 600,
       });
     }
+  }
+  loginGoogle(googleToken: string) {
+    debugger;
+    this.userService.loginGoogle(googleToken).subscribe({
+      next: (response: LoginResponse) => {
+        debugger;
+        const { token } = response;
+        this.tokenService.setToken(token);
+        this.userService.getUserDetails(token).subscribe({
+          next: (resp: UserResponse) => {
+            debugger;
+            this.userResponse = {
+              ...resp,
+              dateOfBirth: new Date(resp.dateOfBirth) || null,
+            };
+            this.userService.setUserResponse(this.userResponse!);
+            this.router.navigate(['']);
+          },
+          error: (error: any) => {
+            console.error(error);
+          },
+        });
+      },
+      error: (error: any) => {
+        console.error(error);
+      },
+    });
   }
 }

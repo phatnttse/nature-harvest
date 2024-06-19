@@ -3,7 +3,8 @@ import { CategoryResponse } from '../category/category.response';
 export class ProductResponse {
   id: number;
   title: string;
-  price: number;
+  originalPrice: number;
+  officialPrice: number;
   thumbnail: string;
   description: string;
   quantity: number;
@@ -17,7 +18,8 @@ export class ProductResponse {
   constructor(data: any) {
     this.id = data.id;
     this.title = data.title;
-    this.price = data.price;
+    this.originalPrice = data.originalPrice;
+    this.officialPrice = data.officialPrice;
     this.thumbnail = data.thumbnail;
     this.description = data.description;
     this.quantity = data.quantity;

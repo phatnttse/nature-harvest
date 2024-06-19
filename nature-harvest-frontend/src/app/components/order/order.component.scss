@@ -23,9 +23,8 @@ h1,
   font-size: 2em;
 }
 
-a,
-.icon-print {
-  color: #81c408;
+a {
+  color: #008b4b;
   text-decoration: none;
   cursor: pointer;
 }
@@ -101,7 +100,7 @@ form {
 .btn {
   cursor: pointer;
   display: inline-block;
-  background-color: #81c408;
+  background-color: #008b4b;
   border-color: #2f71a9;
   background-clip: border-box;
   -webkit-box-sizing: border-box;
@@ -696,7 +695,7 @@ textarea.field__input {
 .input-checkbox:focus,
 .field__input:focus {
   outline: none;
-  border-color: #81c408;
+  border-color: #008b4b;
   box-shadow: 0 0 0 1px #66afe9;
 }
 
@@ -993,7 +992,7 @@ textarea.field__input {
   white-space: nowrap;
   padding: 0 0.62em;
   border-radius: 2em;
-  background-color: #81c408;
+  background-color: #008b4b;
   color: #fff;
   position: absolute;
   right: -0.9em;
@@ -1455,8 +1454,8 @@ input[type="radio"] {
 .input-checkbox:checked,
 .input-radio:checked {
   border: none;
-  -webkit-box-shadow: 0 0 0 10px #81c408 inset;
-  box-shadow: 0 0 0 10px #81c408 inset;
+  -webkit-box-shadow: 0 0 0 10px #008b4b inset;
+  box-shadow: 0 0 0 10px #008b4b inset;
 }
 
 .input-checkbox:checked:focus,

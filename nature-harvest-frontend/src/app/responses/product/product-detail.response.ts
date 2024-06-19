@@ -4,7 +4,8 @@ import { ProductImage } from './product-image.response';
 export class ProductDetailResponse {
   id: number;
   title: string;
-  price: number;
+  originalPrice: number;
+  officialPrice: number;
   thumbnail: string;
   description: string;
   quantity: number;
@@ -17,7 +18,8 @@ export class ProductDetailResponse {
   constructor(data: any) {
     this.id = data.id;
     this.title = data.title;
-    this.price = data.price;
+    this.originalPrice = data.originalPrice;
+    this.officialPrice = data.officialPrice;
     this.thumbnail = data.thumbnail;
     this.description = data.description;
     this.quantity = data.quantity;

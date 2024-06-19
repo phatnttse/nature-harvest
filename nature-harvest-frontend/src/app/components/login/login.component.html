@@ -7,9 +7,9 @@
           <h3 class="text-center my-4">Welcome to Nature's Harvest</h3>
         </div>
         <div class="title text-center">
-          Do not have an account ?
+          Bạn chưa có tài khoản ?
           <a style="text-decoration: underline" routerLink="/signup"
-            >Signup here</a
+            >Đăng ký tại đây</a
           >
         </div>
 
@@ -47,7 +47,9 @@
                 [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide"
               >
-                <i class="fas fa-eye" style="font-size: small"> </i>
+                <mat-icon>{{
+                  hide ? "visibility_off" : "visibility"
+                }}</mat-icon>
               </button>
               @if (passwordFormControl.hasError('email') &&
               !passwordFormControl.hasError('required')) {
@@ -56,19 +58,21 @@
               <mat-error>Password is <strong>required</strong></mat-error>
               }
             </mat-form-field>
+
             <div class="text-end">
               <a routerLink="/login" style="font-size: 12px">
-                Forgot password ?</a
+                Quên mật khẩu ?</a
               >
             </div>
             <div class="text-center mt-4">
-              <button mat-flat-button (click)="login()">Login</button>
+              <button mat-flat-button (click)="login()">Đăng nhập</button>
             </div>
-            <div class="divider text-center mt-4">Or log in with</div>
+            <div class="divider text-center mt-4">Hoặc đăng nhập bằng</div>
             <div
               class="align-items-center d-flex justify-content-center my-4 d-grid"
-              id="google-btn"
-            ></div>
+            >
+              <div id="google-btn1"></div>
+            </div>
           </form>
         </div>
       </div>

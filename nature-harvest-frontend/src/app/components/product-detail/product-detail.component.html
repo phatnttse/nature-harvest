@@ -112,19 +112,25 @@
               <span class="special-price">
                 Giá:
                 <span class="price product-price"
-                  >{{ product?.price | number : "1.0" }}₫</span
+                  >{{ product?.officialPrice | number : "1.0" }}₫</span
                 >
               </span>
               <!-- Giá Khuyến mại -->
               <span class="old-price">
                 Giá thị trường:
-                <del class="price product-price-old"> 55.000₫ </del>
+                <del class="price product-price-old">
+                  {{ product?.originalPrice }}₫
+                </del>
               </span>
               <!-- Giás gốc -->
               <span class="save-price"
                 >Tiết kiệm:
-                <span class="price product-price-save">8.000₫</span> so với giá
-                thị trường
+                <span class="price product-price-save"
+                  >{{
+                    product?.originalPrice! - product?.officialPrice!
+                  }}₫</span
+                >
+                so với giá thị trường
               </span>
               <!-- Tiết kiệm -->
             </div>

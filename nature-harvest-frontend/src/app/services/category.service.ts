@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { CategoryProductCountResponse } from '../responses/category/category-product-counts.response';
 import { HttpUtilService } from './http.util.service';
+import { CategoryResponse } from '../responses/category/category.response';
+import { CategoryWithSubcategoriesResponse } from '../responses/category/category-subcategory-response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
-  private apiGetCategoryProductCounts = `${environment.apiBaseUrl}/categories/product-counts`;
-  private apiGetSubCategoriesByCategory = `${environment.apiBaseUrl}/categories/product-counts`;
+  private apiBaseUrl = environment.apiBaseUrl;
+  private categoriesWithSubcategoriesSubject = new BehaviorSubject<
+    CategoryWithSubcategoriesResponse[]
+  >([]);
+  categoriesWithSubcategories$ =
+    this.categoriesWithSubcategoriesSubject.asObservable();
 
   private apiConfig = {
     headers: this.httpUtilService.createHeaders(),
@@ -21,9 +27,29 @@ export class CategoryService {
     private httpUtilService: HttpUtilService
   ) {}
 
+  getCategories(): Observable<CategoryResponse[]> {
+    return this.http.get<CategoryResponse[]>(`${this.apiBaseUrl}/categories`);
+  }
+
+  getCategoriesWithSubcategories(): Observable<
+    CategoryWithSubcategoriesResponse[]
+  > {
+    return this.http
+      .get<CategoryWithSubcategoriesResponse[]>(
+        `${this.apiBaseUrl}/categories/with-subcategories`
+      )
+      .pipe(
+        tap((categoriesWithSubcategories) => {
+          this.categoriesWithSubcategoriesSubject.next(
+            categoriesWithSubcategories
+          );
+        })
+      );
+  }
+
   getCategoryProductCounts(): Observable<CategoryProductCountResponse[]> {
     return this.http.get<CategoryProductCountResponse[]>(
-      this.apiGetCategoryProductCounts
+      `${this.apiBaseUrl}/categories/product-counts`
     );
   }
 }

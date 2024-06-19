@@ -17,6 +17,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TokenInterceptor } from './interceptors/token.interceptors';
 import { provideClientHydration } from '@angular/platform-browser';
+import { provideOAuthClient } from 'angular-oauth2-oidc';
 
 const tokenInterceptorProvider: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -35,5 +36,6 @@ export const appConfig: ApplicationConfig = {
     tokenInterceptorProvider,
     importProvidersFrom(HttpClientModule),
     provideClientHydration(),
+    provideOAuthClient(),
   ],
 };

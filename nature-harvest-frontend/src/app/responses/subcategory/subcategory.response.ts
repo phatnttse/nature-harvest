@@ -1,11 +1,13 @@
+import { CategoryResponse } from '../category/category.response';
+
 export class SubCategoryResponse {
-  subcategoryId: number;
+  id: number;
   name: string;
-  categoryId: number;
+  category: CategoryResponse[];
 
   constructor(data: any) {
-    this.subcategoryId = data.subcategoryId;
+    this.id = data.id;
     this.name = data.name;
-    this.categoryId = data.categoryId;
+    this.category = data.category;
   }
 }

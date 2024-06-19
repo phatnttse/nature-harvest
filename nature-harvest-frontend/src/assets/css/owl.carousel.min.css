@@ -9,7 +9,6 @@
   position: relative;
 }
 .owl-carousel {
-  display: none;
   width: 100%;
   z-index: 1;
 }

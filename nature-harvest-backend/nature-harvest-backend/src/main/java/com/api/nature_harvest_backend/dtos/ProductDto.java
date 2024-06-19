@@ -1,8 +1,10 @@
 package com.api.nature_harvest_backend.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import jakarta.validation.constraints.*;
 
 @Getter
 @Setter
@@ -21,6 +23,9 @@ public class ProductDto {
 
     @Min(value = 0, message = "Quantity must be greater than or equal to 0")
     private int quantity;
+
+    @Min(value = 0, message = "Discount must be greater than or equal to 0")
+    private int discount;
 
     private String description;
     private String thumbnail;

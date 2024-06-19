@@ -1,125 +1,191 @@
 <app-header></app-header>
 
-<section class="section-pagetop bg" style="margin-top: 180px">
-  <div class="container">
-    <h2 class="title-page">Category products</h2>
-    <nav>
-      <ol class="breadcrumb text-white">
-        <li class="breadcrumb-item"><a href="#">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Best category</a></li>
-        <li class="breadcrumb-item active" aria-current="page">
-          Great articles
-        </li>
-      </ol>
-    </nav>
-  </div>
-</section>
+<app-breadcrumb></app-breadcrumb>
 
-<section class="section-content padding-y">
+<section class="section-content padding-y mt-2">
   <div class="container">
     <div class="row">
       <aside class="col-md-3">
-        <div class="card" style="margin-top: 60px">
+        <div class="card mt-2">
           <article class="filter-group">
-            <header class="card-header">
+            <header
+              class="card-header"
+              style="background-color: 008b4b !important"
+            >
               <a href="#" class="">
-                <h6 class="title">Product type</h6>
+                <h6 class="title text-white mt-2">Danh mục sản phẩm</h6>
               </a>
             </header>
             <div class="filter-content collapse show">
               <div class="card-body">
-                <mat-accordion>
-                  <mat-expansion-panel
-                    (opened)="panelOpenState = true"
-                    (closed)="panelOpenState = false"
-                  >
-                    <mat-expansion-panel-header>
-                      <mat-panel-title> Type </mat-panel-title>
-                      <mat-panel-description> </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <p>I'm visible because I am open</p>
-                  </mat-expansion-panel>
-                </mat-accordion>
+                @for (category of categoriesWithSubcategories$ | async; track
+                $index) {
+                <div class="aside-content aside-content-sub clearfix">
+                  <ul class="navbar-pills nav-category">
+                    <li
+                      class="nav-item"
+                      [ngClass]="{
+                        active: openSubcategories[category.id]
+                      }"
+                    >
+                      <a
+                        href="javascript:;"
+                        (click)="
+                          getProductsByCondition(
+                            minPrice,
+                            maxPrice,
+                            '',
+                            category.id,
+                            0,
+                            '',
+                            '',
+                            0,
+                            8
+                          )
+                        "
+                        class="nav-link"
+                        [title]="category.name"
+                        >{{ category.name }}
+                      </a>
+                      <!-- <span class="Collapsible__Plus"></span> -->
+                      <i
+                        class="fa-solid fa-plus Collapsible__Plus"
+                        [ngClass]="{
+                          'fa-plus': !openSubcategories[category.id],
+                          'fa-minus': openSubcategories[category.id]
+                        }"
+                        (click)="toggleSubcategory(category.id)"
+                      ></i>
+
+                      @for (subcategory of category.subcategories; track $index)
+                      {
+                      <ul class="dropdown-menu-ct">
+                        <li class="nav-item">
+                          <a
+                            class="nav-link"
+                            href="javascript:;"
+                            [title]="subcategory.name"
+                            (click)="
+                              getProductsByCondition(
+                                minPrice,
+                                maxPrice,
+                                '',
+                                category.id,
+                                subcategory.id,
+                                '',
+                                '',
+                                0,
+                                8
+                              )
+                            "
+                            >{{ subcategory.name }}
+                          </a>
+                        </li>
+                      </ul>
+                      }
+                    </li>
+                  </ul>
+                </div>
+                }
               </div>
             </div>
           </article>
-          <article class="filter-group">
+          <!-- <article class="filter-group">
             <header class="card-header">
               <a href="#" class="">
-                <h6 class="title">Brands</h6>
+                <h6 class="title text-white mt-2">Loại sản phẩm</h6>
               </a>
             </header>
-            <div class="filter-content collapse show" id="collapse_2">
-              <div class="card-body">
-                <mat-accordion>
-                  <mat-expansion-panel
-                    (opened)="panelOpenState = true"
-                    (closed)="panelOpenState = false"
-                  >
-                    <mat-expansion-panel-header>
-                      <mat-panel-title> Type </mat-panel-title>
-                      <mat-panel-description> </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <p>I'm visible because I am open</p>
-                  </mat-expansion-panel>
-                </mat-accordion>
-              </div>
+            <div class="filter-content collapse show">
+              <div class="card-body"></div>
             </div>
-          </article>
+          </article> -->
           <article class="filter-group">
             <header class="card-header">
               <a href="#" class="">
-                <h6 class="title">Price range</h6>
+                <h6 class="title text-white mt-2">Chọn theo mức giá</h6>
               </a>
             </header>
             <div class="filter-content collapse show" id="collapse_3">
               <div class="card-body">
                 <div class="form-row">
-                  <div class="form-group col-md-6">
-                    <label>Filter</label>
+                  <div class="form-group col-md-10 d-flex align-items-center">
                     <mat-slider
                       min="0"
-                      max="100000"
+                      max="1000000"
                       step="1000"
                       showTickMarks
                       discrete
                       [displayWith]="formatLabel"
+                      class="flex-grow-1 mr-3"
                     >
-                      <input value="10000" matSliderStartThumb />
-                      <input value="50000" matSliderEndThumb />
+                      <input [(ngModel)]="minPrice" matSliderStartThumb />
+                      <input [(ngModel)]="maxPrice" matSliderEndThumb />
                     </mat-slider>
+                    <button
+                      mat-flat-button
+                      style="color: white"
+                      class="btn btn-primary me-3"
+                      (click)="filterProductsByPrice()"
+                    >
+                      Apply
+                    </button>
                   </div>
                 </div>
-                <button style="color: white" class="btn btn-primary">
-                  Apply
-                </button>
               </div>
             </div>
           </article>
         </div>
       </aside>
+
       <main class="col-md-9">
-        <header class="border-bottom my-2 text-end">
-          <button mat-icon-button [matMenuTriggerFor]="menu" class="mb-2">
-            <i class="fa-solid fa-bars"></i>
-          </button>
-          <button mat-icon-button [matMenuTriggerFor]="menu" class="mb-2">
-            <i class="fa-solid fa-ellipsis-vertical"></i>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item>
-              <span>Redial</span>
-            </button>
-            <button mat-menu-item disabled>
-              <span>Check voice mail</span>
-            </button>
-            <button mat-menu-item>
-              <span>Disable alerts</span>
-            </button>
-          </mat-menu>
+        <header class="border-bottom my-2">
+          <div
+            class="d-flex align-items-center justify-content-between"
+            style="background-color: #f7f8f9"
+          >
+            <div class="d-flex justify-content-start ms-2 mt-2">
+              <h6 class="title">Tất cả sản phẩm</h6>
+            </div>
+            <div class="d-flex justify-content-end align-items-center">
+              <img
+                width="16"
+                height="16"
+                alt="Sắp xếp"
+                src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/sort.png?1716945232631"
+                class="mr-2"
+              />
+              <p class="mb-2 mt-2" style="font-size: 14px; margin-left: 6px">
+                Sắp xếp: {{ this.typeArrange }}
+              </p>
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="mb-3">
+                <i
+                  class="fa-solid fa-ellipsis-vertical"
+                  style="color: #606463; font-size: 18px"
+                ></i>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="arrageDefault()">
+                  <span> Mặc định</span>
+                </button>
+                <button mat-menu-item (click)="arrangeByTitleAtoZ()">
+                  <span> A → Z</span>
+                </button>
+                <button mat-menu-item (click)="arrangeByTitleZtoA()">
+                  <span> Z → A</span>
+                </button>
+                <button mat-menu-item (click)="arrangeByPriceAscending()">
+                  <span>Giá tăng dần</span>
+                </button>
+                <button mat-menu-item (click)="arrangeByPriceDescending()">
+                  <span>Giá giảm dần</span>
+                </button>
+              </mat-menu>
+            </div>
+          </div>
         </header>
 
-        <div class="tab-content">
+        <div class="tab-content mt-3">
           <div class="tab-pane fade show p-0 active">
             <div class="row g-4">
               <div class="col-lg-12">
@@ -129,23 +195,31 @@
                     <div class="card mb-4">
                       <div
                         class="badge bg-primary card-badge card-badge-start text-uppercase"
+                        style="
+                          background-color: red !important;
+                          left: 5px;
+                          top: 10px;
+                        "
                       >
                         -{{ product.discount }}%
                       </div>
                       <div class="card-img">
-                        <a class="card-img-hover" href="#">
+                        <a
+                          class="card-img-hover"
+                          routerLink="/product-detail/{{ product.id }}"
+                        >
                           <img
                             class="card-img-top card-img-back"
                             [src]="product.thumbnail"
-                            width="260"
-                            height="140"
+                            width="222"
+                            height="155"
                             alt="..."
                           />
                           <img
                             class="card-img-top card-img-front"
                             [src]="product.thumbnail"
-                            width="260"
-                            height="140"
+                            width="222"
+                            height="155"
                             alt="..."
                           />
                         </a>
@@ -155,10 +229,9 @@
                           <span class="card-action">
                             <button
                               class="btn btn-xs btn-circle btn-white-primary"
-                              data-bs-toggle="modal"
-                              data-bs-target="#modalProduct"
+                              (click)="quickViewProduct(product.id)"
                             >
-                              <i style="color: #81c408" class="fas fa-eye"></i>
+                              <i style="color: #008b4b" class="fas fa-eye"></i>
                             </button>
                           </span>
                           <span class="card-action">
@@ -167,7 +240,7 @@
                               data-toggle="button"
                             >
                               <i
-                                style="color: #81c408"
+                                style="color: #008b4b"
                                 class="fas fa-shopping-cart"
                               ></i>
                             </button>
@@ -178,7 +251,7 @@
                               data-toggle="button"
                             >
                               <i
-                                style="color: #81c408"
+                                style="color: #008b4b"
                                 class="fas fa-heart"
                               ></i>
                             </button>
@@ -193,47 +266,54 @@
 
                         <!-- Title -->
                         <div class="fw-bold text-center">
-                          <a class="text-body" href="#">
+                          <a
+                            class="text-body"
+                            href="#"
+                            style="font-weight: 600"
+                          >
                             {{ product.title }}
                           </a>
                         </div>
 
                         <div class="fx-bold">
-                          <p class="text-center" style="font-size: 14px">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit sed do eiusmod te incididunt
-                          </p>
+                          <p class="text-center" style="font-size: 14px"></p>
                         </div>
 
                         <!-- Price -->
                         <div class="fw-bold text-center">
                           <span
                             class="fs-xs text-gray-350 text-decoration-line-through"
-                            style="padding: 10px"
-                            >{{
-                              product.price -
-                                (product.price * product.discount) / 100
-                                | number : "1.0"
-                            }}₫</span
+                            style="padding: 8px; font-size: 14px"
+                            >{{ product.officialPrice | number : "1.0" }}₫</span
                           >
-                          <span class="text-primary"
-                            >{{ product.price | number : "1.0" }}₫</span
+                          <span class="text-primary" style="font-size: 14px"
+                            >{{ product.originalPrice | number : "1.0" }}₫</span
                           >
                         </div>
                         <div
                           class="align-items-center justify-content-center text-center mt-2"
                         >
                           <a
-                            href="#"
+                            href="javascript:void(0);"
+                            (click)="
+                              addProductToCart(product.id, product.title)
+                            "
                             class="btn border border-secondary rounded-pill px-3 text-primary"
                             ><i
                               class="fa fa-shopping-bag me-2 text-primary"
                             ></i>
-                            Add to cart</a
+                            Thêm vào giỏ</a
                           >
                         </div>
                       </div>
                     </div>
+                  </div>
+                  } @empty {
+                  <div
+                    class="alert alert-warning alert-dismissible section ms-2"
+                    role="alert"
+                  >
+                    Sản phẩm đang được cập nhật.
                   </div>
                   }
                 </div>
@@ -241,16 +321,252 @@
             </div>
           </div>
         </div>
-        <nav class="mt-4">
-          <mat-paginator
-            [length]="200"
-            [pageSizeOptions]="[10, 50, 100]"
-            aria-label="Select page"
-          >
-          </mat-paginator>
-        </nav>
+
+        @if (totalPages > 1) {
+        <div class="section pagenav clearfix a-center">
+          <nav class="collection-paginate clearfix relative nav_pagi w_100">
+            <ul class="pagination clearfix">
+              @if (currentPage > 0) {
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="javascript:;"
+                  (click)="onPageChange(currentPage - 1)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="20"
+                    viewBox="0 0 12 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M0.827131 10.5488L10.0777 19.7738C10.3808 20.0759 10.8715 20.0754 11.1741 19.7723C11.4764 19.4692 11.4756 18.9782 11.1725 18.6759L2.47255 9.99996L11.1728 1.32406C11.4759 1.02172 11.4767 0.531057 11.1744 0.227934C11.0227 0.0759811 10.824 3.76429e-06 10.6253 3.74691e-06C10.4271 3.72959e-06 10.2292 0.0754737 10.0778 0.226372L0.827131 9.45114C0.681155 9.59637 0.599241 9.79403 0.599241 9.99996C0.599241 10.2059 0.68139 10.4033 0.827131 10.5488Z"
+                      fill="#9D9D9D"
+                    ></path>
+                  </svg>
+                </a>
+              </li>
+              } @for (page of visiblePages; track $index) {
+              <li
+                class="page-item"
+                [ngClass]="{ active: page === currentPage + 1 }"
+              >
+                <a
+                  class="page-link"
+                  href="javascript:;"
+                  [style]="{ 'pointer-events: none': page === currentPage + 1 }"
+                  (click)="onPageChange(page - 1)"
+                  >{{ page }}</a
+                >
+              </li>
+              } @if (currentPage < totalPages - 1) {
+              <li class="page-item">
+                <a
+                  class="page-link link-next-pre"
+                  onclick="doSearch(2)"
+                  href="javascript:;"
+                  (click)="onPageChange(currentPage + 1)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="20"
+                    viewBox="0 0 12 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M11.1729 9.45117L1.92228 0.226167C1.6192 -0.0759023 1.12849 -0.0753945 0.825918 0.227729C0.523575 0.530814 0.524357 1.02179 0.827481 1.32409L9.52745 10L0.827168 18.6759C0.524083 18.9783 0.523302 19.4689 0.825605 19.7721C0.977285 19.924 1.17599 20 1.37471 20C1.57291 20 1.77084 19.9245 1.92224 19.7736L11.1729 10.5489C11.3188 10.4036 11.4008 10.206 11.4008 10C11.4008 9.7941 11.3186 9.59668 11.1729 9.45117Z"
+                      fill="#9D9D9D"
+                    ></path>
+                  </svg>
+                </a>
+              </li>
+              }
+            </ul>
+          </nav>
+        </div>
+        }
       </main>
     </div>
   </div>
 </section>
 <app-footer></app-footer>
+
+<div
+  id="quick-view-product"
+  class="quickview-product"
+  [style.display]="modalStyle ? 'block' : 'none'"
+>
+  <div
+    class="quickview-overlay fancybox-overlay fancybox-overlay-fixed"
+    (click)="closeModal()"
+  ></div>
+  <div class="quick-view-product">
+    <div class="block-quickview primary_block details-product">
+      <div class="row">
+        <div
+          class="product-left-column product-images col-xs-12 col-sm-4 col-md-4 col-lg-5 col-xl-5"
+        >
+          <div class="image-block large-image col_large_default">
+            <span class="view_full_size">
+              <a class="img-product" title="" href="javascript:;">
+                <img
+                  [src]="currentImage"
+                  id="product-featured-image-quickview"
+                  class="img-responsive product-featured-image-quickview"
+                  alt="quickview"
+                />
+              </a>
+            </span>
+            <div class="loading-imgquickview" style="display: none"></div>
+          </div>
+          <div class="more-view-wrapper clearfix">
+            <div
+              class="thumbs_quickview owl_nav_custome1 swiper-container thumbs_list_quickview swiper-container-initialized swiper-container-horizontal swiper-container-pointer-events"
+              id="thumbs_list_quickview"
+            >
+              <ul
+                class="product-photo-thumbs quickview-more-views-owlslider not-thuongdq swiper-wrapper"
+                id="thumblist_quickview"
+                style="
+                  transition-duration: 0ms;
+                  transform: translate3d(0px, 0px, 0px);
+                "
+              >
+                @for (image of product?.productImages; track image.imageUrl; let
+                i = $index;) {
+                <li
+                  class="swiper-slide"
+                  style="width: 77.5px; margin-right: 15px"
+                >
+                  <a href="javascript:void(0)"
+                    ><img
+                      [src]="image.imageUrl"
+                      alt="Zomart"
+                      style="max-width: 120px; max-height: 120px"
+                      (click)="thumbnailClick(image.imageUrl)"
+                  /></a>
+                </li>
+                }
+              </ul>
+              <div class="swiper-button-prev swiper-button-disabled"></div>
+              <div class="swiper-button-next swiper-button-disabled"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="product-center-column product-info product-item col-xs-12 col-sm-6 col-md-8 col-lg-7 col-xl-7 details-pro style_product style_border"
+          id="product-35655314"
+        >
+          <div class="head-qv group-status">
+            <h3 class="qwp-name title-product">
+              <a class="text2line">{{ product?.title }}</a>
+            </h3>
+            <div class="vend-qv group-status">
+              <div class="left_vend">
+                <div class="first_status">
+                  Tình trạng:
+                  <span class="soluong status_name">Còn hàng</span>
+                </div>
+                <div class="top_sku first_status">
+                  Mã sản phẩm:
+                  <span class="sku_ status_name"
+                    ><span>Đang cập nhật</span></span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="quickview-info">
+            <span class="prices price-box">
+              <span class="price product-price sale-price"
+                >{{ product?.officialPrice | number : "1.0" }}₫</span
+              >
+              <del class="old-price"
+                >{{ product?.originalPrice | number : "1.0" }}₫</del
+              >
+            </span>
+          </div>
+
+          <div class="product-description product-summary">
+            <div class="rte">
+              <p>
+                {{ product?.description }}
+              </p>
+            </div>
+          </div>
+
+          <form
+            class="quick_option variants form-ajaxtocart form-product"
+            id="product-actions-35655314"
+          >
+            <div class="form_product_content">
+              <div class="count_btn_style quantity_wanted_p">
+                <div class="soluong1 clearfix">
+                  <span class="soluong_h">Số lượng:</span>
+                  <div class="sssssscustom input_number_product">
+                    <button
+                      type="button"
+                      (click)="decreaseQuantity()"
+                      class="btn_num num_1 button button_qty"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      id="quantity-detail"
+                      name="quantity"
+                      [value]="quantity"
+                      maxlength="3"
+                      class="form-control prd_quantity"
+                    />
+                    <button
+                      type="button"
+                      (click)="increaseQuantity()"
+                      class="btn_num num_2 button button_qty"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div class="button_actions clearfix">
+                  <button
+                    (click)="addProductToCart(product?.id!, product?.title!)"
+                    type="button"
+                    class="btn_cool btn btn_base fix_add_to_cart ajax_addtocart btn_add_cart btn-cart add_to_cart add_to_cart_detail"
+                  >
+                    <span class="btn-content text_1">Thêm vào giỏ</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <a
+      title="Close"
+      class="quickview-close close-window"
+      (click)="closeModal()"
+      href="javascript:;"
+    >
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        data-prefix="far"
+        data-icon="times"
+        role="img"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 320 512"
+        class="svg-inline--fa fa-times fa-w-10"
+      >
+        <path
+          fill="currentColor"
+          d="M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z"
+          class=""
+        ></path>
+      </svg>
+    </a>
+  </div>
+</div>

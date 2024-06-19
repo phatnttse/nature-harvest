@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class ProductService implements IProductService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
+
     @Override
     @Transactional
     public Product createProduct(ProductDto productDto) throws DataNotFoundException {
@@ -36,7 +38,8 @@ public class ProductService implements IProductService {
                                 "Cannot find category with id: " + productDto.getCategoryId()));
         Product newProduct = Product.builder()
                 .title(productDto.getTitle())
-                .price(productDto.getPrice())
+                .originalPrice(productDto.getPrice())
+                .officialPrice(productDto.getPrice() - (productDto.getPrice() * productDto.getDiscount() / 100))
                 .quantity(productDto.getQuantity())
                 .description(productDto.getDescription())
                 .thumbnail(productDto.getThumbnail())
@@ -51,12 +54,13 @@ public class ProductService implements IProductService {
     public Product getProductById(long productId) throws DataNotFoundException {
         Optional<Product> optionalProduct = productRepository.getDetailProduct(productId);
 
-        if(optionalProduct.isPresent()) {
+        if (optionalProduct.isPresent()) {
             if (!optionalProduct.get().isActive()) throw new DataNotFoundException("Product not found");
             return optionalProduct.get();
         }
         throw new DataNotFoundException("Cannot find product with id =" + productId);
     }
+
     @Override
     public List<Product> findProductsByIds(List<Long> productIds) {
         return productRepository.findProductsByIds(productIds);
@@ -75,12 +79,12 @@ public class ProductService implements IProductService {
                     .build();
             //Ko cho insert quá 5 ảnh cho 1 sản phẩm
             int size = productImageRepository.findByProductId(productId).size();
-            if(size >= ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
+            if (size >= ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
                 throw new InvalidParamException(
                         "Number of images must be <= "
-                                +ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
+                                + ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
             }
-            if (existingProduct.getThumbnail() == null ) {
+            if (existingProduct.getThumbnail() == null) {
                 existingProduct.setThumbnail(newProductImage.getImageUrl());
                 productRepository.save(existingProduct);
             }
@@ -92,13 +96,25 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Page<ProductResponse> getAllProducts(String keyword,
-                                                Long categoryId, PageRequest pageRequest) {
-        // Lấy danh sách sản phẩm theo trang (page), giới hạn (limit), và categoryId (nếu có)
+    public Page<ProductResponse> getProductByPriceRange(Double minPrice, Double maxPrice, PageRequest pageRequest) {
         Page<Product> productsPage;
-        productsPage = productRepository.searchProducts(categoryId, keyword, pageRequest);
+        productsPage = productRepository.findProductsByPriceRange(minPrice, maxPrice, pageRequest);
         return productsPage.map(ProductResponse::fromProduct);
     }
+
+    @Override
+    public Page<ProductResponse> getAllProducts(String keyword,
+                                                Long categoryId,
+                                                Long subcategoryId,
+                                                Long minPrice,
+                                                Long maxPrice,
+                                                PageRequest pageRequest) {
+        // Lấy danh sách sản phẩm theo trang (page), giới hạn (limit), và categoryId (nếu có)
+        Page<Product> productsPage;
+        productsPage = productRepository.searchProducts(categoryId, subcategoryId, keyword, minPrice, maxPrice, pageRequest);
+        return productsPage.map(ProductResponse::fromProduct);
+    }
+
     @Override
     @Transactional
     public Product updateProduct(
@@ -107,23 +123,27 @@ public class ProductService implements IProductService {
     )
             throws Exception {
         Product existingProduct = getProductById(id);
-        if(existingProduct != null) {
+        if (existingProduct != null) {
             Category existingCategory = categoryRepository
                     .findById(productDto.getCategoryId())
                     .orElseThrow(() ->
                             new DataNotFoundException(
                                     "Cannot find category with id: " + productDto.getCategoryId()));
 
-            if(productDto.getTitle() != null && !productDto.getTitle().isEmpty()) {
+            if (productDto.getTitle() != null && !productDto.getTitle().isEmpty()) {
                 existingProduct.setTitle(productDto.getTitle());
             }
-            if(productDto.getQuantity() >= 0){
+            if (productDto.getQuantity() >= 0) {
                 existingProduct.setQuantity(productDto.getQuantity());
             }
-            if(productDto.getPrice() >= 0) {
-                existingProduct.setPrice(productDto.getPrice());
+            if (productDto.getPrice() >= 0) {
+                existingProduct.setOriginalPrice(productDto.getPrice());
+                existingProduct.setOfficialPrice(productDto.getPrice() - (productDto.getPrice() * productDto.getDiscount() / 100));
             }
-            if(productDto.getDescription() != null &&
+            if (productDto.getDiscount() >= 0) {
+                existingProduct.setOfficialPrice(productDto.getPrice() - (productDto.getPrice() * productDto.getDiscount() / 100));
+            }
+            if (productDto.getDescription() != null &&
                     !productDto.getDescription().isEmpty()) {
                 existingProduct.setDescription(productDto.getDescription());
             }
@@ -146,4 +166,5 @@ public class ProductService implements IProductService {
     public boolean existsByName(String title) {
         return productRepository.existsByTitle(title);
     }
+
 }

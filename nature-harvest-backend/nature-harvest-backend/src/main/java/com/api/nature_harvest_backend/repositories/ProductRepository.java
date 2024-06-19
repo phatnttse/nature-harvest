@@ -15,21 +15,31 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByTitle(String title);
+
     Page<Product> findAll(Pageable pageable);//phân trang
+
     List<Product> findByCategory(Category category);
+
     @Query("SELECT p FROM Product p WHERE " +
             "(:categoryId IS NULL OR :categoryId = 0 OR p.category.id = :categoryId) " +
-//            "AND (:subcategoryId IS NULL OR :subcategoryId = 0 OR p.subcategory.id = :subcategoryId) " +
-            "AND (:keyword IS NULL OR :keyword = '' OR p.title LIKE %:keyword% OR p.description LIKE %:keyword%) " +
+            "AND (:subcategoryId IS NULL OR :subcategoryId = 0 OR p.subcategory.id = :subcategoryId) " +
+            "AND (:keyword IS NULL OR :keyword = '' OR p.title LIKE %:keyword%) " +
+            "AND (p.officialPrice >= :minPrice AND p.officialPrice <= :maxPrice) " +
             "AND p.active = true")
     Page<Product> searchProducts(@Param("categoryId") Long categoryId,
-//                                 @Param("subcategoryId") Long subcategoryId,
+                                 @Param("subcategoryId") Long subcategoryId,
                                  @Param("keyword") String keyword,
+                                 @Param("minPrice") Long minPrice,
+                                 @Param("maxPrice") Long maxPrice,
                                  Pageable pageable);
+
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.productImages WHERE p.id = :productId")
     Optional<Product> getDetailProduct(@Param("productId") Long productId);
 
     @Query("SELECT p FROM Product p WHERE p.id IN :productIds")
     List<Product> findProductsByIds(@Param("productIds") List<Long> productIds);
+
+    @Query("SELECT p FROM Product p WHERE p.officialPrice >= :minPrice AND p.officialPrice <= :maxPrice")
+    Page<Product> findProductsByPriceRange(@Param("minPrice") Double minPrice, @Param("maxPrice") Double maxPrice, Pageable pageable);
 
 }

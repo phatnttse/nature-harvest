@@ -2,6 +2,7 @@ package com.api.nature_harvest_backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//@EntityListeners(ProductListener.class)
+@EntityListeners(ProductListener.class)
 public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,15 +25,18 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-//    @ManyToOne
-//    @JoinColumn(name = "subcategory_id")
-//    private SubCategory subcategory;
+    @ManyToOne
+    @JoinColumn(name = "subcategory_id")
+    private SubCategory subcategory;
 
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "price", nullable = false)
-    private int price;
+    @Column(name = "original_price", nullable = false)
+    private int originalPrice;
+
+    @Column(name = "official_price", nullable = false)
+    private int officialPrice;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
@@ -47,6 +51,8 @@ public class Product extends BaseEntity {
 
     @Column(name = "thumbnail", nullable = false)
     private String thumbnail;
+
+    private String slug;
 
     @Column(name = "description", columnDefinition = "LONGTEXT")
     private String description;

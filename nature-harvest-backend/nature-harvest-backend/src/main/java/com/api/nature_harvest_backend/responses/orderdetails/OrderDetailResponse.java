@@ -2,6 +2,7 @@ package com.api.nature_harvest_backend.responses.orderdetails;
 
 import com.api.nature_harvest_backend.models.OrderDetail;
 import lombok.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class OrderDetailResponse {
                 .productId(orderDetail.getProduct().getId().toString())
                 .productName(orderDetail.getProduct().getTitle())
                 .quantity(orderDetail.getQuantity())
-                .price(orderDetail.getProduct().getPrice())
+                .price(orderDetail.getProduct().getOfficialPrice())
                 .thumbnail(orderDetail.getProduct().getThumbnail())
                 .build();
     }

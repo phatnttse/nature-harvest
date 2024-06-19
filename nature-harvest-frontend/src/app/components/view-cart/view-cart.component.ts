@@ -70,7 +70,7 @@ export class ViewCartComponent implements OnInit {
 
   getTotalPrice(): number {
     return this.cart.reduce(
-      (total, item) => total + item.product.price * item.quantity,
+      (total, item) => total + item.product.officialPrice * item.quantity,
       0
     );
   }

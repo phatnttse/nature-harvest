@@ -1,166 +1,317 @@
-<!-- Search -->
-<div
-  class="offcanvas offcanvas-end"
-  id="modalSearch"
-  tabindex="-1"
-  role="dialog"
-  aria-hidden="true"
->
-  <!-- Close -->
-  <button
-    type="button"
-    class="btn-close"
-    data-bs-dismiss="offcanvas"
-    aria-label="Close"
-  >
-    <i class="fe fe-x" aria-hidden="true"></i>
-  </button>
+<app-header></app-header>
+<app-breadcrumb></app-breadcrumb>
+<div class="container-fluid fruite py-5">
+  <div class="container">
+    <div class="tab-class text-center">
+      <div class="row g-4"></div>
+      <div class="tab-content">
+        <div id="tab-1" class="tab-pane fade show p-0 active">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="col-12 col-xl-12 col-lg-12 mb-5">
+                <h3 class="title-head title_search">
+                  Có {{ products.length }} kết quả tìm kiếm phù hợp
+                </h3>
+              </div>
+              <div class="row g-4">
+                @for (product of products; track $index) {
+                <div class="col-6 col-md-6 col-lg-3">
+                  <div class="card">
+                    <div
+                      class="badge bg-primary card-badge card-badge-start text-uppercase"
+                      style="left: 5px; background-color: red !important"
+                    >
+                      -{{ product.discount }}%
+                    </div>
 
-  <!-- Header-->
-  <div class="offcanvas-header lh-fixed fs-lg">
-    <strong class="mx-auto">Search Products</strong>
-  </div>
+                    <div class="card-img">
+                      <a
+                        class="card-img-hover"
+                        routerLink="product-detail/{{ product.id }}"
+                      >
+                        <img
+                          class="card-img-top card-img-back"
+                          [src]="product.thumbnail"
+                          alt="..."
+                          width="304"
+                          height="213"
+                        />
+                        <img
+                          class="card-img-top card-img-front"
+                          [src]="product.thumbnail"
+                          alt="..."
+                          width="304"
+                          height="213"
+                        />
+                      </a>
 
-  <!-- Body: Form -->
-  <div class="offcanvas-body">
-    <form>
-      <div class="form-group">
-        <label class="visually-hidden" for="modalSearchCategories"
-          >Categories:</label
-        >
-        <select class="form-select" id="modalSearchCategories">
-          <option selected>All Categories</option>
-          <option>Women</option>
-          <option>Men</option>
-          <option>Kids</option>
-        </select>
-      </div>
-      <div class="input-group input-group-merge">
-        <input class="form-control" type="search" placeholder="Search" />
-        <div class="input-group-append">
-          <button class="btn btn-outline-border" type="submit">
-            <i class="fe fe-search"></i>
-          </button>
+                      <!-- Actions -->
+                      <div class="card-actions">
+                        <span class="card-action">
+                          <button
+                            class="btn btn-xs btn-circle btn-white-primary"
+                            (click)="quickViewProduct(product.id)"
+                          >
+                            <i style="color: #008b4b" class="fas fa-eye"></i>
+                          </button>
+                        </span>
+                        <span class="card-action">
+                          <button
+                            class="btn btn-xs btn-circle btn-white-primary"
+                            data-toggle="button"
+                          >
+                            <i
+                              style="color: #008b4b"
+                              class="fas fa-shopping-cart"
+                            ></i>
+                          </button>
+                        </span>
+                        <span class="card-action">
+                          <button
+                            class="btn btn-xs btn-circle btn-white-primary"
+                            data-toggle="button"
+                          >
+                            <i style="color: #008b4b" class="fas fa-heart"></i>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="card-body px-0">
+                      <!-- Category -->
+                      <div class="fs-xs"></div>
+
+                      <!-- Title -->
+                      <div class="fw-bold">
+                        <a
+                          class="text-body"
+                          routerLink="product-detail/{{ product.id }}"
+                        >
+                          {{ product.title }}
+                        </a>
+                      </div>
+
+                      <div class="fx-bold">
+                        <p class="text-center"></p>
+                      </div>
+
+                      <!-- Price -->
+                      <div class="fw-bold">
+                        <span
+                          class="fs-xs text-gray-350 text-decoration-line-through"
+                          style="padding: 10px; font-size: 14px"
+                          >{{ product.officialPrice | number : "1.0" }}₫</span
+                        >
+                        <span class="text-primary" style="font-size: 14px"
+                          >{{ product.originalPrice | number : "1.0" }}₫</span
+                        >
+                      </div>
+                      <div>
+                        <button
+                          (click)="addProductToCart(product.id, product.title)"
+                          class="btn border border-secondary rounded-pill px-3 text-primary my-2"
+                        >
+                          <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                          Thêm vào giỏ
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                } @empty {
+                <div class="py-3">
+                  <i class="fas fa-sad-tear" style="font-size: 2rem"></i>
+                  <h3 class="text-primary text-center">
+                    Không tìm thấy sản phẩm phù hợp
+                  </h3>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </form>
+    </div>
   </div>
+</div>
+<app-footer></app-footer>
 
-  <!-- Body: Results (add `.d-none` to disable it) -->
-  <div class="offcanvas-body border-top fs-sm">
-    <!-- Heading -->
-    <p>Search Results:</p>
+<div
+  id="quick-view-product"
+  class="quickview-product"
+  [style.display]="modalStyle ? 'block' : 'none'"
+>
+  <div
+    class="quickview-overlay fancybox-overlay fancybox-overlay-fixed"
+    (click)="closeModal()"
+  ></div>
+  <div class="quick-view-product">
+    <div class="block-quickview primary_block details-product">
+      <div class="row">
+        <div
+          class="product-left-column product-images col-xs-12 col-sm-4 col-md-4 col-lg-5 col-xl-5"
+        >
+          <div class="image-block large-image col_large_default">
+            <span class="view_full_size">
+              <a class="img-product" title="" href="javascript:;">
+                <img
+                  [src]="currentImage"
+                  id="product-featured-image-quickview"
+                  class="img-responsive product-featured-image-quickview"
+                  alt="quickview"
+                />
+              </a>
+            </span>
+            <div class="loading-imgquickview" style="display: none"></div>
+          </div>
+          <div class="more-view-wrapper clearfix">
+            <div
+              class="thumbs_quickview owl_nav_custome1 swiper-container thumbs_list_quickview swiper-container-initialized swiper-container-horizontal swiper-container-pointer-events"
+              id="thumbs_list_quickview"
+            >
+              <ul
+                class="product-photo-thumbs quickview-more-views-owlslider not-thuongdq swiper-wrapper"
+                id="thumblist_quickview"
+                style="
+                  transition-duration: 0ms;
+                  transform: translate3d(0px, 0px, 0px);
+                "
+              >
+                @for (image of product?.productImages; track image.imageUrl; let
+                i = $index;) {
+                <li
+                  class="swiper-slide"
+                  style="width: 77.5px; margin-right: 15px"
+                >
+                  <a href="javascript:void(0)"
+                    ><img
+                      [src]="image.imageUrl"
+                      alt="Zomart"
+                      style="max-width: 120px; max-height: 120px"
+                      (click)="thumbnailClick(image.imageUrl)"
+                  /></a>
+                </li>
+                }
+              </ul>
+              <div class="swiper-button-prev swiper-button-disabled"></div>
+              <div class="swiper-button-next swiper-button-disabled"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="product-center-column product-info product-item col-xs-12 col-sm-6 col-md-8 col-lg-7 col-xl-7 details-pro style_product style_border"
+          id="product-35655314"
+        >
+          <div class="head-qv group-status">
+            <h3 class="qwp-name title-product">
+              <a class="text2line">{{ product?.title }}</a>
+            </h3>
+            <div class="vend-qv group-status">
+              <div class="left_vend">
+                <div class="first_status">
+                  Tình trạng:
+                  <span class="soluong status_name">Còn hàng</span>
+                </div>
+                <div class="top_sku first_status">
+                  Mã sản phẩm:
+                  <span class="sku_ status_name"
+                    ><span>Đang cập nhật</span></span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="quickview-info">
+            <span class="prices price-box">
+              <span class="price product-price sale-price"
+                >{{ product?.officialPrice | number : "1.0" }}₫</span
+              >
+              <del class="old-price"
+                >{{ product?.originalPrice | number : "1.0" }}₫</del
+              >
+            </span>
+          </div>
 
-    <!-- Items -->
-    <div class="row align-items-center position-relative mb-5">
-      <div class="col-4 col-md-3">
-        <!-- Image -->
-        <img
-          class="img-fluid"
-          src="../../../assets/images/products/product-5.jpg"
-          alt="..."
-        />
-      </div>
-      <div class="col position-static">
-        <!-- Text -->
-        <p class="mb-0 fw-bold">
-          <a class="stretched-link text-body" href="#"
-            >Leather mid-heel Sandals</a
-          >
-          <br />
-          <span class="text-muted">$129.00</span>
-        </p>
-      </div>
-    </div>
-    <div class="row align-items-center position-relative mb-5">
-      <div class="col-4 col-md-3">
-        <!-- Image -->
-        <img
-          class="img-fluid"
-          src="../../../assets/images/products/product-6.jpg"
-          alt="..."
-        />
-      </div>
-      <div class="col position-static">
-        <!-- Text -->
-        <p class="mb-0 fw-bold">
-          <a class="stretched-link text-body" href="#"
-            >Cotton floral print Dress</a
-          >
-          <br />
-          <span class="text-muted">$40.00</span>
-        </p>
-      </div>
-    </div>
-    <div class="row align-items-center position-relative mb-5">
-      <div class="col-4 col-md-3">
-        <!-- Image -->
-        <img
-          class="img-fluid"
-          src="../../../assets/images/products/product-7.jpg"
-          alt="..."
-        />
-      </div>
-      <div class="col position-static">
-        <!-- Text -->
-        <p class="mb-0 fw-bold">
-          <a class="stretched-link text-body" href="#">Leather Sneakers</a>
-          <br />
-          <span class="text-primary">$85.00</span>
-        </p>
-      </div>
-    </div>
-    <div class="row align-items-center position-relative mb-5">
-      <div class="col-4 col-md-3">
-        <!-- Image -->
-        <img
-          class="img-fluid"
-          src="../../../assets/images/products/product-8.jpg"
-          alt="..."
-        />
-      </div>
-      <div class="col position-static">
-        <!-- Text -->
-        <p class="mb-0 fw-bold">
-          <a class="stretched-link text-body" href="#">Cropped cotton Top</a>
-          <br />
-          <span class="text-muted">$29.00</span>
-        </p>
-      </div>
-    </div>
-    <div class="row align-items-center position-relative mb-5">
-      <div class="col-4 col-md-3">
-        <!-- Image -->
-        <img
-          class="img-fluid"
-          src="../../../assets/images/products/product-9.jpg"
-          alt="..."
-        />
-      </div>
-      <div class="col position-static">
-        <!-- Text -->
-        <p class="mb-0 fw-bold">
-          <a class="stretched-link text-body" href="#"
-            >Floral print midi Dress</a
-          >
-          <br />
-          <span class="text-muted">$50.00</span>
-        </p>
-      </div>
-    </div>
+          <div class="product-description product-summary">
+            <div class="rte">
+              <p>
+                {{ product?.description }}
+              </p>
+            </div>
+          </div>
 
-    <!-- Button -->
-    <a class="btn btn-link px-0 text-reset" href="#">
-      View All <i class="fe fe-arrow-right ms-2"></i>
+          <form
+            class="quick_option variants form-ajaxtocart form-product"
+            id="product-actions-35655314"
+          >
+            <div class="form_product_content">
+              <div class="count_btn_style quantity_wanted_p">
+                <div class="soluong1 clearfix">
+                  <span class="soluong_h">Số lượng:</span>
+                  <div class="sssssscustom input_number_product">
+                    <button
+                      type="button"
+                      (click)="decreaseQuantity()"
+                      class="btn_num num_1 button button_qty"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      id="quantity-detail"
+                      name="quantity"
+                      [value]="quantity"
+                      maxlength="3"
+                      class="form-control prd_quantity"
+                    />
+                    <button
+                      type="button"
+                      (click)="increaseQuantity()"
+                      class="btn_num num_2 button button_qty"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div class="button_actions clearfix">
+                  <button
+                    (click)="addProductToCart(product?.id!, product?.title!)"
+                    type="button"
+                    class="btn_cool btn btn_base fix_add_to_cart ajax_addtocart btn_add_cart btn-cart add_to_cart add_to_cart_detail"
+                  >
+                    <span class="btn-content text_1">Thêm vào giỏ</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <a
+      title="Close"
+      class="quickview-close close-window"
+      (click)="closeModal()"
+      href="javascript:;"
+    >
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        data-prefix="far"
+        data-icon="times"
+        role="img"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 320 512"
+        class="svg-inline--fa fa-times fa-w-10"
+      >
+        <path
+          fill="currentColor"
+          d="M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z"
+          class=""
+        ></path>
+      </svg>
     </a>
-  </div>
-
-  <!-- Body: Empty (remove `.d-none` to enable it) -->
-  <div class="offcanvas-body d-none">
-    <!-- Text -->
-    <p class="mb-3 fs-sm text-center">Nothing matches your search</p>
-
-    <!-- Smiley -->
-    <p class="mb-0 fs-sm text-center">????</p>
   </div>
 </div>

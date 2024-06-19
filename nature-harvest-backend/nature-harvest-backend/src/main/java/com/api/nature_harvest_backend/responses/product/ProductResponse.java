@@ -3,6 +3,7 @@ package com.api.nature_harvest_backend.responses.product;
 import com.api.nature_harvest_backend.models.Category;
 import com.api.nature_harvest_backend.models.Product;
 import lombok.*;
+
 import java.math.BigDecimal;
 
 @Getter
@@ -13,7 +14,8 @@ import java.math.BigDecimal;
 public class ProductResponse {
     private Long id;
     private String title;
-    private int price;
+    private int originalPrice;
+    private int officialPrice;
     private String thumbnail;
     private String description;
     private int quantity;
@@ -21,13 +23,15 @@ public class ProductResponse {
     private int purchases;
     private BigDecimal averageRating;
     private Category category;
-//    private Long subCategoryId;
+    //    private Long subCategoryId;
     private int totalPages;
+
     public static ProductResponse fromProduct(Product product) {
         ProductResponse productResponse = ProductResponse.builder()
                 .id(product.getId())
                 .title(product.getTitle())
-                .price(product.getPrice())
+                .originalPrice(product.getOriginalPrice())
+                .officialPrice(product.getOfficialPrice())
                 .thumbnail(product.getThumbnail())
                 .description(product.getDescription())
                 .quantity(product.getQuantity())

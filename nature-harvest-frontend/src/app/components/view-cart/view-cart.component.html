@@ -1,6 +1,6 @@
 <app-header></app-header>
 <app-breadcrumb></app-breadcrumb>
-@if (cart.length > 0) {
+<!-- @if (cart.length > 0) {
 <section class="main-cart-page main-container col1-layout">
   <div class="main container cartpcstyle">
     <div
@@ -297,7 +297,6 @@
 }@else {
 <section>
   <div class="empty-cart mt-5">
-    <!-- SVG Giỏ trái cây -->
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -316,9 +315,309 @@
       <path d="M8 10c1.5 2 4 2 5 0"></path>
       <path d="M12 10c1.5 2 4 2 5 0"></path>
     </svg>
-    <!-- Thông báo giỏ hàng trống -->
+    <p class="empty-cart-message">Bạn chưa có sản phẩm nào trong giỏ hàng</p>
+  </div>
+</section>
+} -->
+@if (cart.length > 0) {
+<section class="main-cart-page main-container col1-layout">
+  <div class="main container cartpcstyle">
+    <div class="wrap_background_aside margin-bottom-40">
+      <div class="header-cart title_head">
+        <h1 class="title_center_page left after">
+          <span class="background_">Giỏ hàng của bạn</span>
+        </h1>
+        <div class="header-cart title_cart_pc hidden-sm hidden-xs"></div>
+      </div>
+      <div class="col-main cart_desktop_page cart-page">
+        <div class="cart page_cart hidden-xs hidden-sm row">
+          <form class="formcartpage col-lg-12 col-md-12 margin-bottom-0">
+            <div class="bg-scroll">
+              <div class="cart-thead">
+                <div style="width: 10%" class="a-left">Sản phẩm</div>
+                <div style="width: 35%" class="a-left"></div>
+                <div style="width: 25%" class="a-center">Đơn giá</div>
+                <div style="width: 14%" class="a-center">Số lượng</div>
+                <div style="width: 16%" class="a-right">Thành tiền</div>
+              </div>
+              <div class="cart-tbody">
+                @for (item of cart; track $index) {
+                <div class="item-cart">
+                  <div style="width: 10%" class="image">
+                    <a
+                      class="product-image a-left"
+                      [title]="item.product.title"
+                      href=""
+                    >
+                      <img
+                        width="75"
+                        height="auto"
+                        [alt]="item.product.title"
+                        [src]="item.product.thumbnail"
+                      />
+                    </a>
+                  </div>
+                  <div style="width: 35%" class="a-left contentcart">
+                    <h3 class="product-name">
+                      <a
+                        class="text2line"
+                        href=""
+                        [title]="item.product.title"
+                        >{{ item.product.title }}</a
+                      >
+                    </h3>
+                    <span class="variant-title"></span>
+                    <a
+                      class="remove-itemx remove-item-cart"
+                      title="Xóa"
+                      href="javascript:;"
+                      (click)="removeProductFromCart(item.product.id)"
+                    >
+                      <span
+                        ><svg
+                          aria-hidden="true"
+                          focusable="false"
+                          data-prefix="far"
+                          data-icon="times"
+                          role="img"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 320 512"
+                          class="svg-inline--fa fa-times fa-w-10"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z"
+                            class=""
+                          ></path>
+                        </svg>
+                        Xóa</span
+                      >
+                    </a>
+                  </div>
+                  <div style="width: 25%" class="a-center">
+                    <span class="cart-prices">
+                      <span class="prices"
+                        >{{
+                          item.product.officialPrice | number : "1.0"
+                        }}₫</span
+                      >
+                    </span>
+                  </div>
+                  <div style="width: 14%" class="a-center">
+                    <div class="input_qty_pr">
+                      <button
+                        class="reduced_pop items-count btn-minus"
+                        type="button"
+                        (click)="
+                          decrementQuantity(item.product.id, item.quantity)
+                        "
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        maxlength="3"
+                        readonly=""
+                        min="0"
+                        class="check_number_here input-text number-sidebar input_pop input_pop"
+                        name="Lines"
+                        [value]="item.quantity"
+                      />
+                      <button
+                        class="increase_pop items-count btn-plus"
+                        type="button"
+                        (click)="
+                          incrementQuantity(item.product.id, item.quantity)
+                        "
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <div style="width: 16%" class="a-center">
+                    <span class="cart-price">
+                      <span class="price"
+                        >{{
+                          item.product.officialPrice | number : "1.0"
+                        }}₫</span
+                      >
+                    </span>
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+          </form>
+
+          <div class="col-lg-12 col-md-12">
+            <div class="section bg_cart shopping-cart-table-total">
+              <div
+                class="table-total col-lg-4 col-lg-offset-8 col-xl-4 col-xl-offset-8"
+              >
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td coldspan="20" class="total-text">
+                        Tổng tiền thanh toán:
+                      </td>
+                      <td class="txt-right totals_price price_end f-right">
+                        {{ getTotalPrice() | number : "1.0" }}₫
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12">
+            <div class="f-right section continued w-100">
+              <a
+                routerLink="/order"
+                class="btn btn-primary btn-checkout-cart button_checkfor_buy"
+                >Tiến hành thanh toán</a
+              >
+              <a
+                routerLink="/products/all"
+                class="f-left btn btn-primary form-cart-continue"
+                >Tiếp tục mua hàng</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="wrap_background_aside padding-top-15 margin-bottom-40 padding-left-0 padding-right-0 cartmbstyle"
+  >
+    <div class="cart-mobile container">
+      <form class="margin-bottom-0">
+        <div class="header-cart">
+          <div class="title-cart title_cart_mobile">
+            <h3>Giỏ hàng</h3>
+          </div>
+        </div>
+
+        <div class="header-cart-content">
+          <div class="cart_page_mobile content-product-list">
+            @for (item of cart; track $index) {
+
+            <div class="item-product item">
+              <div class="item-product-cart-mobile">
+                <a href=""> </a
+                ><a
+                  class="product-images1"
+                  href=""
+                  [title]="item.product.title"
+                >
+                  <img
+                    width="80"
+                    height="150"
+                    [src]="item.product.thumbnail"
+                    [alt]="item.product.title"
+                  />
+                </a>
+              </div>
+              <div class="title-product-cart-mobile">
+                <h3>
+                  <a href="" [title]="item.product.title">{{
+                    item.product.title
+                  }}</a>
+                </h3>
+                <p>
+                  Giá: <span>{{ item.product.officialPrice }}₫</span>
+                </p>
+              </div>
+              <div class="select-item-qty-mobile">
+                <div class="txt_center">
+                  <button
+                    (click)="decrementQuantity(item.product.id, item.quantity)"
+                    class="reduced items-count btn-minus"
+                    type="button"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="text"
+                    maxlength="3"
+                    min="1"
+                    class="input-text number-sidebar"
+                    name="Lines"
+                    [value]="item.quantity"
+                  />
+                  <button
+                    (click)="incrementQuantity(item.product.id, item.quantity)"
+                    class="increase items-count btn-plus"
+                    type="button"
+                  >
+                    +
+                  </button>
+                </div>
+                <a
+                  class="button remove-item remove-item-cart"
+                  href="javascript:;"
+                  (click)="removeProductFromCart(item.product.id)"
+                  >Xoá</a
+                >
+              </div>
+            </div>
+            }
+          </div>
+          <div class="header-cart-price">
+            <div class="title-cart">
+              <h3 class="text-xs-left">Tổng tiền:</h3>
+              <a class="text-xs-right totals_price_mobile"
+                >{{ getTotalPrice() | number : "1.0" }}₫</a
+              >
+            </div>
+            <div class="checkout">
+              <button
+                class="btn-proceed-checkout-mobile"
+                title="Tiến hành thanh toán"
+                type="button"
+                routerLink="/order"
+              >
+                <span>Tiến hành thanh toán</span>
+              </button>
+              <button
+                class="btn btn-white f-left"
+                title="Tiếp tục mua hàng"
+                type="button"
+                routerLink="/products/all"
+              >
+                <span>Tiếp tục mua hàng</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+}@else {
+<section>
+  <div class="empty-cart mt-5">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      class="empty-cart-icon"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M4 4h16v2H4z"></path>
+      <path d="M4 6l2 10h12l2-10"></path>
+      <circle cx="9" cy="20" r="1"></circle>
+      <circle cx="15" cy="20" r="1"></circle>
+      <path d="M4 8h16v2H4z"></path>
+      <path d="M8 10c1.5 2 4 2 5 0"></path>
+      <path d="M12 10c1.5 2 4 2 5 0"></path>
+    </svg>
     <p class="empty-cart-message">Bạn chưa có sản phẩm nào trong giỏ hàng</p>
   </div>
 </section>
 }
+
 <app-footer></app-footer>

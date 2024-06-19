@@ -52,10 +52,12 @@ CREATE TABLE `products` (
     `category_id` INT NOT NULL,
     `subcategory_id` INT,
     `title` VARCHAR(255) NOT NULL,
-    `price` INT NOT NULL,
+    `original_price` INT NOT NULL,
+    `official_price` INT NOT NULL,
     `quantity` INT NOT NULL,
     `discount` INT DEFAULT 0,
     `thumbnail` VARCHAR(255) DEFAULT '',
+	`slug` VARCHAR(255) DEFAULT '',
     `description` LONGTEXT,
     `purchases` INT DEFAULT 0,
 	`average_rating` DECIMAL(2, 1) DEFAULT 0.0,
@@ -209,10 +211,32 @@ ALTER TABLE `coupon_conditions` ADD FOREIGN KEY (`coupon_id`) REFERENCES `coupon
 
 
 INSERT INTO categories (name) VALUES
-  ('Vegetables'),
-  ('Fruits'),
-  ('Bread'),
-  ('Meat');
+  ('Rau củ quả'),
+  ('Trái cây'),
+  ('Thức uống'),
+  ('Đồ khô'),
+  ('Thịt và hải sản');
+INSERT INTO subcategories (category_id, name) VALUES
+  (1, 'Rau ăn lá'),
+  (1, 'Rau ăn củ'),
+  (1, 'Rau ăn quả'),
+  (1, 'Rau gia vị'),
+  
+  (2,'Trái cây trong nước'),
+  (2,'Trái cây nhập khẩu'),
+  (2,'Trái cây sấy'),
+  
+  (3,'Sữa thực vật'),
+  (3,'Sữa bò'),
+  
+  (4,'Gạo các loại'),
+  (4,'Hạt các loại'),
+  
+  (5,'Thịt heo'),
+  (5,'Thịt bò'),
+  (5,'Cá biển'),
+  (5,'Thịt nhập khẩu');
+
 
   
 INSERT INTO roles (role_id, name) values
@@ -227,43 +251,43 @@ VALUES (UUID(), 'staff123@gmail.com', '$2a$10$wNGqMyi/jy8aURA1Bbm8.e6l90CY5A6FU0
 INSERT INTO `users` (`user_id`, `email`, `password`, `name`, `phone`, `picture`, `address`,`role_id`, `email_verified`) 
 VALUES (UUID(), 'admin123@gmail.com', '$2a$10$wNGqMyi/jy8aURA1Bbm8.e6l90CY5A6FU0gmqKdLWC7BmWDYkoPpG', 'Ng Tran Admin', '1234567890', 'picture_url2', 'Address2', 2, 1);
 
-INSERT INTO products (title, description, quantity, price, category_id, thumbnail) VALUES 
+INSERT INTO products (title, description, quantity, original_price, official_price, category_id, subcategory_id, thumbnail) VALUES 
 ('Apple', 'Apples come in various varieties such as Gala, Fuji, Granny Smith, and Honeycrisp. They have thin skin with colors ranging from red, yellow, to green, and a crisp, sweet, or tart flesh.',
- 200, 50000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215698/best-product-6_w8j3ua.jpg'),
+ 200, 50000, 50000, 2, 5, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717480907/premium_photo-1667049292983-d2524dd0ef08_kazmm1.jpg'),
  
 ('Grapes', 'Grapes are small, juicy fruits that come in various colors such as red, green, and purple. They can be eaten fresh, made into wine, or dried into raisins.',
- 200, 80000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/fruite-item-5_sdpt9f.jpg'),
+ 200, 80000, 80000, 2, 5, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/fruite-item-5_sdpt9f.jpg'),
  
 ('Banana', 'Bananas are tropical fruits with yellow skin when ripe, and soft, sweet flesh. They are easy to peel and can be eaten raw or used in various dishes.', 
-200, 30000, 2, 
+200, 30000, 30000, 2, 5, 
 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/fruite-item-3_j8akab.jpg'),
 
 ('Oranges', 'Oranges have thick orange skin, juicy flesh, and a sweet or tart taste. They are often eaten fresh or juiced.', 
-200, 60000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/fruite-item-1_sfzdva.jpg'),
+200, 60000, 60000, 2, 5, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/fruite-item-1_sfzdva.jpg'),
 
 ('Apricots', 'Apricots are small, golden-orange fruits with a velvety skin and flesh. They have a slightly tart and sweet flavor, with a texture similar to a peach but firmer and less juicy', 
-200, 35000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/fruite-item-4_v2h3mo.jpg'),
+200, 35000, 35000,  2, 5, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/fruite-item-4_v2h3mo.jpg'),
 
 ('Raspberries', 'Raspberries are small, delicate fruits that come in various colors, including red, black, purple, and golden', 
-200, 720000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/fruite-item-2_k4ruse.jpg'),
+200, 720000, 720000, 2, 6, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/fruite-item-2_k4ruse.jpg'),
 
 ('Strawberry', 'Strawberries are bright red, juicy fruits with a sweet or tart flavor. They are often eaten fresh, made into jam, or used in desserts.', 
-200, 90000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/featur-2_svn6ut.jpg'),
+200, 90000, 90000, 2, 6, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/featur-2_svn6ut.jpg'),
 
 ('Tomato', 'Tomatoes are versatile fruits (often considered vegetables in culinary contexts) that come in various shapes, sizes, and colors, including red, yellow, green, and purple..', 
-200, 30000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215698/vegetable-item-1_a9s2lr.jpg'),
+200, 30000, 30000, 1, 5, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215698/vegetable-item-1_a9s2lr.jpg'),
 
 ('Broccoli', 'Broccoli is a green vegetable belonging to the cruciferous family. It has a tree-like appearance with thick, edible stems and clusters of small, tight green florets.', 
-200, 40000, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/featur-3_ofqx8w.jpg'),
+200, 40000, 40000, 1, 1, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/featur-3_ofqx8w.jpg'),
 
 ('Potato', 'Potatoes are starchy tuberous vegetables that come in various shapes, sizes, and colors, including white, yellow, red, and purple.', 
-200, 20000, 1, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/vegetable-item-5_ahplep.jpg'),
+200, 20000, 20000, 1, 2, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/vegetable-item-5_ahplep.jpg'),
 
 ('Bell Pepper', 'They come in various colors, including red, yellow, orange, green, and even purple, and have a crunchy texture and a sweet, mildly tangy flavor', 
-200, 20000, 1, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/vegetable-item-4_piszyt.jpg'),
+200, 20000, 20000, 1, 3, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215699/vegetable-item-4_piszyt.jpg'),
 
 ('Cilantro', 'Cilantro is rich in vitamins A, C, and K, as well as antioxidants, fiber, and essential oils.', 
-200, 10000, 1, 'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/vegetable-item-6_nf9z8a.jpg');
+200, 10000, 10000, 1, 4,  'https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215700/vegetable-item-6_nf9z8a.jpg');
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

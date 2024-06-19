@@ -8,24 +8,26 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { ViewCartComponent } from './components/view-cart/view-cart.component';
 import { OrderComponent } from './components/order/order.component';
-import { PaymentComponent } from './components/payment/payment.component';
 import { VnPayPayComponent } from './components/vn-pay-pay/vn-pay-pay.component';
 import { OrderSuccessComponent } from './components/order-success/order-success.component';
 import { MomoPayComponent } from './components/momo-pay/momo-pay.component';
+import { SearchProductsComponent } from './components/search-products/search-products.component';
+import { OrderTrackingComponent } from './components/order-tracking/order-tracking.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignUpComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'product-all', component: ProductComponent },
+  { path: 'products/all', component: ProductComponent },
   { path: 'verify-email', component: VerifyEmailComponent },
   { path: 'product-detail/:id', component: ProductDetailComponent },
   { path: 'view-cart', component: ViewCartComponent },
   { path: 'order', component: OrderComponent },
-  { path: 'payment', component: PaymentComponent },
   { path: 'vnpay-pay', component: VnPayPayComponent },
   { path: 'momo-pay', component: MomoPayComponent },
   { path: 'order-success', component: OrderSuccessComponent },
   { path: 'order-success/:id', component: OrderSuccessComponent },
+  { path: 'products/search', component: SearchProductsComponent },
+  { path: 'order-tracking', component: OrderTrackingComponent },
 ];

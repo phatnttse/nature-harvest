@@ -13,7 +13,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { CartDto } from '../../dtos/cart/cart.dto';
 import { CartService } from '../../services/cart.service';
-import { CartResponse } from '../../responses/cart/cart.response';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user.service';
 import { CartListResponse } from '../../responses/cart/cart-list.response';
@@ -132,8 +131,8 @@ export class ProductDetailComponent implements OnInit {
         debugger;
         this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
           closeButton: true,
-          timeOut: 5000,
-          easeTime: 600,
+          timeOut: 4000,
+          easeTime: 400,
           progressBar: true,
         });
       },

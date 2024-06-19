@@ -295,9 +295,9 @@
               </svg>
             </button>
 
-            <a href="/cart" class="text-primary" style="color: #81c408">
+            <a href="/cart" class="text-primary" style="color: #008b4b">
               <i class="previous-link__arrow">❮</i>
-              <span class="" style="color: #81c408">Quay về giỏ hàng</span>
+              <span class="" style="color: #008b4b">Quay về giỏ hàng</span>
             </a>
           </div>
         </div>
@@ -361,7 +361,7 @@
                         <em>Số lượng:</em> {{ item.product.quantity }}
                       </td>
                       <td class="product__price">
-                        {{ item.product.price | number : "1.0" }}₫
+                        {{ item.product.officialPrice | number : "1.0" }}₫
                       </td>
                     </tr>
                     }

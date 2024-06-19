@@ -39,7 +39,7 @@
   --bs-twitter: #49b2e8;
   --bs-pinterest: #d74047;
   --bs-linkedin: #0d76b4;
-  --bs-primary-rgb: 255, 111, 97;
+  --bs-primary-rgb: #008b4b;
   --bs-secondary-rgb: 166, 166, 166;
   --bs-success-rgb: 40, 187, 116;
   --bs-info-rgb: 59, 134, 255;
@@ -65,7 +65,7 @@
     hsla(0, 0%, 100%, 0.15),
     hsla(0, 0%, 100%, 0)
   );
-  --bs-body-font-family: Jost;
+  --bs-body-font-family: Arial, Helvetica, sans-serif;
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;

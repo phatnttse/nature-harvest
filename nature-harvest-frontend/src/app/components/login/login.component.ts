@@ -22,11 +22,23 @@ import {
 import { UserService } from '../../services/user.service';
 import { LoginDto } from '../../dtos/user/login.dto';
 import { LoginResponse } from '../../responses/user/login.response';
-import { Router, RouterModule } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterModule,
+} from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { UserResponse } from '../../responses/user/user.response';
 import { MatIconModule } from '@angular/material/icon';
-
+import {
+  NullValidationHandler,
+  OAuthModule,
+  OAuthService,
+} from 'angular-oauth2-oidc';
+import { AuthService } from '../../services/auth.service';
+import { authConfig } from '../../configurations/auth.config';
+import { filter } from 'rxjs';
 declare var google: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -59,14 +71,15 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatButtonModule,
     RouterModule,
     MatIconModule,
+    OAuthModule,
   ],
 })
 export class LoginComponent implements OnInit {
-  emailFormControl = new FormControl('phat19102003@gmail.com', [
+  emailFormControl = new FormControl('', [
     Validators.required,
     Validators.email,
   ]);
-  passwordFormControl = new FormControl('123', [Validators.required]);
+  passwordFormControl = new FormControl('', [Validators.required]);
   matcher = new MyErrorStateMatcher();
   userResponse?: UserResponse;
   hide = true;
@@ -80,22 +93,41 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     private tokenService: TokenService,
-    private platformLocation: PlatformLocation
-  ) {}
+    private oauthService: OAuthService,
+    private platformLocation: PlatformLocation,
+    private activatedRoute: ActivatedRoute
+  ) {
+    // this.oauthService.configure(authConfig);
+    // this.oauthService.tokenValidationHandler = new NullValidationHandler();
+  }
+
+  // ngOnInit(): void {
+  //   debugger;
+  //   if (this.oauthService.hasValidAccessToken()) {
+  //     const googleToken = this.oauthService.getIdToken();
+  //     this.loginGoogleCallBack(googleToken);
+  //   }
+  // }
 
   ngOnInit(): void {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        // Khởi tạo lại các thành phần tại đây
+        // Ví dụ: gọi lại hàm khởi tạo nút đăng nhập Google
+        this.initializeGoogleSignIn();
+      });
     if (this.platformLocation instanceof BrowserPlatformLocation) {
       // Chỉ chạy mã khi ở trong trình duyệt web
       google.accounts.id.initialize({
         client_id:
-          '487241989850-scg65bilo6v0ot63d51dipqlj0ei9k06.apps.googleusercontent.com',
+          '719610777931-akg597p377ho29jabqje6749hegpvhfd.apps.googleusercontent.com',
         callback: (response: any) => {
-          debugger;
           this.loginGoogle(response.credential);
         },
       });
 
-      google.accounts.id.renderButton(document.getElementById('google-btn'), {
+      google.accounts.id.renderButton(document.getElementById('google-btn1'), {
         theme: 'filled_blue',
         size: 'large',
         shape: 'rectangular',
@@ -104,62 +136,82 @@ export class LoginComponent implements OnInit {
       });
     }
   }
+  initializeGoogleSignIn() {
+    google.accounts.id.initialize({
+      client_id:
+        '719610777931-akg597p377ho29jabqje6749hegpvhfd.apps.googleusercontent.com',
+      callback: (response: any) => {
+        this.loginGoogle(response.credential);
+      },
+    });
+
+    google.accounts.id.renderButton(document.getElementById('google-btn'), {
+      theme: 'filled_blue',
+      size: 'large',
+      shape: 'rectangular',
+      with: '350',
+      logo_alignment: 'left',
+    });
+  }
 
   login() {
-    debugger;
-    if (this.emailFormControl.valid && this.passwordFormControl.valid) {
-      const loginDto: LoginDto = {
-        email: this.emailFormControl.value!,
-        password: this.passwordFormControl.value!,
-      };
+    if (this.emailFormControl.invalid && this.passwordFormControl.invalid) {
+      this.emailFormControl.markAllAsTouched();
+      this.passwordFormControl.markAllAsTouched();
+      return;
+    }
 
-      this.userService.login(loginDto).subscribe({
-        next: (response: LoginResponse) => {
-          const { token } = response;
-          this.tokenService.setToken(token);
-          debugger;
-          this.userService.getUserDetails(token).subscribe({
-            next: (resp: UserResponse) => {
-              debugger;
-              this.userResponse = {
-                ...resp,
-                dateOfBirth: new Date(resp.dateOfBirth),
-              };
-              this.userService.setUserResponse(this.userResponse!);
-            },
-            complete: () => {
-              debugger;
-            },
-            error: (error: any) => {
-              console.log(error?.error?.message);
-            },
-          });
+    const loginDto: LoginDto = {
+      email: this.emailFormControl.value!,
+      password: this.passwordFormControl.value!,
+    };
 
-          this.router.navigate(['']);
-        },
-        complete: () => {
-          debugger;
-        },
-        error: (error: any) => {
-          this.toastr.warning(`${error?.error?.message}`, 'Login Fail', {
+    this.userService.login(loginDto).subscribe({
+      next: (response: LoginResponse) => {
+        const { token } = response;
+        this.tokenService.setToken(token);
+        debugger;
+        this.userService.getUserDetails(token).subscribe({
+          next: (resp: UserResponse) => {
+            debugger;
+            this.userResponse = {
+              ...resp,
+              dateOfBirth: new Date(resp.dateOfBirth),
+            };
+            this.userService.setUserResponse(this.userResponse!);
+          },
+          complete: () => {
+            debugger;
+          },
+          error: (error: any) => {
+            console.log(error?.error?.message);
+          },
+        });
+
+        this.router.navigate(['']);
+      },
+      complete: () => {
+        debugger;
+      },
+      error: (error: any) => {
+        this.toastr.warning(
+          'Email hoặc mật khẩu không chính xác',
+          'Đăng nhập không thành công',
+          {
             closeButton: true,
             timeOut: 2000,
             easeTime: 500,
             positionClass: 'toast-top-right',
             progressBar: true,
-          });
-        },
-      });
-    } else {
-      this.toastr.warning('Email and password is required', 'Warning', {
-        closeButton: true,
-        timeOut: 2000,
-        easeTime: 500,
-        positionClass: 'toast-top-right',
-        progressBar: true,
-      });
-    }
+          }
+        );
+      },
+    });
   }
+
+  // loginGoogle() {
+  //   this.oauthService.initCodeFlow();
+  // }
 
   loginGoogle(googleToken: string) {
     debugger;
@@ -179,24 +231,12 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['']);
           },
           error: (error: any) => {
-            this.toastr.warning(`${error?.error?.message}`, 'Login Fail', {
-              closeButton: true,
-              timeOut: 2000,
-              easeTime: 500,
-              positionClass: 'toast-top-right',
-              progressBar: true,
-            });
+            console.error(error);
           },
         });
       },
       error: (error: any) => {
-        this.toastr.warning(`${error?.error?.message}`, 'Login Fail', {
-          closeButton: true,
-          timeOut: 2000,
-          easeTime: 500,
-          positionClass: 'toast-top-right',
-          progressBar: true,
-        });
+        console.error(error);
       },
     });
   }
