@@ -31,7 +31,7 @@
   </mat-step>
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup" class="example-form mt-5">
-      <ng-template matStepLabel>Nhận xét và đánh giá sao</ng-template>
+      <ng-template matStepLabel>Nhận xét và đánh giá</ng-template>
 
       <mat-label>Đánh giá sao</mat-label>
       <div class="star-rating mb-5 mt-2 text-start">
@@ -65,6 +65,10 @@
       <button mat-fab extended (click)="onSubmit()">
         <mat-icon>task_alt</mat-icon>
         Gửi đánh giá
+      </button>
+      <button mat-fab extended (click)="uploadWidget()" class="ms-4">
+        <mat-icon>task_alt</mat-icon>
+        Gửi đánh giá kèm hình ảnh
       </button>
       <div class="mt-3">
         <button mat-button matStepperPrevious>Back</button>

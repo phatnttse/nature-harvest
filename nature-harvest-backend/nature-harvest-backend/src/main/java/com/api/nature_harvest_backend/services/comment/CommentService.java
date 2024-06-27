@@ -62,7 +62,13 @@ public class CommentService implements ICommentService {
                 .product(product)
                 .content(commentDto.getContent())
                 .starRating(commentDto.getStarRating())
+                .picture(commentDto.getPicture())
                 .build();
+
+        if (commentDto.getPicture() != null && !commentDto.getPicture().isEmpty()) {
+            newComment.setPicture(commentDto.getPicture());
+            newComment.setHavePicture(true);
+        }
 
         orderDetail.setReviewed(true);
         // Check if all order details are reviewed

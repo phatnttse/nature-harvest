@@ -26,4 +26,6 @@ public class CommentDto {
 
     @NotNull(message = "Content is required")
     private String content;
+    
+    private String picture;
 }

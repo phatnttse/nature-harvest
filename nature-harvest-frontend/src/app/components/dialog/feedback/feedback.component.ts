@@ -23,9 +23,9 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { CommentService } from '../../../services/comment.service';
-import { CommentResponse } from '../../../responses/comment/comment.response';
 import { ToastrService } from 'ngx-toastr';
 import { OrderAndOrderDetailsResponse } from '../../../responses/order/order-orderdetails-response';
+import { cloudinary } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-feedback',
@@ -61,6 +61,9 @@ export class FeedbackComponent {
   comment: string = '';
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
+  uploadedImage = '';
+  uploadedImages: string[] = [];
+  isDisabled = false;
 
   constructor(
     private dialog: MatDialog,
@@ -119,6 +122,7 @@ export class FeedbackComponent {
       orderId: this.data.order.order.id,
       content: this.secondFormGroup.get('comment')?.value,
       starRating: this.selectedStars,
+      picture: null,
     };
     debugger;
     this.commentService.comment(commentDto).subscribe({
@@ -133,4 +137,72 @@ export class FeedbackComponent {
       },
     });
   }
+  processResults = (error: any, result: any): void => {
+    if (result.event === 'close') {
+      this.isDisabled = false;
+    }
+    if (result && result.event === 'success') {
+      const secureUrl = result.info.secure_url;
+      const previewUrl = secureUrl.replace('/upload/', '/upload/w_110/');
+      this.uploadedImages.push(previewUrl);
+      const selectedProductId = Array.isArray(
+        this.firstFormGroup.get('selectedProduct')?.value
+      )
+        ? this.firstFormGroup.get('selectedProduct')?.value[0]
+        : this.firstFormGroup.get('selectedProduct')?.value;
+
+      const commentDto: CommentDto = {
+        productId: selectedProductId,
+        orderId: this.data.order.order.id,
+        content: this.secondFormGroup.get('comment')?.value,
+        starRating: this.selectedStars,
+        picture: secureUrl,
+      };
+      debugger;
+      this.commentService.comment(commentDto).subscribe({
+        next: (response: OrderAndOrderDetailsResponse[]) => {
+          debugger;
+          this.dialogRef.close(response);
+          this.toastr.success('Đánh giá sản phẩm thành công');
+        },
+        error: (err) => {
+          console.log(err);
+          this.toastr.error('Đánh giá sản phẩm thất bại');
+        },
+      });
+    }
+    if (error) {
+      this.isDisabled = false;
+    }
+  };
+
+  uploadWidget = (): void => {
+    if (this.firstFormGroup.invalid || this.secondFormGroup.invalid) {
+      this.toastr.error('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    if (this.data.order.orderDetails.reviewed === true) {
+      this.toastr.warning('Bạn đã đánh giá sản phẩm này');
+      return;
+    }
+
+    if (this.data.order.order.reviewed === true) {
+      this.toastr.warning('Bạn đã đánh giá đơn hàng này');
+      return;
+    }
+    this.isDisabled = true;
+    window.cloudinary.openUploadWidget(
+      {
+        cloudName: cloudinary.cloudName,
+        uploadPreset: cloudinary.uploadPreset,
+        sources: ['local', 'url'],
+        tags: ['myphotoalbum-nature-harvest'],
+        clientAllowedFormats: ['image'],
+        resourceType: 'image',
+        maxFileSize: 5 * 1024 * 1024,
+      },
+      this.processResults
+    );
+  };
 }
