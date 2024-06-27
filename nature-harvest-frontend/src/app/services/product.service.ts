@@ -1,11 +1,11 @@
 import { ProductResponse } from './../responses/product/product.response';
 import { Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpUtilService } from './http.util.service';
 import { ProductListResponse } from '../responses/product/product-list.response';
 import { ProductDetailResponse } from '../responses/product/product-detail.response';
+import { environment } from '../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',

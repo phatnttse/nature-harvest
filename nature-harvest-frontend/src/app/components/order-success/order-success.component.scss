@@ -144,7 +144,7 @@ body {
 
 .button:hover {
   background-color: #38a169;
-  color: #fff;
+  color: #fff !important;
 }
 .label::after {
   content: "  ";

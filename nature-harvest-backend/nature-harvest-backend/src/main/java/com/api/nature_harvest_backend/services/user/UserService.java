@@ -16,6 +16,7 @@ import com.api.nature_harvest_backend.responses.user.LoginResponse;
 import com.api.nature_harvest_backend.services.email.IEmailService;
 import com.api.nature_harvest_backend.services.token.ITokenService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -31,10 +32,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +56,7 @@ public class UserService implements IUserService {
     @Transactional
     public User createUser(SignUpDto signUpDTO) throws Exception {
 
-        if(userRepository.existsByEmailAndGoogleIdIsNull(signUpDTO.getEmail())) {
+        if (userRepository.existsByEmailAndGoogleIdIsNull(signUpDTO.getEmail())) {
             throw new DataIntegrityViolationException("Email already exists");
         }
         Role role = roleRepository.findByName("User");
@@ -73,10 +75,10 @@ public class UserService implements IUserService {
         String encodedPassword = passwordEncoder.encode(signUpDTO.getPassword());
         newUser.setPassword(encodedPassword);
 
-         userRepository.save(newUser);
-         String token = jwtTokenUtil.generateTokenEmail(newUser);
-         emailService.sendConfirmationEmail(newUser, token);
-         return newUser;
+        userRepository.save(newUser);
+        String token = jwtTokenUtil.generateTokenEmail(newUser);
+        emailService.sendConfirmationEmail(newUser, token);
+        return newUser;
     }
 
 
@@ -84,18 +86,19 @@ public class UserService implements IUserService {
     public LoginResponse login(String email, String password, String userAgent) throws Exception {
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
-        if(optionalUser.isEmpty()) {
+        if (optionalUser.isEmpty()) {
             throw new DataNotFoundException("Email incorrect");
         }
-        if(!optionalUser.get().isActive()) {
+        if (!optionalUser.get().isActive()) {
             throw new DataNotFoundException("User is locked");
         }
-        if(!optionalUser.get().isEmailVerified()) {
+        if (!optionalUser.get().isEmailVerified()) {
             throw new DataNotFoundException("Unverified email");
         }
         User existingUser = optionalUser.get();
 
-        if (!passwordEncoder.matches(password, existingUser.getPassword())) throw new BadCredentialsException("Password incorrect");
+        if (!passwordEncoder.matches(password, existingUser.getPassword()))
+            throw new BadCredentialsException("Password incorrect");
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 email, password,
@@ -157,14 +160,14 @@ public class UserService implements IUserService {
             String token = jwtTokenUtil.generateToken(newUser);
             Token jwtToken = tokenService.addToken(newUser, token, isMobileDevice(userAgent));
             return LoginResponse.builder()
-                   .message("Login Successfully")
-                   .token(jwtToken.getToken())
-                   .tokenType(jwtToken.getTokenType())
-                   .refreshToken(jwtToken.getRefreshToken())
-                   .username(newUser.getUsername())
-                   .role(newUser.getAuthorities().stream().map(item -> item.getAuthority()).toList())
-                   .id(newUser.getId())
-                   .build();
+                    .message("Login Successfully")
+                    .token(jwtToken.getToken())
+                    .tokenType(jwtToken.getTokenType())
+                    .refreshToken(jwtToken.getRefreshToken())
+                    .username(newUser.getUsername())
+                    .role(newUser.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+                    .id(newUser.getId())
+                    .build();
         } else {
             String token = jwtTokenUtil.generateToken(optionalUser.get());
             Token jwtToken = tokenService.addToken(optionalUser.get(), token, isMobileDevice(userAgent));
@@ -182,7 +185,7 @@ public class UserService implements IUserService {
 
     @Override
     public boolean verifyUser(String token) throws Exception {
-        if(jwtTokenUtil.isTokenExpired(token)) {
+        if (jwtTokenUtil.isTokenExpired(token)) {
             throw new ExpiredTokenException("Token is expired");
         }
         String email = jwtTokenUtil.extractEmail(token);
@@ -197,7 +200,7 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserDetailsFromToken(String token) throws Exception {
-        if(jwtTokenUtil.isTokenExpired(token)) {
+        if (jwtTokenUtil.isTokenExpired(token)) {
             throw new ExpiredTokenException("Token is expired");
         }
         String email = jwtTokenUtil.extractEmail(token);
@@ -238,6 +241,12 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public User updatePicture(String url, User user) throws Exception {
+        user.setPicture(url);
+        return userRepository.save(user);
+    }
+
+    @Override
     @Transactional
     public void resetPassword(String userId, String newPassword) throws InvalidPasswordException, DataNotFoundException {
         User existingUser = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
@@ -245,7 +254,7 @@ public class UserService implements IUserService {
         String encodedPassword = passwordEncoder.encode(newPassword);
         if (existingUser.getPassword() != null) {
             existingUser.setPassword(encodedPassword);
-        }else {
+        } else {
             throw new DataNotFoundException("Google account cannot change the account password");
         }
         userRepository.save(existingUser);

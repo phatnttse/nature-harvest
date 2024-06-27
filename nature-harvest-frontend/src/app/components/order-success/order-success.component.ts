@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { OrderResponse } from '../../responses/order/order.response';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { OrderDetailService } from '../../services/order-detail.service';
-import { OrderDetailResponse } from '../../responses/order-detail/order-detail.response';
+import { OrderDetailResponse } from '../../responses/order/order-detail.response';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,10 +31,7 @@ export class OrderSuccessComponent implements OnInit {
     debugger;
     if (orderCode) {
       this.getOrder(orderCode);
-      this.getOrderDetails(orderCode!);
-    } else {
-      this.order = this.orderService.getOrder();
-      this.getOrderDetails(this.order?.id || '');
+      this.getOrderDetails(orderCode);
     }
   }
 

@@ -1,9 +1,6 @@
 package com.api.nature_harvest_backend.controllers;
 
-import com.api.nature_harvest_backend.dtos.LoginDto;
-import com.api.nature_harvest_backend.dtos.RefreshTokenDto;
-import com.api.nature_harvest_backend.dtos.SignUpDto;
-import com.api.nature_harvest_backend.dtos.UpdateUserDto;
+import com.api.nature_harvest_backend.dtos.*;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
 import com.api.nature_harvest_backend.models.Token;
@@ -12,6 +9,8 @@ import com.api.nature_harvest_backend.responses.user.LoginResponse;
 import com.api.nature_harvest_backend.responses.user.SignUpResponse;
 import com.api.nature_harvest_backend.responses.user.UserListResponse;
 import com.api.nature_harvest_backend.responses.user.UserResponse;
+import com.api.nature_harvest_backend.services.aws.IAwsS3Service;
+import com.api.nature_harvest_backend.services.cloudinary.ICloudinaryService;
 import com.api.nature_harvest_backend.services.token.ITokenService;
 import com.api.nature_harvest_backend.services.user.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,9 +22,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +36,9 @@ import java.util.UUID;
 public class UserController {
     private final IUserService userService;
     private final ITokenService tokenService;
+    private final ICloudinaryService cloudinaryService;
+    private final IAwsS3Service awsS3Service;
+
     @PostMapping("/signup")
     public ResponseEntity<SignUpResponse> signUp(
             @Valid @RequestBody SignUpDto signUpDto,
@@ -66,15 +70,16 @@ public class UserController {
             return ResponseEntity.badRequest().body(signUpResponse);
         }
     }
+
     @GetMapping("/confirm-email")
     public ResponseEntity<SignUpResponse> confirmEmail(@RequestParam("token") String token) {
         try {
             if (userService.verifyUser(token))
                 return ResponseEntity.ok(SignUpResponse.builder()
-                    .message("Sign up successfully. Login to shopping now!")
-                    .build());
+                        .message("Sign up successfully. Login to shopping now!")
+                        .build());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(SignUpResponse.builder()
                     .message(e.getMessage())
                     .build());
@@ -98,6 +103,7 @@ public class UserController {
             );
         }
     }
+
     @PostMapping("/login-google")
     public ResponseEntity<LoginResponse> loginGoogle(
             @RequestHeader("Authorization") String googleToken,
@@ -115,32 +121,77 @@ public class UserController {
             );
         }
     }
-    
+
     @PostMapping("/refresh-token")
     public ResponseEntity<LoginResponse> refreshToken(
             @Valid @RequestBody RefreshTokenDto refreshTokenDto
-            ) {
+    ) {
         try {
             User userDetail = userService.getUserDetailsFromRefreshToken(refreshTokenDto.getRefreshToken());
             Token jwtToken = tokenService.refreshToken(refreshTokenDto.getRefreshToken(), userDetail);
 
             return ResponseEntity.ok(LoginResponse.builder()
-                            .message("Refresh token successfully")
-                            .token(jwtToken.getToken())
-                            .tokenType(jwtToken.getTokenType())
-                            .refreshToken(jwtToken.getRefreshToken())
-                            .username(userDetail.getUsername())
-                            .role(userDetail.getAuthorities().stream().map(item -> item.getAuthority()).toList())
-                            .id(userDetail.getId())
-                            .build());
+                    .message("Refresh token successfully")
+                    .token(jwtToken.getToken())
+                    .tokenType(jwtToken.getTokenType())
+                    .refreshToken(jwtToken.getRefreshToken())
+                    .username(userDetail.getUsername())
+                    .role(userDetail.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+                    .id(userDetail.getId())
+                    .build());
 
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             return ResponseEntity.badRequest().body(
                     LoginResponse.builder()
                             .message(ex.getMessage())
                             .build());
         }
     }
+
+//    @PostMapping("/upload-picture")
+//    @PreAuthorize("hasRole('ROLE_USER')")
+//    public ResponseEntity<UserResponse> uploadPicture(@ModelAttribute("multipartFile") MultipartFile multipartFile) throws Exception {
+//        try {
+//            if (multipartFile.getSize() > 0) {
+//                User loginUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//                String url = cloudinaryService.upload(multipartFile);
+//                if (url != null && !url.isEmpty()) {
+//                    User user = userService.updatePicture(url, loginUser);
+//                    return ResponseEntity.ok(UserResponse.fromUser(user));
+//                }
+//            }
+//            return ResponseEntity.badRequest().build();
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
+
+    @PatchMapping("/update-picture")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<UserResponse> updatePicture(@Valid @RequestBody UpdateUserPictureDto updateUserPictureDto) throws Exception {
+        try {
+
+            User loginUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.updatePicture(updateUserPictureDto.getPictureUrl(), loginUser);
+            return ResponseEntity.ok(UserResponse.fromUser(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PatchMapping("/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable String userId,
+            @Valid @RequestBody UpdateUserDto updateUserDto) {
+        try {
+            User user = userService.updateUser(userId, updateUserDto);
+            return ResponseEntity.ok().body(UserResponse.fromUser(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 
     @GetMapping("")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -150,29 +201,28 @@ public class UserController {
             @RequestParam(defaultValue = "10") int limit
     ) {
         try {
-            // Tạo Pageable từ thông tin trang và giới hạn
             PageRequest pageRequest = PageRequest.of(
                     page, limit,
                     Sort.by("id").ascending()
             );
             Page<UserResponse> userPage = userService.findAll(keyword, pageRequest).map(UserResponse::fromUser);
 
-            //Lay tong so trang
             int totalPages = userPage.getTotalPages();
             List<UserResponse> userResponses = userPage.getContent();
 
             return ResponseEntity.ok(UserListResponse.builder()
-                            .users(userResponses)
-                            .totalPages(totalPages)
+                    .users(userResponses)
+                    .totalPages(totalPages)
                     .build());
 
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             return ResponseEntity.badRequest().body(UserListResponse.builder()
                     .users(null)
                     .totalPages(0)
                     .build());
         }
     }
+
     @PostMapping("/details")
     public ResponseEntity<UserResponse> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
@@ -185,30 +235,10 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping("/details/{userId}")
-    public ResponseEntity<UserResponse> updateUserDetails(
-            @PathVariable String userId,
-            @RequestBody UpdateUserDto updatedUserDTO,
-            @RequestHeader("Authorization") String authorizationHeader
-    ) {
-        try {
-            String extractedToken = authorizationHeader.substring(7);
-            User user = userService.getUserDetailsFromToken(extractedToken);
-            // Ensure that the user making the request matches the user being updated
-            if (!user.getId().equals(userId)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-            User updatedUser = userService.updateUser(userId, updatedUserDTO);
-            return ResponseEntity.ok(UserResponse.fromUser(updatedUser));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 
     @PutMapping("/reset-password/{userId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<String> resetPassword(@Valid @PathVariable String userId){
+    public ResponseEntity<String> resetPassword(@Valid @PathVariable String userId) {
         try {
             String newPassword = UUID.randomUUID().toString().substring(0, 5); // Tạo mật khẩu mới
             userService.resetPassword(userId, newPassword);

@@ -62,15 +62,17 @@ export class SearchProductsComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       this.keyword = params['q'] || '';
-      this.getProducts(
-        this.keyword,
-        this.selectedCategoryId,
-        this.selectedSubCategoryId,
-        this.sortBy,
-        this.arrange,
-        this.currentPage,
-        this.itemsPerPage
-      );
+      if (params['q'] != null) {
+        this.getProducts(
+          this.keyword,
+          this.selectedCategoryId,
+          this.selectedSubCategoryId,
+          this.sortBy,
+          this.arrange,
+          this.currentPage,
+          this.itemsPerPage
+        );
+      }
     });
   }
 

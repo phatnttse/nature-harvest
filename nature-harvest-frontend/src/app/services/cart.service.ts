@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { HttpUtilService } from './http.util.service';
@@ -9,6 +8,7 @@ import { RemoveCartDto } from '../dtos/cart/remove-cart-item.dto';
 import { CartListResponse } from '../responses/cart/cart-list.response';
 import { CartSizeResponse } from '../responses/cart/cart-size.response';
 import { ClearCartDto } from '../dtos/cart/clear-cart.dto';
+import { environment } from '../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',

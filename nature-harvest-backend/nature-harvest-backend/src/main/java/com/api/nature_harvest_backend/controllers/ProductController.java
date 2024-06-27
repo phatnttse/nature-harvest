@@ -97,7 +97,7 @@ public class ProductController {
                         minPrice,
                         maxPrice,
                         pageRequest);
-        if (productResponses != null && !productResponses.isEmpty()) {
+        if (productResponses != null) {
             totalPages = productResponses.get(0).getTotalPages();
         }
         if (productResponses == null) {
@@ -111,9 +111,9 @@ public class ProductController {
             totalPages = productPage.getTotalPages();
             productResponses = productPage.getContent();
             // Bổ sung totalPages vào các đối tượng ProductResponse
-            for (ProductResponse product : productResponses) {
-                product.setTotalPages(totalPages);
-            }
+//            for (ProductResponse product : productResponses) {
+//                product.setTotalPages(totalPages);
+//            }
             productRedisService.saveAllProducts(
                     productResponses,
                     keyword,

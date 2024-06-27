@@ -54,6 +54,9 @@ ul {
 a:hover {
   cursor: pointer !important;
 }
+.dropdown-menu a:hover {
+  color: #0c0e0c !important;
+}
 /* header.component.scss */
 .modal-body ul {
   list-style-type: none;

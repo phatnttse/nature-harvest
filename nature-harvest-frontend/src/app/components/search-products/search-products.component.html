@@ -9,9 +9,11 @@
           <div class="row">
             <div class="col-lg-12">
               <div class="col-12 col-xl-12 col-lg-12 mb-5">
+                @if (products.length > 0) {
                 <h3 class="title-head title_search">
                   Có {{ products.length }} kết quả tìm kiếm phù hợp
                 </h3>
+                }
               </div>
               <div class="row g-4">
                 @for (product of products; track $index) {

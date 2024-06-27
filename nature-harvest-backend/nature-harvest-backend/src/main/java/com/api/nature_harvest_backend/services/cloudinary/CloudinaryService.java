@@ -1,17 +1,15 @@
 package com.api.nature_harvest_backend.services.cloudinary;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class CloudinaryService implements ICloudinaryService {
@@ -29,25 +27,33 @@ public class CloudinaryService implements ICloudinaryService {
     }
 
     @Override
-    public Map upload(MultipartFile multipartFile) throws IOException {
-        File file = convert(multipartFile);
-        Map result = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
-        if (!Files.deleteIfExists(file.toPath())) {
-            throw new IOException("Failed to delete temporary file: " + file.getAbsolutePath());
-        }
-        return result;
+    public String upload(MultipartFile multipartFile) throws IOException {
+        // Define transformation parameters for cropping
+        Transformation transformation = new Transformation()
+                .width(288)
+                .height(288)
+                .crop("fill");
+
+        // Upload file to Cloudinary with transformation using byte array
+        String url = (String) cloudinary.uploader().upload(multipartFile.getBytes(), ObjectUtils.asMap(
+                "transformation", transformation,
+                "resource_type", "auto" // Ensure correct resource type is detected
+        )).get("secure_url");
+
+        return url;
     }
+
 
     @Override
     public Map delete(String id) throws IOException {
         return cloudinary.uploader().destroy(id, ObjectUtils.emptyMap());
     }
 
-    private File convert(MultipartFile multipartFile) throws IOException {
-        File file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        try (FileOutputStream fo = new FileOutputStream(file)) {
-            fo.write(multipartFile.getBytes());
-        }
-        return file;
-    }
+//    private File convert(MultipartFile multipartFile) throws IOException {
+//        File file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+//        try (FileOutputStream fo = new FileOutputStream(file)) {
+//            fo.write(multipartFile.getBytes());
+//        }
+//        return file;
+//    }
 }

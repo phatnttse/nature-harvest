@@ -1,1 +1,107 @@
-<p>order-tracking works!</p>
+<app-header></app-header>
+<app-breadcrumb></app-breadcrumb>
+<div class="container">
+  <article class="card">
+    <header class="card-header">Đơn hàng của tôi / Theo dõi</header>
+    @for (order of orderAndOrderDetails; track $index) {
+    <div class="card-body">
+      <h6>Mã đơn hàng: {{ order.order.id }}</h6>
+      <article class="card">
+        <div class="card-body row">
+          <div class="col">
+            <strong>Thời gian giao hàng dự kiến:</strong> <br />{{
+              order.order.deliveryDate | date : "dd-MM-yyyy"
+            }}
+          </div>
+          <div class="col">
+            <strong>Vận chuyển bởi:</strong> <br />
+            GHTK, | <i class="fa fa-phone"></i> {{ order.order.phone }}
+          </div>
+          <div class="col">
+            <strong>Địa chỉ giao hàng</strong> <br />
+            {{ order.order.deliveryAddress }}
+          </div>
+          <div class="col">
+            <strong>Trạng thái thanh toán:</strong> <br />
+            @if (order.order.paymentStatus === 'unpaid') { Chưa thanh toán
+            }@else if (order.order.paymentStatus === 'paid') { Đã thanh toán }
+          </div>
+        </div>
+      </article>
+      <div class="track custom-track">
+        @for (step of steps; track $index) {
+        <div
+          class="step"
+          [ngClass]="{
+            active: isActiveStep(order.order.status, step.status)
+          }"
+        >
+          <span class="icon"> <i [class]="step.icon"></i> </span>
+          <span class="text">{{ step.label }}</span>
+        </div>
+        }
+      </div>
+      <hr />
+      <ul class="row">
+        @for (product of order.orderDetails; track $index) {
+        <li class="col-md-4">
+          <figure class="itemside mb-3">
+            <div class="aside">
+              <img [src]="product.thumbnail" class="img-sm border" />
+            </div>
+            <figcaption class="info align-self-center">
+              <p class="title">
+                {{ product.productName }} <br />
+                x{{ product.quantity }}
+              </p>
+              <span class="text-muted"
+                >{{ product.price | number : "1.0" }}₫</span
+              >
+            </figcaption>
+          </figure>
+        </li>
+        }
+      </ul>
+      <hr />
+      @if (order.order.status === 'successful_delivery') {
+      <div class="text-center">
+        <button type="button" (click)="openDialog(order)" mat-flat-button>
+          Đánh giá sản phẩm
+        </button>
+      </div>
+      }
+    </div>
+    }@empty {
+    <section>
+      <div class="empty-order mt-5">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          class="empty-order-icon"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 4h16v2H4z" />
+          <path d="M4 6l2 10h12l2-10" />
+          <circle cx="9" cy="20" r="1" />
+          <circle cx="15" cy="20" r="1" />
+          <path d="M4 8h16v2H4z" />
+          <path d="M8 10c1.5 2 4 2 5 0" />
+          <path d="M12 10c1.5 2 4 2 5 0" />
+        </svg>
+
+        <p class="empty-order-message">
+          Bạn chưa có đơn hàng nào.
+          <a routerLink="/products/all" style="font-size: 14px"
+            >Mua sắm ngay!</a
+          >
+        </p>
+      </div>
+    </section>
+    }
+  </article>
+</div>
+<app-footer></app-footer>

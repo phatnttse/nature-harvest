@@ -1,17 +1,19 @@
+import { CommentDto } from './../dtos/order/comment.dto';
 import { OrderResponse } from './../responses/order/order.response';
 import { Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpUtilService } from './http.util.service';
 import { OrderDto } from '../dtos/order/order.dto';
+import { OrderAndOrderDetailsResponse } from '../responses/order/order-orderdetails-response';
+import { environment } from '../environments/environment.development';
+import { CommentResponse } from '../responses/comment/comment.response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService {
   private apiBaseUrl = environment.apiBaseUrl;
-  private order: OrderResponse | null = null;
 
   private apiConfig = {
     headers: this.httpUtilService.createHeaders(),
@@ -35,10 +37,13 @@ export class OrderService {
       this.apiConfig
     );
   }
-  setOrder(order: OrderResponse) {
-    this.order = order;
-  }
-  getOrder(): OrderResponse | null {
-    return this.order;
+
+  getOrdersByUserId(
+    userId: string
+  ): Observable<OrderAndOrderDetailsResponse[]> {
+    return this.http.get<OrderAndOrderDetailsResponse[]>(
+      `${this.apiBaseUrl}/orders/user/${userId}`,
+      this.apiConfig
+    );
   }
 }

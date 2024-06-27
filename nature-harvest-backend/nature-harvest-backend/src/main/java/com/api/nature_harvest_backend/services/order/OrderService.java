@@ -4,6 +4,9 @@ import com.api.nature_harvest_backend.dtos.OrderDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.models.*;
 import com.api.nature_harvest_backend.repositories.*;
+import com.api.nature_harvest_backend.responses.order.OrderAndOrderDetailsResponse;
+import com.api.nature_harvest_backend.responses.order.OrderResponse;
+import com.api.nature_harvest_backend.responses.orderdetails.OrderDetailResponse;
 import com.api.nature_harvest_backend.utils.HashUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -38,14 +41,13 @@ public class OrderService implements IOrderService {
 
         Order order = new Order();
         modelMapper.map(orderDto, order);
+        order.setId("Vit-" + HashUtils.getRandomNumber(8));
         order.setUser(user);
         order.setStatus(OrderStatus.PENDING);
         if (orderDto.getPaymentMethod().equals(Payment.VNPAY) | orderDto.getPaymentMethod().equals(Payment.MOMO)) {
             order.setPaymentStatus(Payment.PAID);
-            order.setId(orderDto.getId());
         } else {
             order.setPaymentStatus(Payment.UNPAID);
-            order.setId("Vit-" + HashUtils.getRandomNumber(8));
         }
         order.setDeliveryDate(LocalDate.now().plusDays(3));
         order.setActive(true);
@@ -112,8 +114,23 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<Order> findByUserId(String userId) {
-        return orderRepository.findByUserId(userId);
+    public List<OrderAndOrderDetailsResponse> getOrdersByUserId(String userId) throws Exception {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + userId));
+        List<Order> orders = orderRepository.findByUserAndReviewed(user, false);
+        List<OrderAndOrderDetailsResponse> orderAndOrderDetailsResponses = new ArrayList<>();
+        for (Order order : orders) {
+            List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrder(order);
+            OrderResponse orderResponse = OrderResponse.fromOrder(order);
+            List<OrderDetailResponse> orderDetailResponses = OrderDetailResponse.fromOrderDetails(orderDetails);
+            OrderAndOrderDetailsResponse response = OrderAndOrderDetailsResponse.builder()
+                    .order(orderResponse)
+                    .orderDetails(orderDetailResponses)
+                    .build();
+            orderAndOrderDetailsResponses.add(response);
+        }
+        return orderAndOrderDetailsResponses;
     }
 
     @Override

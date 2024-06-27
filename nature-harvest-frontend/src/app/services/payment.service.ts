@@ -1,6 +1,5 @@
 import { appConfig } from './../app.config';
 import { Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpUtilService } from './http.util.service';
@@ -8,6 +7,7 @@ import { OrderResponse } from '../responses/order/order.response';
 import { OrderDto } from '../dtos/order/order.dto';
 import { VnPayPaymentDto } from '../dtos/payment/vnpay-payment.dto';
 import { MoMoPaymentDto } from '../dtos/payment/momo-payment.dto';
+import { environment } from '../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',

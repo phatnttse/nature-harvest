@@ -19,8 +19,6 @@ import { UserResponse } from '../../responses/user/user.response';
 import { OrderDto } from '../../dtos/order/order.dto';
 import { OrderResponse } from '../../responses/order/order.response';
 import { ClearCartDto } from '../../dtos/cart/clear-cart.dto';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { PaymentService } from '../../services/payment.service';
@@ -125,8 +123,7 @@ export class OrderComponent implements OnInit {
         next: (response: OrderResponse) => {
           debugger;
           this.clearCart();
-          this.orderService.setOrder(response);
-          this.router.navigate(['/order-success']);
+          this.router.navigate(['/order-success', response.id]);
         },
         error: (err) => {
           console.log(err);

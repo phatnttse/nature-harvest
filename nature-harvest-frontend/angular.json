@@ -30,6 +30,7 @@
               }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/cyan-orange.css",
               "src/styles.scss",
               "src/assets/css/lightbox.min.css",
               "src/assets/css/owl.carousel.min.css",
@@ -99,7 +100,10 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "@angular/material/prebuilt-themes/cyan-orange.css",
+              "src/styles.scss"
+            ],
             "scripts": []
           }
         }

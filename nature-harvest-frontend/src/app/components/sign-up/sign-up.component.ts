@@ -24,8 +24,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { UserResponse } from '../../responses/user/user.response';
-import { AuthService } from '../../services/auth.service';
-import { OAuthModule } from 'angular-oauth2-oidc';
 import { LoginResponse } from '../../responses/user/login.response';
 import { TokenService } from '../../services/token.service';
 import { filter } from 'rxjs';
@@ -60,22 +58,21 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     ReactiveFormsModule,
     MatButtonModule,
     RouterModule,
-    OAuthModule,
   ],
 })
 // implements OnInit, AfterViewInit, OnDestroy
 export class SignUpComponent {
-  emailFormControl = new FormControl('phat19102003@gmail.com', [
+  emailFormControl = new FormControl('', [
     Validators.required,
     Validators.email,
   ]);
-  nameFormControl = new FormControl('Nguyen Tran Tan Phat', [
+  nameFormControl = new FormControl('', [
     Validators.required,
     Validators.minLength(2),
     Validators.maxLength(50),
   ]);
-  passwordFormControl = new FormControl('123', [Validators.required]);
-  confirmPasswordFormControl = new FormControl('123', [Validators.required]);
+  passwordFormControl = new FormControl('', [Validators.required]);
+  confirmPasswordFormControl = new FormControl('', [Validators.required]);
   matcher = new MyErrorStateMatcher();
   userResponse?: UserResponse;
 
@@ -133,40 +130,31 @@ export class SignUpComponent {
   }
 
   signUp() {
-    debugger;
     if (
-      this.emailFormControl.valid &&
-      this.nameFormControl.valid &&
-      this.passwordFormControl.valid &&
-      this.confirmPasswordFormControl.valid
+      this.emailFormControl.invalid ||
+      this.nameFormControl.invalid ||
+      (this.passwordFormControl.invalid &&
+        this.confirmPasswordFormControl.invalid)
     ) {
-      const signUpDto: SignUpDto = {
-        name: this.nameFormControl.value!,
-        email: this.emailFormControl.value!,
-        password: this.passwordFormControl.value!,
-        confirmPassword: this.confirmPasswordFormControl.value!,
-      };
-      this.userService.signUp(signUpDto).subscribe({
-        next: (response: SignUpResponse) => {
-          debugger;
-          this.router.navigate(['/verify-email']);
-        },
-        error: (error: any) => {
-          console.log(error);
-          this.toastr.warning(error?.error?.message, 'Signup Fail', {
-            closeButton: true,
-            timeOut: 2000,
-            easeTime: 600,
-          });
-        },
-      });
-    } else {
-      this.toastr.error('Fields invalid', 'Signup Fail', {
-        closeButton: true,
-        timeOut: 2000,
-        easeTime: 600,
-      });
+      return;
     }
+
+    debugger;
+    const signUpDto: SignUpDto = {
+      name: this.nameFormControl.value!,
+      email: this.emailFormControl.value!,
+      password: this.passwordFormControl.value!,
+      confirmPassword: this.confirmPasswordFormControl.value!,
+    };
+    this.userService.signUp(signUpDto).subscribe({
+      next: (response: SignUpResponse) => {
+        debugger;
+        this.router.navigate(['/verify-email']);
+      },
+      error: (error: any) => {
+        console.log(error);
+      },
+    });
   }
   loginGoogle(googleToken: string) {
     debugger;

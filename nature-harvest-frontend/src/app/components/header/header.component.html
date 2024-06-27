@@ -1,5 +1,5 @@
 <div class="container-fluid fixed-top">
-  <div class="container topbar bg-primary d-none d-lg-block">
+  <div class="topbar d-none d-lg-block container bg-primary">
     <div class="d-flex justify-content-between">
       <div class="top-info ps-2">
         <small class="me-3"
@@ -13,33 +13,33 @@
       </div>
       <div class="top-link pe-2">
         <a href="#" class="text-white"
-          ><small class="text-white mx-2">Privacy Policy</small>/</a
+          ><small class="mx-2 text-white">Privacy Policy</small>/</a
         >
         <a href="#" class="text-white"
-          ><small class="text-white mx-2">Terms of Use</small>/</a
+          ><small class="mx-2 text-white">Terms of Use</small>/</a
         >
         <a href="#" class="text-white"
-          ><small class="text-white ms-2">Sales and Refunds</small></a
+          ><small class="ms-2 text-white">Sales and Refunds</small></a
         >
       </div>
     </div>
   </div>
   <div class="container px-0">
-    <nav class="navbar navbar-light bg-white navbar-expand-xl">
+    <nav class="navbar navbar-light navbar-expand-xl bg-white">
       <a routerLink="/" class="navbar-brand"
-        ><h1 class="text-primary display-6" style="font-size: 22px">
+        ><h1 class="display-6 text-primary" style="font-size: 22px">
           Nature'sHarvest
         </h1></a
       >
       <button
-        class="navbar-toggler py-2 px-3"
+        class="navbar-toggler px-3 py-2"
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#navbarCollapse"
       >
         <span class="fa fa-bars text-primary"></span>
       </button>
-      <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+      <div class="navbar-collapse collapse bg-white" id="navbarCollapse">
         <div class="navbar-nav mx-auto">
           <a
             routerLink="/"
@@ -71,7 +71,7 @@
                           @for (category of categoriesWithSubcategories$ |
                           async; track $index) {
                           <div class="col-6 col-md">
-                            <div class="mb-2 fw-bold">{{ category.name }}</div>
+                            <div class="fw-bold mb-2">{{ category.name }}</div>
                             <ul
                               class="list-styled"
                               style="padding: 0 !important"
@@ -137,16 +137,16 @@
         </div>
         <div class="d-flex m-3 me-0">
           <button
-            class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+            class="btn-search btn btn-md-square rounded-circle me-4 border border-secondary bg-white"
             data-bs-toggle="modal"
             data-bs-target="#searchModal"
           >
             <i class="fas fa-search text-primary"></i>
           </button>
-          <a routerLink="/view-cart" class="position-relative me-4 my-auto">
+          <a routerLink="/view-cart" class="position-relative my-auto me-4">
             <i class="fa fa-shopping-bag fa-2x"></i>
             <span
-              class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white px-1"
+              class="position-absolute rounded-circle d-flex align-items-center justify-content-center bg-secondary px-1 text-white"
               style="top: -5px; left: 15px; height: 20px; min-width: 20px"
             >
               @if (cartSize > 0) {
@@ -157,22 +157,26 @@
 
           @if (userResponse) {
           <div
-            class="my-auto d-inline-flex user-logged nav-item dropdown"
+            class="d-inline-flex user-logged nav-item dropdown my-auto"
             data-bs-toggle="dropdown"
           >
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQACGFpr0iqURE_6EHYMm-AGXfhXC1Nzf4ucA&s"
+              [src]="userResponse.picture"
               class="img-fluid rounded-circle me-2"
               width="30px"
               alt=""
               data-bs-toggle="dropdown"
+              style="height: 33px; object-fit: cover"
             />
             <p class="my-auto" data-bs-toggle="dropdown">
               {{ userResponse.name }}
             </p>
-            <i class="fa-solid fa-caret-down p-2 mb-1"></i>
-            <div class="dropdown-menu m-0 rounded-0">
-              <a href="login" class="dropdown-item">Tài khoản</a>
+            <i class="fa-solid fa-caret-down mb-1 p-2"></i>
+            <div class="dropdown-menu rounded-0 m-0">
+              <a routerLink="/profile" class="dropdown-item">Tài khoản</a>
+              <a routerLink="/order-tracking" class="dropdown-item"
+                >Đơn hàng của tôi</a
+              >
               <a href="#" (click)="logOut()" class="dropdown-item">Đăng xuất</a>
             </div>
           </div>
@@ -210,7 +214,7 @@
         ></button>
       </div>
       <div class="modal-body d-block align-items-center">
-        <div class="input-group w-75 mx-auto d-flex">
+        <div class="input-group w-75 d-flex mx-auto">
           <input
             type="search"
             class="form-control p-3"
@@ -231,7 +235,7 @@
             ></i
           ></span>
         </div>
-        <div class="input-group w-75 mx-auto d-flex mt-4">
+        <div class="input-group w-75 d-flex mx-auto mt-4">
           <div class="" style="width: 100%">
             @if (searchProductsResult.length > 0) { @for (product of
             searchProductsResult; track $index) {
@@ -240,7 +244,7 @@
                 <img [src]="product.thumbnail" class="product-image" />
                 <div class="product-details">
                   <span class="product-name">{{ product.title }}</span>
-                  <span class="product-price text-primary text-start"
+                  <span class="product-price text-start text-primary"
                     >{{ product.officialPrice | number : "1.0" }}₫</span
                   >
                 </div>

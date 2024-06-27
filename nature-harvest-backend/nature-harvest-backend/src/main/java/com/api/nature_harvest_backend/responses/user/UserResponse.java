@@ -1,7 +1,8 @@
 package com.api.nature_harvest_backend.responses.user;
 
-import java.util.Date;
 import lombok.*;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -15,7 +16,6 @@ public class UserResponse {
     private String phone;
     private String picture;
     private String address;
-    private boolean active;
     private Date dateOfBirth;
     private com.api.nature_harvest_backend.models.Role role;
 
@@ -27,7 +27,6 @@ public class UserResponse {
                 .phone(user.getPhone())
                 .address(user.getAddress())
                 .picture(user.getPicture())
-                .active(user.isActive())
                 .dateOfBirth(user.getDateOfBirth())
                 .role(user.getRole())
                 .build();

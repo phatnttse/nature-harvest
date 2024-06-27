@@ -1,43 +1,161 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { UpdatePictureDto } from './../../dtos/user/update-picture.dto';
+import { UpdateUserProfileDto } from './../../dtos/user/update.dto';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NgxDropzoneModule } from 'ngx-dropzone';
-import { CloudinaryUploadService } from '../../services/cloudinaryupload.service';
+import { FooterComponent } from '../footer/footer.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { UserResponse } from '../../responses/user/user.response';
+import { HeaderComponent } from '../header/header.component';
+import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
+import { UserService } from '../../services/user.service';
+import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { ScriptService } from '../../services/script.service';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgxDropzoneModule, CommonModule, RouterModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
+  styleUrl: './../order/order.component.scss',
+  imports: [
+    RouterModule,
+    FooterComponent,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    HeaderComponent,
+    BreadcrumbComponent,
+    CommonModule,
+    FormsModule,
+    MatDialogModule,
+  ],
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit, OnDestroy {
   files: File[] = [];
+  userResponse?: UserResponse | null;
+  profileForm: FormGroup;
+  showDropzonePopup = false;
+  subscriptions: Subscription[] = [];
+  uploadedImage = '';
+  uploadedImages: string[] = [];
+  isDisabled = false;
 
-  constructor(private cloudinaryUploadService: CloudinaryUploadService) {}
-
-  onSelect(event: any) {
-    this.files.push(...event.addedFiles);
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private toastr: ToastrService,
+    private scriptService: ScriptService
+  ) {
+    this.profileForm = this.formBuilder.group({
+      name: ['', [Validators.required]],
+      address: ['', [Validators.minLength(10)]],
+      phone: ['', [Validators.pattern(/^\d{10}$/)]],
+      dateOfBirth: [Date.now()],
+    });
+    this.scriptService.load('uw');
   }
 
-  onRemove(event: any) {
-    this.files.splice(this.files.indexOf(event), 1);
+  ngOnInit(): void {
+    const subscription = this.userService.userResponse$.subscribe(
+      (userResponse) => {
+        this.userResponse = userResponse;
+        if (this.userResponse) {
+          this.profileForm.patchValue({
+            name: this.userResponse.name || '',
+            address: this.userResponse.address || '',
+            phone: this.userResponse.phone || '',
+            dateOfBirth: this.userResponse.dateOfBirth || Date.now(),
+          });
+        }
+      }
+    );
+    this.subscriptions.push(subscription);
   }
 
-  uploadFiles() {
-    if (!this.files[0]) {
-      alert('No files selected');
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  processResults = (error: any, result: any): void => {
+    if (result.event === 'close') {
+      this.isDisabled = false;
     }
-
-    for (let i = 0; i < this.files.length; i++) {
-      const file_data = this.files[i];
-      const data = new FormData();
-      data.append('file', file_data);
-      data.append('upload_preset', 'ml_default');
-      data.append('cloud_name', 'dl3rsgucq');
-      this.cloudinaryUploadService.uploadImage(data).subscribe((response) => {
-        console.log(response);
+    if (result && result.event === 'success') {
+      const secureUrl = result.info.secure_url;
+      const previewUrl = secureUrl.replace('/upload/', '/upload/w_110/');
+      this.uploadedImages.push(previewUrl);
+      const updatePictureDto: UpdatePictureDto = {
+        pictureUrl: secureUrl,
+      };
+      this.userService.updatePicture(updatePictureDto).subscribe({
+        next: (response: UserResponse) => {
+          this.userService.setUserResponse(response);
+          this.isDisabled = false;
+        },
+        error: (err: any) => {
+          console.log(err);
+          this.toastr.error(`Cập nhật ảnh không thành công`);
+        },
       });
     }
+    if (error) {
+      this.isDisabled = false;
+    }
+  };
+
+  cloudName = 'dlpust9lj';
+  uploadPreset = 'nature_harvest';
+
+  uploadWidget = (): void => {
+    this.isDisabled = true;
+    window.cloudinary.openUploadWidget(
+      {
+        cloudName: this.cloudName,
+        uploadPreset: this.uploadPreset,
+        sources: ['local', 'url'],
+        tags: ['myphotoalbum-nature-harvest'],
+        clientAllowedFormats: ['image'],
+        resourceType: 'image',
+        maxFileSize: 5 * 1024 * 1024,
+      },
+      this.processResults
+    );
+  };
+
+  saveChanges() {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      return;
+    }
+    const updateUserProfileDto: UpdateUserProfileDto = {
+      ...this.profileForm.value,
+    };
+    debugger;
+    this.userService
+      .updateProfile(this.userResponse?.id!, updateUserProfileDto)
+      .subscribe({
+        next: (response: UserResponse) => {
+          this.userService.setUserResponse(response);
+          this.toastr.success(`Cập nhật thông tin thành công`, '', {
+            closeButton: true,
+            timeOut: 3000,
+            progressBar: true,
+          });
+        },
+        error: (err: any) => {
+          console.log(err);
+          this.toastr.error(`Cập nhật thông tin không thành công`);
+        },
+      });
   }
 }

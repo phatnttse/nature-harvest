@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { CategoryProductCountResponse } from '../responses/category/category-product-counts.response';
 import { HttpUtilService } from './http.util.service';
 import { CategoryResponse } from '../responses/category/category.response';
 import { CategoryWithSubcategoriesResponse } from '../responses/category/category-subcategory-response';
+import { environment } from '../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',

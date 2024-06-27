@@ -1,6 +1,7 @@
 package com.api.nature_harvest_backend.repositories;
 
 import com.api.nature_harvest_backend.models.Order;
+import com.api.nature_harvest_backend.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,11 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, String> {
-    List<Order> findByUserId(String userId);
+    List<Order> findByUser(User user);
+
+    @Query("SELECT o FROM Order o WHERE o.user = :user AND o.reviewed = :reviewed")
+    List<Order> findByUserAndReviewed(@Param("user") User user, @Param("reviewed") boolean reviewed);
+
     @Query("SELECT o FROM Order o WHERE o.active = true AND (:keyword IS NULL OR :keyword = '' OR " +
             "o.name LIKE %:keyword% " +
             "OR o.deliveryAddress LIKE %:keyword% " +

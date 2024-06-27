@@ -17,6 +17,7 @@ public class OrderDetailResponse {
     private int quantity;
     private int price;
     private String thumbnail;
+    private boolean reviewed;
 
     public static OrderDetailResponse fromOrderDetail(OrderDetail orderDetail) {
         return OrderDetailResponse.builder()
@@ -25,6 +26,7 @@ public class OrderDetailResponse {
                 .quantity(orderDetail.getQuantity())
                 .price(orderDetail.getProduct().getOfficialPrice())
                 .thumbnail(orderDetail.getProduct().getThumbnail())
+                .reviewed(orderDetail.isReviewed())
                 .build();
     }
 

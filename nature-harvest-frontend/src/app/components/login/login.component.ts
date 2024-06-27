@@ -22,22 +22,10 @@ import {
 import { UserService } from '../../services/user.service';
 import { LoginDto } from '../../dtos/user/login.dto';
 import { LoginResponse } from '../../responses/user/login.response';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterModule,
-} from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { UserResponse } from '../../responses/user/user.response';
 import { MatIconModule } from '@angular/material/icon';
-import {
-  NullValidationHandler,
-  OAuthModule,
-  OAuthService,
-} from 'angular-oauth2-oidc';
-import { AuthService } from '../../services/auth.service';
-import { authConfig } from '../../configurations/auth.config';
 import { filter } from 'rxjs';
 declare var google: any;
 
@@ -71,15 +59,14 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatButtonModule,
     RouterModule,
     MatIconModule,
-    OAuthModule,
   ],
 })
 export class LoginComponent implements OnInit {
-  emailFormControl = new FormControl('', [
+  emailFormControl = new FormControl('phatnttse173202@fpt.edu.vn', [
     Validators.required,
     Validators.email,
   ]);
-  passwordFormControl = new FormControl('', [Validators.required]);
+  passwordFormControl = new FormControl('123', [Validators.required]);
   matcher = new MyErrorStateMatcher();
   userResponse?: UserResponse;
   hide = true;
@@ -93,21 +80,8 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     private tokenService: TokenService,
-    private oauthService: OAuthService,
-    private platformLocation: PlatformLocation,
-    private activatedRoute: ActivatedRoute
-  ) {
-    // this.oauthService.configure(authConfig);
-    // this.oauthService.tokenValidationHandler = new NullValidationHandler();
-  }
-
-  // ngOnInit(): void {
-  //   debugger;
-  //   if (this.oauthService.hasValidAccessToken()) {
-  //     const googleToken = this.oauthService.getIdToken();
-  //     this.loginGoogleCallBack(googleToken);
-  //   }
-  // }
+    private platformLocation: PlatformLocation
+  ) {}
 
   ngOnInit(): void {
     this.router.events
@@ -156,8 +130,6 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (this.emailFormControl.invalid && this.passwordFormControl.invalid) {
-      this.emailFormControl.markAllAsTouched();
-      this.passwordFormControl.markAllAsTouched();
       return;
     }
 
@@ -194,24 +166,16 @@ export class LoginComponent implements OnInit {
         debugger;
       },
       error: (error: any) => {
-        this.toastr.warning(
-          'Email hoặc mật khẩu không chính xác',
-          'Đăng nhập không thành công',
-          {
-            closeButton: true,
-            timeOut: 2000,
-            easeTime: 500,
-            positionClass: 'toast-top-right',
-            progressBar: true,
-          }
-        );
+        this.toastr.warning(error.error.message, 'Đăng nhập không thành công', {
+          closeButton: true,
+          timeOut: 2000,
+          easeTime: 500,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+        });
       },
     });
   }
-
-  // loginGoogle() {
-  //   this.oauthService.initCodeFlow();
-  // }
 
   loginGoogle(googleToken: string) {
     debugger;

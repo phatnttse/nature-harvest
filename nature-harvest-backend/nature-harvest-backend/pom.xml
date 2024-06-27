@@ -161,6 +161,12 @@
             <artifactId>modelmapper</artifactId>
             <version>3.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.12.750</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Entity
 @Table(name = "order_details")
 @Getter
@@ -33,5 +31,8 @@ public class OrderDetail {
     @JoinColumn(name = "coupon_id")
     @JsonBackReference
     private Coupon coupon;
+
+    private boolean reviewed;
+
 
 }

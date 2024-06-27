@@ -3,6 +3,7 @@ package com.api.nature_harvest_backend.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDate;
 
 @Entity
@@ -55,6 +56,8 @@ public class Order {
 
     @Column(name = "active", nullable = false)
     private boolean active;
+
+    private boolean reviewed;
 
     @ManyToOne
     @JoinColumn(name = "coupon_id")

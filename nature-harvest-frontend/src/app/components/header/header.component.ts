@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserResponse } from '../../responses/user/user.response';
 import { UserService } from '../../services/user.service';
 import { TokenService } from '../../services/token.service';
@@ -9,7 +9,6 @@ import { Observable, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { CategoryService } from '../../services/category.service';
 import { CategoryWithSubcategoriesResponse } from '../../responses/category/category-subcategory-response';
-import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { FormsModule } from '@angular/forms';
 import { ProductResponse } from '../../responses/product/product.response';
 import { ProductService } from '../../services/product.service';
@@ -20,9 +19,9 @@ import { ProductListResponse } from '../../responses/product/product-list.respon
   standalone: true,
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
-  imports: [RouterModule, CommonModule, OAuthModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, CommonModule, FormsModule],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   userResponse?: UserResponse | null;
   cartSize: number = 0;
   cartSubscription: Subscription | null = null;
@@ -31,6 +30,7 @@ export class HeaderComponent implements OnInit {
   keyword: string = '';
   searchProductsResult: ProductResponse[] = [];
   products: ProductResponse[] = [];
+  subscriptions: Subscription[] = [];
 
   constructor(
     private userService: UserService,
@@ -38,32 +38,38 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private cartService: CartService,
     private categoryService: CategoryService,
-    private productService: ProductService,
-    private oauthService: OAuthService
+    private productService: ProductService
   ) {
     this.categoriesWithSubcategories$ =
       this.categoryService.categoriesWithSubcategories$;
   }
 
   ngOnInit(): void {
-    this.userService.userResponse$.subscribe((userResponse) => {
-      this.userResponse = userResponse;
-      if (this.userResponse != null) this.getCart();
-    });
+    const subscription = this.userService.userResponse$.subscribe(
+      (userResponse) => {
+        this.userResponse = userResponse;
+        if (this.userResponse != null) this.getCart();
+      }
+    );
 
     this.cartSubscription = this.cartService.cart$.subscribe(
       (cartData: CartListResponse) => {
         this.cartSize = cartData.cart.length;
       }
     );
+    this.subscriptions.push(subscription);
     this.categoryService.getCategoriesWithSubcategories().subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   logOut() {
     debugger;
     this.userService.clearUserResponse();
     this.tokenService.removeToken();
-    this.oauthService.logOut(); // Đăng xuất khỏi OAuth
+    this.router.navigate(['/login']);
   }
   getCart() {
     this.cartService.getCart().subscribe({

@@ -14,15 +14,23 @@
         </div>
         <div class="card-body">
           <form>
-            <mat-form-field class="example-full-width mt-3">
-              <mat-label class="font-size-14">Name</mat-label>
+            <mat-form-field class="example-full-width mt-4">
+              <mat-label class="font-size-14">Họ & tên</mat-label>
               <input
                 type="text"
                 matInput
                 [formControl]="nameFormControl"
                 [errorStateMatcher]="matcher"
               />
-              @if (nameFormControl.hasError('required')) {
+              @if (nameFormControl.hasError('minlength') &&
+              !nameFormControl.hasError('required') ) {
+              <mat-error>
+                Tên phải <strong>nhiều hơn 2 ký tự</strong>
+              </mat-error>
+              } @if (nameFormControl.hasError('maxlength') &&
+              !nameFormControl.hasError('required') ) {
+              <mat-error> Tên phải <strong>ít hơn 50 ký tự</strong> </mat-error>
+              } @if (nameFormControl.hasError('required')) {
               <mat-error> Name is <strong>required</strong> </mat-error>
               }
             </mat-form-field>
@@ -45,7 +53,7 @@
             </mat-form-field>
 
             <mat-form-field class="example-full-width mt-3">
-              <mat-label class="font-size-14">Password</mat-label>
+              <mat-label class="font-size-14">Mật khẩu</mat-label>
               <input
                 type="password"
                 matInput
@@ -58,7 +66,7 @@
             </mat-form-field>
 
             <mat-form-field class="example-full-width mt-3">
-              <mat-label class="font-size-14">Confirm Password</mat-label>
+              <mat-label class="font-size-14">Nhập lại mật khẩu</mat-label>
               <input
                 type="password"
                 matInput

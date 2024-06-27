@@ -3,8 +3,6 @@ package com.api.nature_harvest_backend.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "ratings")
 @Getter
@@ -28,6 +26,5 @@ public class Rating extends BaseEntity {
 
     @Column(name = "rating", nullable = false)
     private int rating;
-
 
 }

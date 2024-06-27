@@ -1,6 +1,7 @@
+import { UpdatePictureDto } from './../dtos/user/update-picture.dto';
+import { UpdateUserProfileDto } from './../dtos/user/update.dto';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
 import { SignUpDto } from '../dtos/user/signup.dto';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SignUpResponse } from '../responses/user/signup-response';
@@ -9,16 +10,13 @@ import { LoginResponse } from '../responses/user/login.response';
 import { HttpUtilService } from './http.util.service';
 import { DOCUMENT } from '@angular/common';
 import { UserResponse } from '../responses/user/user.response';
+import { environment } from '../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private apiLogin = `${environment.apiBaseUrl}/users/login`;
-  private apiLoginGoogle = `${environment.apiBaseUrl}/users/login-google`;
-  private apiSignup = `${environment.apiBaseUrl}/users/signup`;
-  private apiUserDetails = `${environment.apiBaseUrl}/users/details`;
-  private apiConfirmEmail = `${environment.apiBaseUrl}/users/confirm-email`;
+  private apiBaseUrl = environment.apiBaseUrl;
   localStorage?: Storage;
   private userResponseSubject = new BehaviorSubject<UserResponse | null>(null);
   userResponse$ = this.userResponseSubject.asObservable();
@@ -42,7 +40,7 @@ export class UserService {
   signUp(signUpDto: SignUpDto): Observable<SignUpResponse> {
     debugger;
     return this.http.post<SignUpResponse>(
-      this.apiSignup,
+      `${this.apiBaseUrl}/users/signup`,
       signUpDto,
       this.apiConfig
     );
@@ -50,7 +48,7 @@ export class UserService {
 
   login(loginDto: LoginDto): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
-      this.apiLogin,
+      `${this.apiBaseUrl}/users/login`,
       loginDto,
       this.apiConfig
     );
@@ -58,7 +56,7 @@ export class UserService {
 
   loginGoogle(googleToken: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
-      this.apiLoginGoogle,
+      `${this.apiBaseUrl}/users/login-google`,
       {}, // Add a body if needed or keep it as an empty object
       {
         headers: new HttpHeaders({
@@ -70,19 +68,37 @@ export class UserService {
   }
 
   verifyEmail(token: string): Observable<SignUpResponse> {
-    return this.http.get<SignUpResponse>(this.apiConfirmEmail, {
-      params: { token },
-    });
+    return this.http.get<SignUpResponse>(
+      `${this.apiBaseUrl}/users/confirm-email`,
+      {
+        params: { token },
+      }
+    );
   }
 
   getUserDetails(token: string): Observable<UserResponse> {
     debugger;
-    return this.http.post<UserResponse>(this.apiUserDetails, {
+    return this.http.post<UserResponse>(`${this.apiBaseUrl}/users/details`, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       }),
     });
+  }
+
+  updatePicture(updatePictureDto: UpdatePictureDto): Observable<UserResponse> {
+    return this.http.patch<UserResponse>(
+      `${this.apiBaseUrl}/users/update-picture`,
+      updatePictureDto
+    );
+  }
+
+  updateProfile(userId: string, updateUserProfileDto: UpdateUserProfileDto) {
+    return this.http.patch<UserResponse>(
+      `${this.apiBaseUrl}/users/${userId}`,
+      updateUserProfileDto,
+      this.apiConfig
+    );
   }
 
   saveUserResponseToLocalStorage(userResponse?: UserResponse) {

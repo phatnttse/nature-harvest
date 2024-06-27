@@ -5,7 +5,7 @@
     <div class="details-product">
       <div class="row">
         <div
-          class="product-detail-left product-images col-12 col-md-12 col-lg-6"
+          class="product-detail-left product-images col-12 col-md-12 col-lg-5"
         >
           <div class="box_pro_img carousel slide" data-bs-ride="carousel">
             <div class="product-image-block relative">
@@ -21,45 +21,17 @@
                       <div class="">
                         <img
                           [src]="image.imageUrl"
-                          class="product-image rounded"
+                          class="product-image rounded-3"
                           alt="Product Image"
                         />
                       </div>
                     </div>
                     }
-                    <button
-                      class="carousel-control-prev"
-                      type="button"
-                      data-bs-target="#carouselExample"
-                      data-bs-slide="prev"
-                      (click)="previousImage()"
-                    >
-                      <span
-                        class="carousel-control-prev-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button
-                      class="carousel-control-next"
-                      type="button"
-                      data-bs-target="#carouselExample"
-                      data-bs-slide="next"
-                      (click)="nextImage()"
-                    >
-                      <span
-                        class="carousel-control-next-icon"
-                        data-bs-target="#carouselExample"
-                        data-bs-slide="next"
-                        aria-hidden="true"
-                        (click)="nextImage()"
-                      ></span>
-                      <span class="visually-hidden">Next</span>
-                    </button>
                   </div>
                 </div>
                 <div class="product-percent">
-                  <span class="label_product">- 15% </span><span>OFF </span>
+                  <span class="label_product">- {{ product?.discount }}% </span
+                  ><span>OFF </span>
                 </div>
               </div>
               <div class="row">
@@ -83,14 +55,13 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-12 col-lg-6">
+        <div class="col-12 col-md-12 col-lg-7">
           <div class="details-pro">
             <h1 class="title-product">{{ product?.title }}</h1>
 
             <div class="reviews_details_product">
               <div
                 class="sapo-product-reviews-badge sapo-product-reviews-badge-detail"
-                data-id="35394343"
               ></div>
             </div>
 
@@ -115,14 +86,12 @@
                   >{{ product?.officialPrice | number : "1.0" }}₫</span
                 >
               </span>
-              <!-- Giá Khuyến mại -->
               <span class="old-price">
                 Giá thị trường:
                 <del class="price product-price-old">
                   {{ product?.originalPrice }}₫
                 </del>
               </span>
-              <!-- Giás gốc -->
               <span class="save-price"
                 >Tiết kiệm:
                 <span class="price product-price-save"
@@ -132,7 +101,6 @@
                 >
                 so với giá thị trường
               </span>
-              <!-- Tiết kiệm -->
             </div>
 
             <div class="motangan mt-4">
@@ -171,7 +139,7 @@
                   </div>
                   <div class="flex-btntity">
                     <div class="btn-mua button_actions clearfix">
-                      <div style="display: flex; flex-wrap: wrap; width: 100%">
+                      <div style="display: flex; flex-wrap: wrap; width: 80%">
                         <button
                           class="btn btn_base normal_button btn_add_cart add_to_cart btn-cart"
                           (click)="
@@ -236,16 +204,8 @@
           <div class="content-pro">
             <div class="product-tab e-tabs not-dqtab" id="tab-product">
               <ul class="tabs tabs-title clearfix">
-                <li class="tab-link active" data-tab="#tab-1">
+                <li class="tab-link active">
                   <h3>Mô tả sản phẩm</h3>
-                </li>
-
-                <li class="tab-link" data-tab="#tab-2">
-                  <h3>Hướng dẫn mua hàng</h3>
-                </li>
-
-                <li class="tab-link" data-tab="#tab-3">
-                  <h3>Đánh giá</h3>
                 </li>
               </ul>
               <div class="tab-float">
@@ -266,82 +226,355 @@
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                <div id="tab-2" class="tab-content content_extab">
-                  <div class="rte">
-                    <p>
-                      <strong>Bước 1:</strong>&nbsp;Truy cập website và lựa chọn
-                      sản phẩm&nbsp;cần mua
-                    </p>
-                    <p>
-                      <strong>Bước 2:</strong>&nbsp;Click và sản phẩm muốn mua,
-                      màn hình hiển thị ra pop up với các lựa chọn sau
-                    </p>
-                    <p>
-                      Nếu bạn muốn tiếp tục mua hàng: Bấm vào phần tiếp tục mua
-                      hàng để lựa chọn thêm sản phẩm vào giỏ hàng
-                    </p>
-                    <p>
-                      Nếu bạn muốn xem giỏ hàng để cập nhật sản phẩm: Bấm vào
-                      xem giỏ hàng
-                    </p>
-                    <p>
-                      Nếu bạn muốn đặt hàng và thanh toán cho sản phẩm này vui
-                      lòng bấm vào: Đặt hàng và thanh toán
-                    </p>
-                    <p>
-                      <strong>Bước 3:</strong>&nbsp;Lựa chọn thông tin tài khoản
-                      thanh toán
-                    </p>
-                    <p>
-                      Nếu bạn đã có tài khoản vui lòng nhập thông tin tên đăng
-                      nhập là email và mật khẩu vào mục đã có tài khoản trên hệ
-                      thống
-                    </p>
-                    <p>
-                      Nếu bạn chưa có tài khoản và muốn đăng ký tài khoản vui
-                      lòng điền các thông tin cá nhân để tiếp tục đăng ký tài
-                      khoản. Khi có tài khoản bạn sẽ dễ dàng theo dõi được đơn
-                      hàng của mình
-                    </p>
-                    <p>
-                      Nếu bạn muốn mua hàng mà không cần tài khoản vui lòng nhấp
-                      chuột vào mục đặt hàng không cần tài khoản
-                    </p>
-                    <p>
-                      <strong>Bước 4:</strong>&nbsp;Điền các thông tin của bạn
-                      để nhận đơn hàng, lựa chọn hình thức thanh toán và vận
-                      chuyển cho đơn hàng của mình
-                    </p>
-                    <p>
-                      <strong>Bước 5:</strong>&nbsp;Xem lại thông tin đặt hàng,
-                      điền chú thích và gửi đơn hàng
-                    </p>
-                    <p>
-                      Sau khi nhận được đơn hàng bạn gửi chúng tôi sẽ liên hệ
-                      bằng cách gọi điện lại để xác nhận lại đơn hàng và địa chỉ
-                      của bạn.
-                    </p>
-                    <p>Trân trọng cảm ơn.</p>
-                  </div>
-                </div>
-
-                <div id="tab-3" class="tab-content content_extab">
-                  <div class="rte">
-                    <div
-                      class="alert alert-info alert-dismissible margin-top-15 section"
-                      role="alert"
-                      style="max-width: 100% !important"
-                    >
-                      Bạn tiến hàng mua và cài app
-                      <a
-                        style="color: red"
-                        target="_blank"
-                        href="https://apps.sapo.vn/danh-gia-san-pham-v2"
-                        title="Đánh giá sản phẩm"
-                        >Đánh giá sản phẩm</a
+      <div class="row">
+        <div class="col-12 col-sm-12 col-lg-9 col-col-md-9">
+          <div class="content-pro">
+            <div class="product-tab e-tabs not-dqtab" id="tab-product">
+              <ul class="tabs tabs-title clearfix">
+                <li class="tab-link active">
+                  <h3>Đánh giá sản phẩm</h3>
+                </li>
+              </ul>
+              <div class="tab-float">
+                <div class="tab-content content_extab active">
+                  <div class="container mx-auto lg:w-4/6">
+                    <div>
+                      <div
+                        id="sapo-product-reviews"
+                        class="sapo-product-reviews"
                       >
-                      mới sử dụng được tính năng này!
+                        <div>
+                          <div id="sapo-product-reviews-sub">
+                            <div>
+                              <div class="sapo-product-reviews-summary">
+                                <div class="summary-filter">
+                                  <div class="sapo-product-reviews-action">
+                                    <div
+                                      itemprop="aggregateRating"
+                                      itemscope=""
+                                      itemtype="http://schema.org/AggregateRating"
+                                      class="bpr-summary"
+                                    >
+                                      <meta content="5" itemprop="bestRating" />
+                                      <meta
+                                        content="1"
+                                        itemprop="worstRating"
+                                      />
+                                      <div class="bpr-summary-average">
+                                        <span itemprop="ratingValue">{{
+                                          product?.averageRating
+                                        }}</span>
+                                        <span class="max-score">/5</span>
+                                      </div>
+                                      <div
+                                        class="sapo-product-reviews-star"
+                                        id="sapo-prv-summary-star"
+                                        title="gorgeous"
+                                      >
+                                        @for (item of [1,2,3,4,5]; track $index)
+                                        { @if ($index < product?.averageRating!)
+                                        {
+                                        <i
+                                          data-alt="1"
+                                          class="star-on-png"
+                                          title="gorgeous"
+                                        ></i
+                                        >&nbsp; } }
+                                      </div>
+                                      <p>
+                                        (<span itemprop="ratingCount">{{
+                                          comments.length
+                                        }}</span>
+                                        <span> đánh giá</span>)
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div class="sapo-product-reviews-filter">
+                                    <p>
+                                      <i
+                                        class="fa fa-filter"
+                                        aria-hidden="true"
+                                      ></i
+                                      ><span>Bộ lọc</span>
+                                    </p>
+                                    <div class="list-filter">
+                                      <label class="active">
+                                        <input
+                                          type="radio"
+                                          id="FilterAll"
+                                          name="filter"
+                                          value="all"
+                                          checked=""
+                                          style="display: none"
+                                        />
+                                        <span class="checkmark"
+                                          ><span>Tất cả</span></span
+                                        >
+                                      </label>
+                                      <label class="">
+                                        <input
+                                          type="radio"
+                                          id="FiveScore"
+                                          name="filter"
+                                          data-filter="score"
+                                          value="5"
+                                          style="display: none"
+                                        />
+                                        <span class="checkmark"
+                                          ><span>5 Điểm</span> (<span
+                                            class="count"
+                                            >2</span
+                                          >)</span
+                                        >
+                                      </label>
+                                      <label class="">
+                                        <input
+                                          type="radio"
+                                          id="FourScore"
+                                          name="filter"
+                                          data-filter="score"
+                                          value="4"
+                                          style="display: none"
+                                        />
+                                        <span class="checkmark"
+                                          ><span>4 Điểm</span> (<span
+                                            class="count"
+                                            data-content="four_rating"
+                                            >0</span
+                                          >)</span
+                                        >
+                                      </label>
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          id="ThreeScore"
+                                          name="filter"
+                                          data-filter="score"
+                                          value="3"
+                                          style="display: none"
+                                        />
+                                        <span class="checkmark"
+                                          ><span>3 Điểm</span> (<span
+                                            class="count"
+                                            >1</span
+                                          >)</span
+                                        >
+                                      </label>
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          id="TwoScore"
+                                          name="filter"
+                                          data-filter="score"
+                                          value="2"
+                                          style="display: none"
+                                        />
+                                        <span class="checkmark"
+                                          ><span>2 Điểm</span> (<span
+                                            class="count"
+                                            data-content="two_rating"
+                                            >0</span
+                                          >)</span
+                                        >
+                                      </label>
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          id="OneScore"
+                                          name="filter"
+                                          data-filter="score"
+                                          value="1"
+                                          style="display: none"
+                                        />
+                                        <span class="checkmark"
+                                          ><span>1 Điểm</span> (<span
+                                            class="count"
+                                            data-content="one_rating"
+                                            >0</span
+                                          >)</span
+                                        >
+                                      </label>
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          id="IsImage"
+                                          name="filter"
+                                          value="isimage"
+                                          style="display: none"
+                                        />
+                                        <span class="checkmark"
+                                          ><span>Có hình ảnh</span> (<span
+                                            class="count"
+                                            >2</span
+                                          >)</span
+                                        >
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                id="bpr-list"
+                                class="sapo-product-reviews-list"
+                              >
+                                @for (comment of comments; track $index) {
+                                <div
+                                  id="sapo-review-560777"
+                                  class="sapo-review"
+                                  itemtype="http://schema.org/Review"
+                                >
+                                  <div class="sapo-review-header">
+                                    <span
+                                      class="sapo-review-author"
+                                      itemprop="author"
+                                      >{{ comment.userResponse.name }}</span
+                                    >
+                                    <div
+                                      class="sapo-product-reviews-star"
+                                      data-score="5"
+                                      data-number="5"
+                                      title="gorgeous"
+                                    >
+                                      @for (item of [1,2,3,4,5]; track $index) {
+                                      @if ($index < comment.starRating) {
+                                      <i
+                                        data-alt="1"
+                                        class="star-on-png"
+                                        title="gorgeous"
+                                      ></i
+                                      >&nbsp; } }
+                                    </div>
+                                  </div>
+                                  <div class="sapo-review-body">
+                                    <span
+                                      class="sapo-review-content-body"
+                                      itemprop="description"
+                                      >{{ comment.content }}</span
+                                    >
+                                  </div>
+                                  <div
+                                    class="sapo-review-actions"
+                                    style="color: #80bb35"
+                                  >
+                                    <ul>
+                                      <li class="sapo-review-reply">
+                                        <a
+                                          title="Gửi trả lời"
+                                          href="javascript: void(0);"
+                                          >Gửi trả lời</a
+                                        >
+                                      </li>
+
+                                      <li>
+                                        <span
+                                          class="sapo-review-time"
+                                          itemprop="datePublished"
+                                          >{{
+                                            comment.formattedCreatedAt
+                                          }}</span
+                                        >
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  <div class="sapo-review-images">
+                                    <ul>
+                                      <li>
+                                        <a
+                                          data-fancybox="gallery"
+                                          href="https://newproductreviews.sapoapps.vn//Upload/ReviewImage/2024/6/24/bad07e34d23158d288ee72afe6c93830.jpg"
+                                          ><img
+                                            src="https://newproductreviews.sapoapps.vn//Thumbnail/Medium/Upload/ReviewImage/2024/6/24/bad07e34d23158d288ee72afe6c93830.jpg"
+                                            onerror="this.onerror=null;this.src='https://newproductreviews.sapoapps.vn//Upload/ReviewImage/2024/6/24/bad07e34d23158d288ee72afe6c93830.jpg';"
+                                            alt="dsdasdasdasdasdasdas"
+                                        /></a>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                }
+                              </div>
+                              @if (totalPages > 1) {
+                              <div class="section pagenav clearfix a-center">
+                                <nav
+                                  class="collection-paginate clearfix nav_pagi w_100 relative"
+                                >
+                                  <ul class="pagination clearfix">
+                                    @if (currentPage > 0) {
+                                    <li class="page-item">
+                                      <a
+                                        class="page-link"
+                                        href="javascript:;"
+                                        (click)="onPageChange(currentPage - 1)"
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="12"
+                                          height="20"
+                                          viewBox="0 0 12 20"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M0.827131 10.5488L10.0777 19.7738C10.3808 20.0759 10.8715 20.0754 11.1741 19.7723C11.4764 19.4692 11.4756 18.9782 11.1725 18.6759L2.47255 9.99996L11.1728 1.32406C11.4759 1.02172 11.4767 0.531057 11.1744 0.227934C11.0227 0.0759811 10.824 3.76429e-06 10.6253 3.74691e-06C10.4271 3.72959e-06 10.2292 0.0754737 10.0778 0.226372L0.827131 9.45114C0.681155 9.59637 0.599241 9.79403 0.599241 9.99996C0.599241 10.2059 0.68139 10.4033 0.827131 10.5488Z"
+                                            fill="#9D9D9D"
+                                          ></path>
+                                        </svg>
+                                      </a>
+                                    </li>
+                                    } @for (page of visiblePages; track $index)
+                                    {
+                                    <li
+                                      class="page-item"
+                                      [ngClass]="{
+                                        active: page === currentPage + 1
+                                      }"
+                                    >
+                                      <a
+                                        class="page-link"
+                                        href="javascript:;"
+                                        [style]="{
+                                          'pointer-events: none':
+                                            page === currentPage + 1
+                                        }"
+                                        (click)="onPageChange(page - 1)"
+                                        >{{ page }}</a
+                                      >
+                                    </li>
+                                    } @if (currentPage < totalPages - 1) {
+                                    <li class="page-item">
+                                      <a
+                                        class="page-link link-next-pre"
+                                        href="javascript:;"
+                                        (click)="onPageChange(currentPage + 1)"
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="12"
+                                          height="20"
+                                          viewBox="0 0 12 20"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M11.1729 9.45117L1.92228 0.226167C1.6192 -0.0759023 1.12849 -0.0753945 0.825918 0.227729C0.523575 0.530814 0.524357 1.02179 0.827481 1.32409L9.52745 10L0.827168 18.6759C0.524083 18.9783 0.523302 19.4689 0.825605 19.7721C0.977285 19.924 1.17599 20 1.37471 20C1.57291 20 1.77084 19.9245 1.92224 19.7736L11.1729 10.5489C11.3188 10.4036 11.4008 10.206 11.4008 10C11.4008 9.7941 11.3186 9.59668 11.1729 9.45117Z"
+                                            fill="#9D9D9D"
+                                          ></path>
+                                        </svg>
+                                      </a>
+                                    </li>
+                                    }
+                                  </ul>
+                                </nav>
+                              </div>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
