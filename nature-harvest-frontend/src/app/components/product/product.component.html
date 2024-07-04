@@ -123,7 +123,7 @@
                       <input [(ngModel)]="maxPrice" matSliderEndThumb />
                     </mat-slider>
                     <button
-                      mat-flat-button
+                      mat-primary-button
                       style="color: white"
                       class="btn btn-primary me-3"
                       (click)="filterProductsByPrice()"
@@ -159,10 +159,6 @@
                 Sắp xếp: {{ this.typeArrange }}
               </p>
               <button mat-icon-button [matMenuTriggerFor]="menu" class="mb-3">
-                <!-- <i
-                  class="fa-solid fa-ellipsis-vertical"
-                  style="color: #606463; font-size: 18px"
-                ></i> -->
                 <span class="material-icons mt-2"> view_list </span>
               </button>
               <mat-menu #menu="matMenu">

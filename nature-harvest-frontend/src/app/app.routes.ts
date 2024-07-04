@@ -13,7 +13,7 @@ import { OrderSuccessComponent } from './components/order-success/order-success.
 import { MomoPayComponent } from './components/momo-pay/momo-pay.component';
 import { SearchProductsComponent } from './components/search-products/search-products.component';
 import { OrderTrackingComponent } from './components/order-tracking/order-tracking.component';
-import { UploadTestComponent } from './components/upload-test/upload-test.component';
+import { AdminComponent } from './components/admin/admin.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -31,5 +31,7 @@ export const routes: Routes = [
   { path: 'order-success/:id', component: OrderSuccessComponent },
   { path: 'products/search', component: SearchProductsComponent },
   { path: 'order-tracking', component: OrderTrackingComponent },
-  { path: 'test', component: UploadTestComponent },
+
+  //admin
+  { path: 'admin', component: AdminComponent },
 ];

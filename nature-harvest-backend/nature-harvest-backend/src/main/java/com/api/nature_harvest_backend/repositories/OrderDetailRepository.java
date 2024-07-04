@@ -16,9 +16,10 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
 
     boolean existsByOrderIdAndProductId(String orderId, Long productId);
 
-    @Query("SELECT CASE WHEN COUNT(od) > 0 THEN TRUE ELSE FALSE END " +
+    @Query("SELECT COUNT(od) = 0 " +
             "FROM OrderDetail od " +
             "WHERE od.order.id = :orderId " +
             "AND od.reviewed = FALSE")
-    boolean existsUnreviewedOrderDetailsByOrderId(@Param("orderId") String orderId);
+    boolean allOrderDetailsReviewed(@Param("orderId") String orderId);
+
 }

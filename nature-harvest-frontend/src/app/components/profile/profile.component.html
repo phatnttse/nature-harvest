@@ -26,26 +26,26 @@
                     style="
                       position: absolute;
                       top: 80px;
-                      right: 6px;
-                      padding: 2px;
-                      color: #0f0f0f;
-                      border-radius: 10rem;
+                      right: 4px;
+                      padding: 6px;
+                      background-color: #0f0f0f;
                       cursor: pointer;
                       z-index: 1;
                     "
                     type="button"
                     (click)="uploadWidget()"
+                    class="rounded-circle"
                   >
                     <i
-                      class="fa-solid fa-camera"
-                      style="color: rgb(24, 4, 196); font-size: 20px"
+                      class="fa-solid fa-image"
+                      style="color: #fff; font-size: 20px"
                     ></i>
                   </button>
                 </div>
 
                 <div class="mt-3">
                   <h4>{{ userResponse?.name }}</h4>
-                  <p class="mb-1 text-secondary">Khách hàng mới</p>
+                  <p class="mb-1 text-secondary">Khách hàng</p>
                   <p class="text-muted font-size-sm">
                     {{ userResponse?.email }}
                   </p>

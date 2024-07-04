@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
 import { UserService } from '../../services/user.service';
@@ -27,6 +27,7 @@ import { UserResponse } from '../../responses/user/user.response';
 import { LoginResponse } from '../../responses/user/login.response';
 import { TokenService } from '../../services/token.service';
 import { filter } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
 declare var google: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -47,7 +48,11 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-sign-up',
   standalone: true,
   templateUrl: './sign-up.component.html',
-  styleUrl: './sign-up.component.scss',
+  styleUrls: [
+    './../../../assets/css/styles.css',
+    './../../../assets/css/app.css',
+  ],
+  encapsulation: ViewEncapsulation.None,
   imports: [
     HeaderComponent,
     FooterComponent,
@@ -58,6 +63,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     ReactiveFormsModule,
     MatButtonModule,
     RouterModule,
+    MatIconModule,
   ],
 })
 // implements OnInit, AfterViewInit, OnDestroy
@@ -71,8 +77,13 @@ export class SignUpComponent {
     Validators.minLength(2),
     Validators.maxLength(50),
   ]);
-  passwordFormControl = new FormControl('', [Validators.required]);
-  confirmPasswordFormControl = new FormControl('', [Validators.required]);
+  passwordFormControl = new FormControl('', [
+    Validators.required,
+    Validators.minLength(8),
+    Validators.pattern(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    ),
+  ]);
   matcher = new MyErrorStateMatcher();
   userResponse?: UserResponse;
 
@@ -133,9 +144,11 @@ export class SignUpComponent {
     if (
       this.emailFormControl.invalid ||
       this.nameFormControl.invalid ||
-      (this.passwordFormControl.invalid &&
-        this.confirmPasswordFormControl.invalid)
+      this.passwordFormControl.invalid
     ) {
+      this.emailFormControl.markAllAsTouched();
+      this.nameFormControl.markAllAsTouched();
+      this.passwordFormControl.markAllAsTouched();
       return;
     }
 
@@ -144,7 +157,6 @@ export class SignUpComponent {
       name: this.nameFormControl.value!,
       email: this.emailFormControl.value!,
       password: this.passwordFormControl.value!,
-      confirmPassword: this.confirmPasswordFormControl.value!,
     };
     this.userService.signUp(signUpDto).subscribe({
       next: (response: SignUpResponse) => {

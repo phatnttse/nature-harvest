@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
 import { ToastrService } from 'ngx-toastr';
@@ -27,6 +27,7 @@ import { TokenService } from '../../services/token.service';
 import { UserResponse } from '../../responses/user/user.response';
 import { MatIconModule } from '@angular/material/icon';
 import { filter } from 'rxjs';
+import { ROLE_ADMIN, ROLE_USER } from '../../responses/user/role.response';
 declare var google: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -47,7 +48,11 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  styleUrls: [
+    './../../../assets/css/styles.css',
+    './../../../assets/css/app.css',
+  ],
+  encapsulation: ViewEncapsulation.None,
   imports: [
     HeaderComponent,
     FooterComponent,
@@ -66,7 +71,7 @@ export class LoginComponent implements OnInit {
     Validators.required,
     Validators.email,
   ]);
-  passwordFormControl = new FormControl('123', [Validators.required]);
+  passwordFormControl = new FormControl('Phat@123', [Validators.required]);
   matcher = new MyErrorStateMatcher();
   userResponse?: UserResponse;
   hide = true;
@@ -130,6 +135,8 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (this.emailFormControl.invalid && this.passwordFormControl.invalid) {
+      this.emailFormControl.markAllAsTouched();
+      this.passwordFormControl.markAllAsTouched();
       return;
     }
 
@@ -151,6 +158,11 @@ export class LoginComponent implements OnInit {
               dateOfBirth: new Date(resp.dateOfBirth),
             };
             this.userService.setUserResponse(this.userResponse!);
+            if (this.userResponse?.role.name === ROLE_USER) {
+              this.router.navigate(['/']);
+            } else if (this.userResponse?.role.name === ROLE_ADMIN) {
+              this.router.navigate(['/admin']);
+            }
           },
           complete: () => {
             debugger;
@@ -159,8 +171,6 @@ export class LoginComponent implements OnInit {
             console.log(error?.error?.message);
           },
         });
-
-        this.router.navigate(['']);
       },
       complete: () => {
         debugger;

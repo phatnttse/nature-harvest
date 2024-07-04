@@ -42,7 +42,6 @@ import { cloudinary } from '../../environments/environment.development';
   ],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-  files: File[] = [];
   userResponse?: UserResponse | null;
   profileForm: FormGroup;
   showDropzonePopup = false;
@@ -102,6 +101,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         next: (response: UserResponse) => {
           this.userService.setUserResponse(response);
           this.isDisabled = false;
+          this.toastr.success('Cập nhật hình ảnh thành công');
         },
         error: (err: any) => {
           console.log(err);
@@ -125,6 +125,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         clientAllowedFormats: ['image'],
         resourceType: 'image',
         maxFileSize: 5 * 1024 * 1024,
+        multiple: false,
       },
       this.processResults
     );

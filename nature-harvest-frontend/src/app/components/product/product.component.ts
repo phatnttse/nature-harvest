@@ -239,7 +239,6 @@ export class ProductComponent implements OnInit {
         this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
           closeButton: true,
           timeOut: 4000,
-          easeTime: 400,
           progressBar: true,
         });
       },

@@ -6,10 +6,12 @@ import com.api.nature_harvest_backend.models.Product;
 import com.api.nature_harvest_backend.repositories.CategoryRepository;
 import com.api.nature_harvest_backend.repositories.ProductRepository;
 import com.api.nature_harvest_backend.responses.category.CategoryProductCountResponse;
+import com.api.nature_harvest_backend.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -24,6 +26,8 @@ public class CategoryService implements ICategoryService {
         Category newCategory = Category
                 .builder()
                 .name(categoryDto.getName())
+                .slug(StringUtils.toSlug(categoryDto.getName()))
+                .thumbnail(categoryDto.getThumbnail())
                 .build();
         return categoryRepository.save(newCategory);
     }

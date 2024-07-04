@@ -1,4 +1,4 @@
-import { CommentDto } from './../../../dtos/order/comment.dto';
+import { CommentDto } from '../../../dtos/product/comment.dto';
 import { Component, Inject } from '@angular/core';
 import { OrderDetailResponse } from '../../../responses/order/order-detail.response';
 import {
@@ -122,7 +122,7 @@ export class FeedbackComponent {
       orderId: this.data.order.order.id,
       content: this.secondFormGroup.get('comment')?.value,
       starRating: this.selectedStars,
-      picture: null,
+      pictures: this.uploadedImages,
     };
     debugger;
     this.commentService.comment(commentDto).subscribe({
@@ -137,39 +137,15 @@ export class FeedbackComponent {
       },
     });
   }
+
   processResults = (error: any, result: any): void => {
     if (result.event === 'close') {
       this.isDisabled = false;
     }
     if (result && result.event === 'success') {
       const secureUrl = result.info.secure_url;
-      const previewUrl = secureUrl.replace('/upload/', '/upload/w_110/');
-      this.uploadedImages.push(previewUrl);
-      const selectedProductId = Array.isArray(
-        this.firstFormGroup.get('selectedProduct')?.value
-      )
-        ? this.firstFormGroup.get('selectedProduct')?.value[0]
-        : this.firstFormGroup.get('selectedProduct')?.value;
-
-      const commentDto: CommentDto = {
-        productId: selectedProductId,
-        orderId: this.data.order.order.id,
-        content: this.secondFormGroup.get('comment')?.value,
-        starRating: this.selectedStars,
-        picture: secureUrl,
-      };
-      debugger;
-      this.commentService.comment(commentDto).subscribe({
-        next: (response: OrderAndOrderDetailsResponse[]) => {
-          debugger;
-          this.dialogRef.close(response);
-          this.toastr.success('Đánh giá sản phẩm thành công');
-        },
-        error: (err) => {
-          console.log(err);
-          this.toastr.error('Đánh giá sản phẩm thất bại');
-        },
-      });
+      this.uploadedImages.push(secureUrl);
+      this.isDisabled = false;
     }
     if (error) {
       this.isDisabled = false;
@@ -177,21 +153,11 @@ export class FeedbackComponent {
   };
 
   uploadWidget = (): void => {
+    this.isDisabled = true;
     if (this.firstFormGroup.invalid || this.secondFormGroup.invalid) {
       this.toastr.error('Vui lòng điền đầy đủ thông tin');
       return;
     }
-
-    if (this.data.order.orderDetails.reviewed === true) {
-      this.toastr.warning('Bạn đã đánh giá sản phẩm này');
-      return;
-    }
-
-    if (this.data.order.order.reviewed === true) {
-      this.toastr.warning('Bạn đã đánh giá đơn hàng này');
-      return;
-    }
-    this.isDisabled = true;
     window.cloudinary.openUploadWidget(
       {
         cloudName: cloudinary.cloudName,
@@ -201,6 +167,7 @@ export class FeedbackComponent {
         clientAllowedFormats: ['image'],
         resourceType: 'image',
         maxFileSize: 5 * 1024 * 1024,
+        multiple: true,
       },
       this.processResults
     );

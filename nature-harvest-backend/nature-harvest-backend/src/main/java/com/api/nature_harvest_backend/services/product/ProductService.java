@@ -6,10 +6,13 @@ import com.api.nature_harvest_backend.exceptions.InvalidParamException;
 import com.api.nature_harvest_backend.models.Category;
 import com.api.nature_harvest_backend.models.Product;
 import com.api.nature_harvest_backend.models.ProductImage;
+import com.api.nature_harvest_backend.models.SubCategory;
 import com.api.nature_harvest_backend.repositories.CategoryRepository;
 import com.api.nature_harvest_backend.repositories.ProductImageRepository;
 import com.api.nature_harvest_backend.repositories.ProductRepository;
+import com.api.nature_harvest_backend.repositories.SubCategoryRepository;
 import com.api.nature_harvest_backend.responses.product.ProductResponse;
+import com.api.nature_harvest_backend.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,27 +30,38 @@ public class ProductService implements IProductService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
+    private final SubCategoryRepository subCategoryRepository;
 
     @Override
     @Transactional
-    public Product createProduct(ProductDto productDto) throws DataNotFoundException {
+    public Product createProduct(ProductDto productDto) throws Exception {
         Category existingCategory = categoryRepository
                 .findById(productDto.getCategoryId())
                 .orElseThrow(() ->
                         new DataNotFoundException(
                                 "Cannot find category with id: " + productDto.getCategoryId()));
-        Product newProduct = Product.builder()
+        SubCategory existingSubcategory = subCategoryRepository
+                .findById(productDto.getSubcategoryId())
+                .orElseThrow(() ->
+                        new DataNotFoundException(
+                                "Cannot find subcategory with id: " + productDto.getSubcategoryId()));
+
+        Product product = Product.builder()
                 .title(productDto.getTitle())
                 .originalPrice(productDto.getPrice())
                 .officialPrice(productDto.getPrice() - (productDto.getPrice() * productDto.getDiscount() / 100))
+                .discount(productDto.getDiscount())
+                .slug(StringUtils.toSlug(productDto.getTitle()))
                 .quantity(productDto.getQuantity())
                 .description(productDto.getDescription())
-                .thumbnail(productDto.getThumbnail())
                 .category(existingCategory)
+                .subcategory(existingSubcategory)
                 .averageRating(BigDecimal.ZERO)
                 .active(true)
                 .build();
-        return productRepository.save(newProduct);
+        Product newProduct = productRepository.save(product);
+        createProductImage(newProduct, productDto.getImages());
+        return newProduct;
     }
 
     @Override
@@ -62,15 +76,52 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public Product getProductBySlug(String slug) throws DataNotFoundException {
+        Optional<Product> optionalProduct = productRepository.getDetailProductBySlug(slug);
+
+        if (optionalProduct.isPresent()) {
+            if (!optionalProduct.get().isActive()) throw new DataNotFoundException("Product not found");
+            return optionalProduct.get();
+        }
+        throw new DataNotFoundException("Cannot find product with slug =" + slug);
+    }
+
+    @Override
     public List<Product> findProductsByIds(List<Long> productIds) {
         return productRepository.findProductsByIds(productIds);
     }
 
     @Override
     @Transactional
-    public List<ProductImage> createProductImage(Long productId, List<String> urls) throws Exception {
+    public void createProductImage(Product product, List<String> urls) throws Exception {
 
+        List<ProductImage> productImages = new ArrayList<>();
+        for (String url : urls) {
+            ProductImage newProductImage = ProductImage.builder()
+                    .product(product)
+                    .imageUrl(url)
+                    .build();
+            //Ko cho insert quá 5 ảnh cho 1 sản phẩm
+            int size = productImageRepository.findByProductId(product.getId()).size();
+            if (size >= ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
+                throw new InvalidParamException(
+                        "Number of images must be <= "
+                                + ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
+            }
+            if (product.getThumbnail() == null) {
+                product.setThumbnail(newProductImage.getImageUrl());
+                productRepository.save(product);
+            }
+            productImages.add(newProductImage);
+        }
+        productImageRepository.saveAll(productImages);
+    }
+
+    @Override
+    @Transactional
+    public List<ProductImage> updateProductImage(Long productId, List<String> urls) throws Exception {
         Product existingProduct = getProductById(productId);
+
         List<ProductImage> productImages = new ArrayList<>();
         for (String url : urls) {
             ProductImage newProductImage = ProductImage.builder()
@@ -78,7 +129,7 @@ public class ProductService implements IProductService {
                     .imageUrl(url)
                     .build();
             //Ko cho insert quá 5 ảnh cho 1 sản phẩm
-            int size = productImageRepository.findByProductId(productId).size();
+            int size = productImageRepository.findByProductId(existingProduct.getId()).size();
             if (size >= ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
                 throw new InvalidParamException(
                         "Number of images must be <= "
@@ -88,11 +139,9 @@ public class ProductService implements IProductService {
                 existingProduct.setThumbnail(newProductImage.getImageUrl());
                 productRepository.save(existingProduct);
             }
-
-            productImages.add(productImageRepository.save(newProductImage));
+            productImages.add(newProductImage);
         }
-        return productImages;
-
+        return productImageRepository.saveAll(productImages);
     }
 
     @Override
@@ -129,6 +178,11 @@ public class ProductService implements IProductService {
                     .orElseThrow(() ->
                             new DataNotFoundException(
                                     "Cannot find category with id: " + productDto.getCategoryId()));
+            SubCategory existingSubcategory = subCategoryRepository
+                    .findById(productDto.getSubcategoryId())
+                    .orElseThrow(() ->
+                            new DataNotFoundException(
+                                    "Cannot find subcategory with id: " + productDto.getSubcategoryId()));
 
             if (productDto.getTitle() != null && !productDto.getTitle().isEmpty()) {
                 existingProduct.setTitle(productDto.getTitle());
@@ -141,14 +195,19 @@ public class ProductService implements IProductService {
                 existingProduct.setOfficialPrice(productDto.getPrice() - (productDto.getPrice() * productDto.getDiscount() / 100));
             }
             if (productDto.getDiscount() >= 0) {
+                existingProduct.setDiscount(productDto.getDiscount());
                 existingProduct.setOfficialPrice(productDto.getPrice() - (productDto.getPrice() * productDto.getDiscount() / 100));
             }
             if (productDto.getDescription() != null &&
                     !productDto.getDescription().isEmpty()) {
                 existingProduct.setDescription(productDto.getDescription());
             }
+            if (productDto.getImages() != null) {
+                createProductImage(existingProduct, productDto.getImages());
+            }
 
             existingProduct.setCategory(existingCategory);
+            existingProduct.setSubcategory(existingSubcategory);
 
             return productRepository.save(existingProduct);
         }
@@ -157,10 +216,17 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
-    public void deleteProduct(long id) {
+    public boolean deleteProduct(long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
-        optionalProduct.ifPresent(productRepository::delete);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setActive(false);
+            productRepository.save(product);
+            return true;
+        }
+        return false;
     }
+
 
     @Override
     public boolean existsByName(String title) {

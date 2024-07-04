@@ -36,6 +36,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.productImages WHERE p.id = :productId")
     Optional<Product> getDetailProduct(@Param("productId") Long productId);
 
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.productImages WHERE p.slug = :slug")
+    Optional<Product> getDetailProductBySlug(@Param("slug") String slug);
+
     @Query("SELECT p FROM Product p WHERE p.id IN :productIds")
     List<Product> findProductsByIds(@Param("productIds") List<Long> productIds);
 

@@ -2,11 +2,12 @@ package com.api.nature_harvest_backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -58,7 +59,7 @@ public class User extends BaseEntity implements UserDetails, OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("ROLE_" +getRole().getName().toUpperCase()));
+        authorityList.add(new SimpleGrantedAuthority("ROLE_" + getRole().getName().toUpperCase()));
         //authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         return authorityList;
     }
@@ -87,4 +88,6 @@ public class User extends BaseEntity implements UserDetails, OAuth2User {
     public boolean isEnabled() {
         return true;
     }
+
+    public static String DEFAULT_PICTURE = "https://res.cloudinary.com/dlpust9lj/image/upload/v1719497920/360_F_208981748_9fbrA3Hy2GGajHn4XDtfzVFMzHiXguYg_kppkjd.jpg";
 }

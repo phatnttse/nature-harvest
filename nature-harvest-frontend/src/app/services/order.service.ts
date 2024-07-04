@@ -1,4 +1,4 @@
-import { CommentDto } from './../dtos/order/comment.dto';
+import { CommentDto } from '../dtos/product/comment.dto';
 import { OrderResponse } from './../responses/order/order.response';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';

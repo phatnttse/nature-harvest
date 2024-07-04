@@ -16,5 +16,4 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "GROUP BY c.id, c.name")
     List<CategoryProductCountResponse> findCategoryProductCounts();
 
-
 }

@@ -1,10 +1,11 @@
 import { UserResponse } from '../user/user.response';
+import { CommentPicture } from './comment-picture.response';
 
 export class CommentResponse {
   id: number;
   content: string;
   userResponse: UserResponse;
-  picture: string;
+  pictures: CommentPicture[];
   starRating: number;
   createdAt: Date;
   updatedAt: Date;
@@ -15,7 +16,7 @@ export class CommentResponse {
     this.id = data.id;
     this.content = data.content;
     this.userResponse = data.userResponse;
-    this.picture = data.picture;
+    this.pictures = data.pictures;
     this.starRating = data.starRating;
     this.createdAt = this.convertToDate(data.createdAt);
     this.updatedAt = this.convertToDate(data.updatedAt);

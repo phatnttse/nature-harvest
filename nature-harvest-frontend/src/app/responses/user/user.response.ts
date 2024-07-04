@@ -1,3 +1,5 @@
+import { Role } from './role.response';
+
 export interface UserResponse {
   id: string;
   email: string;
@@ -6,5 +8,5 @@ export interface UserResponse {
   name: string;
   phone: string;
   dateOfBirth: Date;
-  role: string;
+  role: Role;
 }

@@ -10,7 +10,6 @@ import com.api.nature_harvest_backend.services.comment.ICommentService;
 import com.api.nature_harvest_backend.services.order.IOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -39,17 +38,26 @@ public class CommentController {
                 page, limit,
                 Sort.by("id").ascending()
         );
-        User loginUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        Page<CommentResponse> commentPage = commentService.getCommentsByUserAndProduct(loginUser.getId(), productId, pageRequest);
-        totalPages = commentPage.getTotalPages();
-        List<CommentResponse> commentResponses = commentPage.getContent();
-
-        return ResponseEntity.ok(CommentListResponse.builder()
-                .comments(commentResponses)
-                .totalPages(totalPages)
-                .build());
+        CommentListResponse commentListResponse = commentService.getComments(productId, pageRequest);
+        return ResponseEntity.ok(commentListResponse);
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<CommentListResponse> getFilteredComments(
+            @RequestParam("productId") Long productId,
+            @RequestParam(required = false) Integer starRating,
+            @RequestParam(defaultValue = "false") boolean hasImage,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int limit
+    ) {
+        PageRequest pageRequest = PageRequest.of(
+                page, limit,
+                Sort.by("id").ascending()
+        );
+        CommentListResponse commentListResponse = commentService.getFilteredComments(productId, starRating, hasImage, pageRequest);
+        return ResponseEntity.ok(commentListResponse);
+    }
+
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
@@ -70,7 +78,7 @@ public class CommentController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<List<OrderAndOrderDetailsResponse>> insertComment(
+    public ResponseEntity<?> insertComment(
             @Valid @RequestBody CommentDto commentDto
     ) {
         try {
@@ -80,8 +88,8 @@ public class CommentController {
             List<OrderAndOrderDetailsResponse> orderAndOrderDetailsResponses = orderService.getOrdersByUserId(loginUser.getId());
             return ResponseEntity.ok(orderAndOrderDetailsResponses);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(null);
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage());
         }
     }
 }

@@ -56,11 +56,6 @@ public class UserController {
             return ResponseEntity.badRequest().body(signUpResponse);
         }
 
-        if (!signUpDto.getPassword().equals(signUpDto.getConfirmPassword())) {
-            signUpResponse.setMessage("Confirm password not match");
-            return ResponseEntity.badRequest().body(signUpResponse);
-        }
-
         try {
             User user = userService.createUser(signUpDto);
             signUpResponse.setMessage("Sign Up Successfully. Login to shopping now!");

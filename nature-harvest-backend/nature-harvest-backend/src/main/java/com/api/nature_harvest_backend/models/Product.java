@@ -49,7 +49,7 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rating> ratings;
 
-    @Column(name = "thumbnail", nullable = false)
+    @Column(name = "thumbnail")
     private String thumbnail;
 
     private String slug;

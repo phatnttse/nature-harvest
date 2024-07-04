@@ -1,0 +1,146 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Sidebar -->
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+  >
+    <div class="p-16">
+      <div class="mb-16">
+        <a href="javascript:void(0)" class="d-flex align-items-center">
+          <img
+            src="https://res.cloudinary.com/dlpust9lj/image/upload/v1719764034/df6o7qrwcfuep5maeabl.png"
+            alt=""
+          />
+          <span class="fw-medium fs-20 ms-2">Nature's Harvest</span>
+        </a>
+      </div>
+
+      <div class="pt-8">
+        <ul>
+          <li class="list-group mb-2" *ngFor="let sidenav of sidebarMenu">
+            <a
+              matRipple
+              [matRippleColor]="'#f7f8f443'"
+              routerLink="{{ sidenav.link }}"
+              class="sidebar-menu w-100 d-flex align-items-center"
+              routerLinkActive="activelink"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i-feather
+                name="{{ sidenav.icon }}"
+                class="feather-base me-12"
+              ></i-feather>
+              <span class="ps-3">{{ sidenav.menu }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <!-- Header -->
+    <mat-toolbar class="header pe-24 ps-24">
+      <button
+        type="button"
+        class="ms-4"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async"
+      >
+        <i-feather
+          name="menu"
+          class="text-light-muted feather-base mt-n3"
+        ></i-feather>
+      </button>
+      <button mat-icon-button class="me-4 ms-4" (click)="search = !search">
+        <i-feather
+          name="search"
+          class="mt-n3 text-light-muted feather-base text-dark"
+        ></i-feather>
+      </button>
+      <div class="ms-auto">
+        <button
+          mat-flat-button
+          class="fs-16 text-light-muted d-flex align-items-center pb-4 pe-8 ps-8 pt-4"
+          [matMenuTriggerFor]="menu"
+          color="accent"
+        >
+          <div class="d-flex align-items-center">
+            <img
+              width="32"
+              height="32"
+              [src]="userResponse?.picture"
+              class="rounded-circle"
+              alt=""
+            />
+            <span class="fw-light ms-2">Hi, </span>
+            <span class="fw-bold ms-2">{{ userResponse?.name }}</span>
+            <i-feather
+              style="margin-bottom: 5px"
+              name="chevron-down"
+              class="feather-base"
+            ></i-feather>
+          </div>
+        </button>
+        <mat-menu #menu="matMenu" class="profile-dropdown">
+          <div class="mb-4 p-16">
+            <button mat-menu-item class="fs-16">Edit Profile</button>
+            <button mat-menu-item class="fs-16">Account</button>
+            <button mat-menu-item class="fs-16">Change Password</button>
+            <button mat-menu-item class="fs-16">My Settings</button>
+          </div>
+
+          <hr />
+
+          <div class="p-16">
+            <button
+              mat-flat-button
+              color="accent"
+              class="w-100 text-white"
+              (click)="logOut()"
+            >
+              Logout
+            </button>
+          </div>
+        </mat-menu>
+      </div>
+    </mat-toolbar>
+
+    <!-- Content -->
+    <div class="body-wrapper">
+      <div class="page-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+
+    <p class="fs-16 pb-24 text-center">
+      © 2024 Website of
+      <a
+        href="https://www.wrappixel.com/templates/category/free-angular-templates/"
+        target="_blank"
+        class="text-indigo"
+        >phatnttse</a
+      >
+    </p>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<!-- Search Box -->
+<div *ngIf="search" class="search-section d-flex align-items-center">
+  <mat-form-field class="w-100" color="primary">
+    <mat-label class="fs-16">Search Here</mat-label>
+    <input matInput />
+  </mat-form-field>
+  <button mat-icon-button (click)="search = !search">
+    <i-feather
+      name="x-circle"
+      class="mt-n3 text-light-muted feather-base text-dark"
+    ></i-feather>
+  </button>
+</div>

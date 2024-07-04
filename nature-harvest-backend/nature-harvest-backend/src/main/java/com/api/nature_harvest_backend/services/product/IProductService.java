@@ -1,6 +1,7 @@
 package com.api.nature_harvest_backend.services.product;
 
 import com.api.nature_harvest_backend.dtos.ProductDto;
+import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.models.Product;
 import com.api.nature_harvest_backend.models.ProductImage;
 import com.api.nature_harvest_backend.responses.product.ProductResponse;
@@ -23,17 +24,21 @@ public interface IProductService {
 
     Product updateProduct(long id, ProductDto productDto) throws Exception;
 
-    void deleteProduct(long id);
+    boolean deleteProduct(long id) throws DataNotFoundException;
 
     boolean existsByName(String name);
 
     List<Product> findProductsByIds(List<Long> productIds);
 
-    List<ProductImage> createProductImage(
+    void createProductImage(
+            Product product,
+            List<String> urls) throws Exception;
+
+    List<ProductImage> updateProductImage(
             Long productId,
             List<String> urls) throws Exception;
 
     Page<ProductResponse> getProductByPriceRange(Double minPrice, Double maxPrice, PageRequest pageRequest);
 
-
+    Product getProductBySlug(String slug) throws Exception;
 }

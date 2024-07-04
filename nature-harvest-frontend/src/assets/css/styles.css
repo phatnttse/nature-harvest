@@ -1,10 +1,10 @@
-.tippy-box[data-animation="fade"][data-state="hidden"] {
+/* .tippy-box[data-animation="fade"][data-state="hidden"] {
   opacity: 0;
 }
 
 [data-tippy-root] {
   max-width: calc(100vw - 10px);
-}
+} */
 
 .tippy-box {
   position: relative;
@@ -360,7 +360,7 @@ swiper-slide {
   scroll-snap-stop: always;
 }
 
-.swiper-centered.swiper-horizontal
+/* .swiper-centered.swiper-horizontal
   > .swiper-wrapper
   > .swiper-slide:first-child {
   margin-inline-start: var(--swiper-centered-offset-before);
@@ -380,7 +380,7 @@ swiper-slide {
   width: 100%;
   min-width: 1px;
   height: var(--swiper-centered-offset-after);
-}
+} */
 
 .swiper-lazy-preloader {
   width: 42px;
@@ -5005,13 +5005,6 @@ span.flatpickr-weekday {
   right: 28px;
 }
 
-@charset "UTF-8"; /*!
-* animate.css - https://animate.style/
-* Version - 4.1.1
-* Licensed under the MIT license - http://opensource.org/licenses/MIT
-*
-* Copyright (c) 2020 Animate.css
-*/
 :root {
   --animate-duration: 1s;
   --animate-delay: 1s;
@@ -14577,11 +14570,7 @@ pre {
 }
 
 .bg-\[linear-gradient\(225deg\,rgba\(239\,18\,98\,1\)_0\%\,rgba\(67\,97\,238\,1\)_100\%\)\] {
-  background-image: linear-gradient(
-    225deg,
-    rgba(239, 18, 98, 1) 0%,
-    rgba(67, 97, 238, 1) 100%
-  );
+  background-image: linear-gradient(225deg, #fff 0%, #326b00 100%);
 }
 
 .bg-\[linear-gradient\(45deg\,\#fff9f9_0\%\,rgba\(255\,255\,255\,0\)_25\%\,rgba\(255\,255\,255\,0\)_75\%\,_\#fff9f9_100\%\)\] {

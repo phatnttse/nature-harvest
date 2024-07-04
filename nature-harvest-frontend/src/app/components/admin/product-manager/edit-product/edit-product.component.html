@@ -1,0 +1,280 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="mb-32" style="color: #03c9d7">Thông tin sản phẩm</h4>
+    <form [formGroup]="productForm" (submit)="saveChanges()">
+      <h6 class="mb-3 mt-5">Ảnh sản phẩm</h6>
+      <div class="upload-section">
+        <div
+          class="file-square"
+          [ngClass]="{
+            'no-upload':
+              product?.productImages?.length! + uploadedImages.length >= 5
+          }"
+          (click)="
+            product?.productImages?.length! + uploadedImages.length < 5 &&
+              uploadWidget()
+          "
+        >
+          <label for="cover-image">
+            <button
+              mat-button
+              type="button"
+              [ngClass]="{
+                'no-upload':
+                  product?.productImages?.length! + uploadedImages.length >= 5
+              }"
+            >
+              <i class="material-icons">add_photo_alternate</i>
+            </button>
+            <span class="fs-12 mt-2">Thêm hình ảnh</span>
+            <span class="fs-12"
+              >({{
+                product?.productImages?.length! + uploadedImages.length
+              }}/5)</span
+            >
+          </label>
+        </div>
+        <div class="uploaded-images">
+          @for (image of product?.productImages; track $index) {
+          <div class="uploaded-image">
+            <a [href]="image.imageUrl">
+              <img
+                width="100px"
+                height="100px"
+                style="object-fit: cover"
+                [src]="image.imageUrl"
+                alt=""
+              />
+            </a>
+          </div>
+          } @if (uploadedImages.length > 0) { @for (image of uploadedImages;
+          track $index) {
+          <div class="uploaded-image">
+            <a [href]="image">
+              <img
+                width="100px"
+                height="100px"
+                style="object-fit: cover"
+                [src]="image"
+                alt=""
+              />
+            </a>
+          </div>
+          } }
+        </div>
+      </div>
+
+      @if (isPictureError) {
+      <mat-error class="fs-12 mb-2 ms-3" style="visibility: visible"
+        >Vui lòng tải ảnh bìa</mat-error
+      >
+      }@else {
+      <mat-error style="visibility: hidden">Vui lòng tải ảnh bìa</mat-error>
+      }
+
+      <h6 class="mb-3">Ảnh bìa</h6>
+      @if (product) {
+      <div class="file-square mb-5">
+        <a [href]="product.thumbnail">
+          <img
+            width="100px"
+            height="100px"
+            style="object-fit: cover"
+            [src]="product.thumbnail"
+            alt=""
+          />
+        </a>
+      </div>
+      }@else {
+      <div class="file-square mb-5">
+        <label for="product-image">
+          <button mat-button type="button" disabled="">
+            <i class="material-icons">add_photo_alternate</i>
+          </button>
+        </label>
+      </div>
+      }
+
+      <h6 class="mb-3">Tên sản phẩm</h6>
+      <mat-form-field class="w-100 fs-16" appearance="outline">
+        <mat-label>Nhập tên sản phẩm</mat-label>
+        <input
+          matInput
+          type="text"
+          required
+          formControlName="title"
+          [class.is-invalid]="
+            productForm.get('title')?.invalid &&
+            productForm.get('title')?.touched
+          "
+        />
+        @if (productForm.get('title')?.hasError('required')) {
+        <mat-error>Tên sản phẩm không được để trống</mat-error>
+        }@else if (productForm.get('title')?.hasError('minlength')) {
+        <mat-error>Tên sản phẩm quá ngắn. Ít nhất 5 ký tự</mat-error>
+        }
+      </mat-form-field>
+
+      <h6 class="mb-3 mt-3">Danh mục sản phẩm</h6>
+      <div class="mb-5">
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          [matMenuTriggerFor]="categoryMenu"
+          extended
+          class="ms-2"
+        >
+          @if (selectedSubCategoryName) {
+          <span class="">{{ selectedCategoryName }}</span>
+          <span class=""> > {{ selectedSubCategoryName }}</span>
+          }@else { Chọn danh mục }
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+        @if (isCategoryError) {
+        <mat-error class="fs-12 mb-2 ms-4" style="visibility: visible"
+          >Danh mục không được để trống</mat-error
+        >
+        }@else {
+        <mat-error style="visibility: hidden"
+          >Danh mục không được để trống</mat-error
+        >
+        }
+      </div>
+
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <h6 class="mb-3">Giá sản phẩm (VNĐ)</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <mat-label>Nhập giá</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="price"
+                min="1000"
+                [class.is-invalid]="
+                  productForm.get('price')?.invalid &&
+                  productForm.get('price')?.touched
+                "
+              />
+              @if (productForm.get('price')?.hasError('required')) {
+              <mat-error>Giá không được để trống</mat-error>
+              }@else if (productForm.get('price')?.hasError('min')) {
+              <mat-error>Giá sản phẩm phải trên 1.000đ</mat-error>
+              }
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Số lượng sản phẩm (kg)</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <mat-label>Nhập số lượng</mat-label>
+              <input
+                matInput
+                type="number"
+                min="1"
+                formControlName="quantity"
+                [class.is-invalid]="
+                  productForm.get('quantity')?.invalid &&
+                  productForm.get('quantity')?.touched
+                "
+              />
+              @if (productForm.get('quantity')?.hasError('required')) {
+              <mat-error>Số lượng không được để trống</mat-error>
+              }@else if (productForm.get('quantity')?.hasError('min')) {
+              <mat-error>Số lượng sản phẩm phải trên 1kg</mat-error>
+              }
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Giảm giá (%)</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <mat-label>Nhập giảm giá</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                max="100"
+                formControlName="discount"
+                [class.is-invalid]="
+                  productForm.get('discount')?.invalid &&
+                  productForm.get('discount')?.touched
+                "
+              />
+              @if (productForm.get('discount')?.hasError('min') ) {
+              <mat-error>Giảm giá phải trên 0%</mat-error>
+              }@else if (productForm.get('discount')?.hasError('max')) {
+              <mat-error>Giảm lớn nhất là 100%</mat-error>
+              }
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+
+      <h6 class="mb-3 mt-3">Mô tả sản phẩm</h6>
+      <mat-form-field class="w-100 fs-16" appearance="outline">
+        <mat-label>Nhập mô tả</mat-label>
+        <textarea
+          matInput
+          rows="6"
+          formControlName="description"
+          [class.is-invalid]="
+            productForm.get('description')?.invalid &&
+            productForm.get('description')?.touched
+          "
+        ></textarea>
+        @if (productForm.get('description')?.hasError('required')) {
+        <mat-error>Mô tả không được để trống</mat-error>
+        }@else if (productForm.get('description')?.hasError('minlength')) {
+        <mat-error>Mô tả sản phẩm quá ngắn. Ít nhất 100 ký tự</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Main category menu -->
+      <mat-menu #categoryMenu="matMenu">
+        @for (category of categoriesWithSubcategories$ | async; track $index) {
+        <button
+          mat-menu-item
+          (mouseover)="setCurrentCategory(category)"
+          [matMenuTriggerFor]="menu"
+        >
+          {{ category.name }}
+        </button>
+        }
+      </mat-menu>
+
+      <!-- Subcategory menu -->
+      <mat-menu #menu="matMenu">
+        @if (currentCategory) { @for (subcategory of
+        currentCategory.subcategories; track $index) {
+        <button
+          mat-menu-item
+          (click)="
+            selectCategory(
+              currentCategory.id,
+              currentCategory.name,
+              subcategory.id,
+              subcategory.name
+            )
+          "
+        >
+          {{ subcategory.name }}
+        </button>
+        } }
+      </mat-menu>
+
+      <div class="d-flex justify-content-end mt-5">
+        <button
+          mat-raised-button
+          class="fs-20 p-24"
+          color="accent"
+          type="submit"
+          extend
+        >
+          Lưu thay đổi
+          <mat-icon>task_alt</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

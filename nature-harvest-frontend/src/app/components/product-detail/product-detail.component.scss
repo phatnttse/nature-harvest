@@ -3184,6 +3184,14 @@ ul {
     padding-top: 10px;
   }
 }
+#sapo-product-reviews
+  .sapo-product-reviews-summary
+  .sapo-product-reviews-filter
+  input:checked
+  ~ .checkmark {
+  color: #80bb35;
+  border-color: #80bb35;
+}
 /* CSS cho ngôi sao */
 .star-on-png:before {
   content: "★";

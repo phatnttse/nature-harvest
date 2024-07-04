@@ -89,7 +89,7 @@
               <span class="old-price">
                 Giá thị trường:
                 <del class="price product-price-old">
-                  {{ product?.originalPrice }}₫
+                  {{ product?.originalPrice | number : "1.0" }}₫
                 </del>
               </span>
               <span class="save-price"
@@ -216,7 +216,7 @@
                       ><span>&nbsp;</span>Canh tác theo hướng hữu cơ. Trang trại
                       không sử dụng phân bón hóa học, không sử dụng thuốc diệt
                       cỏ, không dùng bất cứ loại hóa chất bảo vệ thực vật nào.
-                      Chỉ sử dụng các loại phân gà đã có chứng nhận hữu cơ
+                      Chỉ sử dụng các loại phân đã có chứng nhận hữu cơ
                       OMRILIST, sử dụng thêm các loại phân chuồng ủ hoai cùng
                       thực vậy, các loại phân trùn quế tùy theo mùa. Tùy vào
                       từng mùa trong năm, vườn có sử dụng thêm các chế phẩm sinh
@@ -289,7 +289,7 @@
                                       </div>
                                       <p>
                                         (<span itemprop="ratingCount">{{
-                                          comments.length
+                                          commentList?.totalReviews
                                         }}</span>
                                         <span> đánh giá</span>)
                                       </p>
@@ -312,6 +312,7 @@
                                           value="all"
                                           checked=""
                                           style="display: none"
+                                          (change)="getComments()"
                                         />
                                         <span class="checkmark"
                                           ><span>Tất cả</span></span
@@ -325,11 +326,14 @@
                                           data-filter="score"
                                           value="5"
                                           style="display: none"
+                                          (change)="filterComments(5, null)"
                                         />
                                         <span class="checkmark"
                                           ><span>5 Điểm</span> (<span
                                             class="count"
-                                            >2</span
+                                            >{{
+                                              commentList?.fiveStarReviews
+                                            }}</span
                                           >)</span
                                         >
                                       </label>
@@ -341,12 +345,15 @@
                                           data-filter="score"
                                           value="4"
                                           style="display: none"
+                                          (change)="filterComments(4, null)"
                                         />
                                         <span class="checkmark"
                                           ><span>4 Điểm</span> (<span
                                             class="count"
                                             data-content="four_rating"
-                                            >0</span
+                                            >{{
+                                              commentList?.fourStarReviews
+                                            }}</span
                                           >)</span
                                         >
                                       </label>
@@ -358,11 +365,14 @@
                                           data-filter="score"
                                           value="3"
                                           style="display: none"
+                                          (change)="filterComments(3, null)"
                                         />
                                         <span class="checkmark"
                                           ><span>3 Điểm</span> (<span
                                             class="count"
-                                            >1</span
+                                            >{{
+                                              commentList?.threeStarReviews
+                                            }}</span
                                           >)</span
                                         >
                                       </label>
@@ -374,12 +384,15 @@
                                           data-filter="score"
                                           value="2"
                                           style="display: none"
+                                          (change)="filterComments(2, null)"
                                         />
                                         <span class="checkmark"
                                           ><span>2 Điểm</span> (<span
                                             class="count"
                                             data-content="two_rating"
-                                            >0</span
+                                            >{{
+                                              commentList?.twoStarReviews
+                                            }}</span
                                           >)</span
                                         >
                                       </label>
@@ -391,12 +404,15 @@
                                           data-filter="score"
                                           value="1"
                                           style="display: none"
+                                          (change)="filterComments(1, null)"
                                         />
                                         <span class="checkmark"
                                           ><span>1 Điểm</span> (<span
                                             class="count"
                                             data-content="one_rating"
-                                            >0</span
+                                            >{{
+                                              commentList?.oneStarReviews
+                                            }}</span
                                           >)</span
                                         >
                                       </label>
@@ -407,11 +423,14 @@
                                           name="filter"
                                           value="isimage"
                                           style="display: none"
+                                          (change)="filterComments(null, true)"
                                         />
                                         <span class="checkmark"
                                           ><span>Có hình ảnh</span> (<span
                                             class="count"
-                                            >2</span
+                                            >{{
+                                              commentList?.imageReviews
+                                            }}</span
                                           >)</span
                                         >
                                       </label>
@@ -484,15 +503,22 @@
                                   </div>
                                   <div class="sapo-review-images">
                                     <ul>
+                                      @for (picture of comment.pictures; track
+                                      $index) {
                                       <li>
                                         <a
                                           data-fancybox="gallery"
-                                          [href]="comment.picture"
+                                          [href]="picture.pictureUrl"
                                           ><img
-                                            [src]="comment.picture"
+                                            [src]="picture.pictureUrl"
                                             alt="Hình ảnh phản hồi"
+                                            style="
+                                              max-width: 100%;
+                                              object-fit: cover !important;
+                                            "
                                         /></a>
                                       </li>
+                                      }
                                     </ul>
                                   </div>
                                 </div>

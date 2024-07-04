@@ -1,4 +1,4 @@
-import { CommentDto } from './../dtos/order/comment.dto';
+import { CommentDto } from '../dtos/product/comment.dto';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -42,5 +42,33 @@ export class CommentService {
     return this.http.get<CommentListResponse>(`${this.apiBaseUrl}/comments`, {
       params,
     });
+  }
+
+  getFilteredComments(
+    productId: number,
+    starRating: number | null,
+    hasImage: boolean | null,
+    page: number,
+    limit: number
+  ): Observable<CommentListResponse> {
+    let params = new HttpParams()
+      .set('productId', productId.toString())
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    if (starRating !== null) {
+      params = params.set('starRating', starRating.toString());
+    }
+
+    if (hasImage !== null) {
+      params = params.set('hasImage', hasImage.toString());
+    }
+
+    return this.http.get<CommentListResponse>(
+      `${this.apiBaseUrl}/comments/filter`,
+      {
+        params,
+      }
+    );
   }
 }

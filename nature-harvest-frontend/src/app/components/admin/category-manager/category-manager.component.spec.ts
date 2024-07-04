@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UploadTestComponent } from './upload-test.component';
+import { CategoryManagerComponent } from './category-manager.component';
 
-describe('UploadTestComponent', () => {
-  let component: UploadTestComponent;
-  let fixture: ComponentFixture<UploadTestComponent>;
+describe('CategoryManagerComponent', () => {
+  let component: CategoryManagerComponent;
+  let fixture: ComponentFixture<CategoryManagerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UploadTestComponent]
+      imports: [CategoryManagerComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(UploadTestComponent);
+    fixture = TestBed.createComponent(CategoryManagerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

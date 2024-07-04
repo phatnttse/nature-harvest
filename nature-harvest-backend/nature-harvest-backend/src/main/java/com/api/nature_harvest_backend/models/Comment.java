@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "comments")
 @Getter
@@ -31,8 +33,11 @@ public class Comment extends BaseEntity {
 
     private String content;
 
-    private String picture;
+    @JoinColumn(name = "has_picture")
+    private boolean hasPicture;
 
-    @JoinColumn(name = "have_picture")
-    private boolean havePicture;
+    @OneToMany(mappedBy = "comment",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private List<CommentPicture> commentPictures;
 }

@@ -65,7 +65,12 @@
       <hr />
       @if (order.order.status === 'successful_delivery') {
       <div class="text-center">
-        <button type="button" (click)="openDialog(order)" mat-flat-button>
+        <button
+          type="button"
+          (click)="openDialog(order)"
+          mat-flat-button
+          color="primary"
+        >
           Đánh giá sản phẩm
         </button>
       </div>

@@ -21,7 +21,7 @@ CREATE TABLE `users` (
     `name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     `phone` VARCHAR(12),
     `date_of_birth` DATE,
-    `picture` VARCHAR(255),
+    `picture` VARCHAR(255) DEFAULT 'https://res.cloudinary.com/dlpust9lj/image/upload/v1719497920/360_F_208981748_9fbrA3Hy2GGajHn4XDtfzVFMzHiXguYg_kppkjd.jpg',
     `address` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
     `google_id` VARCHAR(255),
     `role_id` INT NOT NULL,
@@ -38,12 +38,15 @@ CREATE TABLE `roles` (
 
 CREATE TABLE `categories` (
     `category_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `thumbnail` VARCHAR(300),
+    `slug` VARCHAR(255) UNIQUE,
     `name` VARCHAR(100) NOT NULL
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 CREATE TABLE `subcategories` (
     `subcategory_id` INT PRIMARY KEY AUTO_INCREMENT,
     `category_id` INT NOT NULL,
+    `slug` VARCHAR(255) UNIQUE,
     `name` VARCHAR(100) NOT NULL,
     FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
@@ -96,13 +99,13 @@ CREATE TABLE `orders` (
     `phone` VARCHAR(12) NOT NULL,
     `delivery_address` VARCHAR(255) NOT NULL,
     `note` LONGTEXT,
-	`status` enum( 'pending','confirmed','picked_up','on_the_way','successful_delivery', 'cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Trạng thái đơn hàng',
-    `payment_status` enum('paid','unpaid') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Trạng thái thanh toán',
+    `status` ENUM('pending', 'confirmed', 'picked_up', 'on_the_way', 'successful_delivery', 'cancelled')CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI DEFAULT NULL COMMENT 'Trạng thái đơn hàng',
+    `payment_status` ENUM('paid', 'unpaid') CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI DEFAULT NULL COMMENT 'Trạng thái thanh toán',
     `payment_method` VARCHAR(10) NOT NULL,
     `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `delivery_date` TIMESTAMP,
     `amount` INT NOT NULL,
-	`reviewed` BOOLEAN DEFAULT FALSE NOT NULL,
+    `reviewed` BOOLEAN DEFAULT FALSE NOT NULL,
     `coupon_id` INT,
     `active` BOOLEAN DEFAULT TRUE NOT NULL
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
@@ -159,12 +162,16 @@ CREATE TABLE `comments` (
     `user_id` VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
     `star_rating` INT NOT NULL CHECK (star_rating >= 1 AND star_rating <= 5),
 	`content` VARCHAR(255)CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
-    `picture` VARCHAR(255),
-    `have_picture` BOOLEAN DEFAULT FALSE,
+    `has_picture` BOOLEAN DEFAULT FALSE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
+CREATE TABLE `comment_pictures` (
+    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `comment_id` INT NOT NULL,
+    `picture_url` VARCHAR(300)
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 ALTER TABLE `users` ADD FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`);
 
@@ -187,6 +194,8 @@ ALTER TABLE `tokens` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `comments` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 ALTER TABLE `comments` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+
+ALTER TABLE `comment_pictures` ADD FOREIGN KEY (`comment_id`) REFERENCES `comments` (`id`);
 
 ALTER TABLE `coupon_conditions` ADD FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`id`);
 

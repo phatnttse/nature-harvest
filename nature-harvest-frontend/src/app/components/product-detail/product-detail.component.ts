@@ -47,8 +47,8 @@ export class ProductDetailComponent implements OnInit {
   pages: number[] = [];
   totalPages: number = 0;
   visiblePages: number[] = [];
-
   comments: CommentResponse[] = [];
+  commentList?: CommentListResponse;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -143,7 +143,6 @@ export class ProductDetailComponent implements OnInit {
         this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
           closeButton: true,
           timeOut: 4000,
-          easeTime: 400,
           progressBar: true,
         });
       },
@@ -158,6 +157,32 @@ export class ProductDetailComponent implements OnInit {
           this.comments = response.comments.map(
             (comment) => new CommentResponse(comment)
           );
+          this.commentList = response;
+          this.totalPages = response.totalPages;
+          this.visiblePages = this.generateVisiblePageArray(
+            this.currentPage,
+            this.totalPages
+          );
+        },
+        error: (err) => console.log(err),
+      });
+  }
+
+  filterComments(starRating: number | null, hasImage: boolean | null) {
+    this.commentService
+      .getFilteredComments(
+        this.productId,
+        starRating,
+        hasImage,
+        this.currentPage,
+        this.itemsPerPage
+      )
+      .subscribe({
+        next: (response: CommentListResponse) => {
+          this.comments = response.comments.map(
+            (comment) => new CommentResponse(comment)
+          );
+          this.commentList = response;
           this.totalPages = response.totalPages;
           this.visiblePages = this.generateVisiblePageArray(
             this.currentPage,

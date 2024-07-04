@@ -1,4 +1,5 @@
 import { CategoryResponse } from '../category/category.response';
+import { SubCategoryResponse } from '../subcategory/subcategory.response';
 import { ProductImage } from './product-image.response';
 
 export class ProductDetailResponse {
@@ -13,6 +14,7 @@ export class ProductDetailResponse {
   purchases: number;
   averageRating: number;
   category: CategoryResponse;
+  subCategory: SubCategoryResponse;
   productImages: ProductImage[];
 
   constructor(data: any) {
@@ -27,6 +29,7 @@ export class ProductDetailResponse {
     this.purchases = data.purchases;
     this.averageRating = data.averageRating;
     this.category = data.category;
+    this.subCategory = data.subCategory;
     this.productImages = data.productImages;
   }
 }

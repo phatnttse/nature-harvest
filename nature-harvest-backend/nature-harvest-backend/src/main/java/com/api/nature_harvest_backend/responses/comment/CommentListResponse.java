@@ -14,4 +14,11 @@ import java.util.List;
 public class CommentListResponse {
     private List<CommentResponse> comments;
     private int totalPages;
+    private long totalReviews;
+    private long fiveStarReviews;
+    private long fourStarReviews;
+    private long threeStarReviews;
+    private long twoStarReviews;
+    private long oneStarReviews;
+    private long imageReviews;
 }

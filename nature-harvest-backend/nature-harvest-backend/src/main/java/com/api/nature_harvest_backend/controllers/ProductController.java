@@ -4,6 +4,7 @@ import com.api.nature_harvest_backend.dtos.ProductDto;
 import com.api.nature_harvest_backend.dtos.ProductImageDto;
 import com.api.nature_harvest_backend.models.Product;
 import com.api.nature_harvest_backend.models.ProductImage;
+import com.api.nature_harvest_backend.responses.base.BaseResponse;
 import com.api.nature_harvest_backend.responses.product.ProductDetailResponse;
 import com.api.nature_harvest_backend.responses.product.ProductListResponse;
 import com.api.nature_harvest_backend.responses.product.ProductResponse;
@@ -91,39 +92,48 @@ public class ProductController {
 //        logger.info(String.format("keyword = %s, categoryId = %d, page = %d, limit = %d",
 //                keyword, categoryId, page, limit));
 
-        List<ProductResponse> productResponses = productRedisService
+//        List<ProductResponse> productResponses = productRedisService
+//                .getAllProducts(keyword, categoryId,
+//                        subcategoryId,
+//                        minPrice,
+//                        maxPrice,
+//                        pageRequest);
+//        if (productResponses != null) {
+//            totalPages = productResponses.get(0).getTotalPages();
+//        }
+//        if (productResponses == null) {
+//            Page<ProductResponse> productPage = productService
+//                    .getAllProducts(keyword, categoryId,
+//                            subcategoryId,
+//                            minPrice,
+//                            maxPrice,
+//                            pageRequest);
+//
+//            totalPages = productPage.getTotalPages();
+//            productResponses = productPage.getContent();
+//            // Bổ sung totalPages vào các đối tượng ProductResponse
+////            for (ProductResponse product : productResponses) {
+////                product.setTotalPages(totalPages);
+////            }
+//            productRedisService.saveAllProducts(
+//                    productResponses,
+//                    keyword,
+//                    categoryId,
+//                    subcategoryId,
+//                    minPrice,
+//                    maxPrice,
+//                    pageRequest
+//            );
+//        }
+        Page<ProductResponse> productPage = productService
                 .getAllProducts(keyword, categoryId,
                         subcategoryId,
                         minPrice,
                         maxPrice,
                         pageRequest);
-        if (productResponses != null) {
-            totalPages = productResponses.get(0).getTotalPages();
-        }
-        if (productResponses == null) {
-            Page<ProductResponse> productPage = productService
-                    .getAllProducts(keyword, categoryId,
-                            subcategoryId,
-                            minPrice,
-                            maxPrice,
-                            pageRequest);
 
-            totalPages = productPage.getTotalPages();
-            productResponses = productPage.getContent();
-            // Bổ sung totalPages vào các đối tượng ProductResponse
-//            for (ProductResponse product : productResponses) {
-//                product.setTotalPages(totalPages);
-//            }
-            productRedisService.saveAllProducts(
-                    productResponses,
-                    keyword,
-                    categoryId,
-                    subcategoryId,
-                    minPrice,
-                    maxPrice,
-                    pageRequest
-            );
-        }
+        totalPages = productPage.getTotalPages();
+        List<ProductResponse> productResponses = productPage.getContent();
 
         return ResponseEntity.ok(ProductListResponse
                 .builder()
@@ -142,15 +152,27 @@ public class ProductController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
+    }
+
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<ProductDetailResponse> getProductBySlug(
+            @PathVariable("slug") String slug
+    ) {
+        try {
+            Product existingProduct = productService.getProductBySlug(slug);
+            return ResponseEntity.ok(ProductDetailResponse.fromProductDetail(existingProduct));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
 
     }
 
-    @PostMapping("create-images/{id}")
-    public ResponseEntity<List<ProductImage>> createImages(
+    @PostMapping("/update-images/{id}")
+    public ResponseEntity<List<ProductImage>> updateProductImage(
             @PathVariable("id") Long productId,
             @RequestBody ProductImageDto productImageDto) {
         try {
-            List<ProductImage> productImages = productService.createProductImage(productId, productImageDto.getUrls());
+            List<ProductImage> productImages = productService.updateProductImage(productId, productImageDto.getUrls());
             return ResponseEntity.ok(productImages);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
@@ -173,27 +195,39 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public ResponseEntity<String> deleteProduct(@PathVariable long id) {
+    public ResponseEntity<BaseResponse> deleteProduct(@PathVariable long id) {
         try {
-            productService.deleteProduct(id);
-            return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
+            if (productService.deleteProduct(id)) {
+                return ResponseEntity.ok().body(BaseResponse.builder()
+                        .message("Delete product successfully")
+                        .status(HttpStatus.OK.value())
+                        .build());
+            } else {
+                return ResponseEntity.ok().body(BaseResponse.builder()
+                        .message("Delete product fail")
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .build());
+            }
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(BaseResponse.builder()
+                    .message(e.getMessage())
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
         }
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public ResponseEntity<ProductResponse> updateProduct(
+    public ResponseEntity<ProductDetailResponse> updateProduct(
             @PathVariable long id,
             @RequestBody ProductDto productDto) {
         try {
             Product updatedProduct = productService.updateProduct(id, productDto);
-            return ResponseEntity.ok(ProductResponse.fromProduct(updatedProduct));
+            return ResponseEntity.ok(ProductDetailResponse.fromProductDetail(updatedProduct));
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

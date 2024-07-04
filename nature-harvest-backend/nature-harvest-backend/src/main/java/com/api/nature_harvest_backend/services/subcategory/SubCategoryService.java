@@ -6,6 +6,7 @@ import com.api.nature_harvest_backend.models.Category;
 import com.api.nature_harvest_backend.models.SubCategory;
 import com.api.nature_harvest_backend.repositories.CategoryRepository;
 import com.api.nature_harvest_backend.repositories.SubCategoryRepository;
+import com.api.nature_harvest_backend.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class SubCategoryService implements ISubCategoryService {
         SubCategory newSubCategory = SubCategory
                 .builder()
                 .name(subCategoryDto.getName())
+                .slug(StringUtils.toSlug(subCategoryDto.getName()))
                 .category(existingCategory)
                 .build();
         return subcategoryRepository.save(newSubCategory);

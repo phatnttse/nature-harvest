@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,6 +28,6 @@ public class CommentDto {
 
     @NotNull(message = "Content is required")
     private String content;
-    
-    private String picture;
+
+    private List<String> pictures;
 }

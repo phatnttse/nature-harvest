@@ -68,6 +68,7 @@ public class UserService implements IUserService {
                 .emailVerified(false)
                 .name(signUpDTO.getName())
                 .password(signUpDTO.getPassword())
+                .picture(User.DEFAULT_PICTURE)
                 .role(role)
                 .active(true)
                 .build();

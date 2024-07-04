@@ -66,7 +66,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logOut() {
-    debugger;
     this.userService.clearUserResponse();
     this.tokenService.removeToken();
     this.router.navigate(['/login']);

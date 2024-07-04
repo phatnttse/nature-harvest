@@ -18,12 +18,13 @@ public class ProductResponse {
     private int officialPrice;
     private String thumbnail;
     private String description;
+    private String slug;
     private int quantity;
     private int discount;
     private int purchases;
     private BigDecimal averageRating;
     private Category category;
-    //    private Long subCategoryId;
+    private Long subCategoryId;
     private int totalPages;
 
     public static ProductResponse fromProduct(Product product) {
@@ -34,12 +35,13 @@ public class ProductResponse {
                 .officialPrice(product.getOfficialPrice())
                 .thumbnail(product.getThumbnail())
                 .description(product.getDescription())
+                .slug(product.getSlug())
                 .quantity(product.getQuantity())
                 .discount(product.getDiscount())
                 .purchases(product.getPurchases())
                 .averageRating(product.getAverageRating())
                 .category(product.getCategory())
-//                .subCategoryId(product.getSubcategory().getId())
+                .subCategoryId(product.getSubcategory().getId())
                 .build();
         return productResponse;
     }

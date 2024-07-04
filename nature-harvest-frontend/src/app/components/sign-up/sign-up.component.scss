@@ -44,3 +44,13 @@
 .btn-text {
   vertical-align: middle;
 }
+.error-message {
+  height: 20px; /* or whatever height your error messages typically need */
+  visibility: hidden;
+  color: red;
+  font-size: 13px;
+}
+
+.error-message.ng-active {
+  visibility: visible;
+}

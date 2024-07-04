@@ -1,6 +1,42 @@
+// // // Custom Theming for Angular Material
+// // // For more information: https://material.angular.io/guide/theming
+// // @use '@angular/material' as mat;
+// // // Plus imports for other components in your app.
+
+// // // Include the common styles for Angular Material. We include this here so that you only
+// // // have to load a single css file for Angular Material in your app.
+// // // Be sure that you only ever include this mixin once!
+// // @include mat.core();
+
+// // // Define the theme object.
+// // $nature-harvest-frontend-theme: mat.define-theme((
+// //   color: (
+// //     theme-type: light,
+// //     primary: mat.$azure-palette,
+// //     tertiary: mat.$blue-palette,
+// //   ),
+// //   density: (
+// //     scale: 0,
+// //   )
+// // ));
+
+// // // Include theme styles for core and each component used in your app.
+// // // Alternatively, you can import and @include the theme mixins for each component
+// // // that you are using.
+// // :root {
+// //   @include mat.all-component-themes($nature-harvest-frontend-theme);
+// // }
+
+// // Comment out the line below if you want to use the pre-defined typography utility classes.
+// // For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// // @include mat.typography-hierarchy($theme);
+
+// // Comment out the line below if you want to use the deprecated `color` inputs.
+// // @include mat.color-variants-backwards-compatibility($theme);
 // // Custom Theming for Angular Material
 // // For more information: https://material.angular.io/guide/theming
-// @use '@angular/material' as mat;
+// @use "@angular/material" as mat;
+
 // // Plus imports for other components in your app.
 
 // // Include the common styles for Angular Material. We include this here so that you only
@@ -9,104 +45,68 @@
 // @include mat.core();
 
 // // Define the theme object.
-// $nature-harvest-frontend-theme: mat.define-theme((
-//   color: (
-//     theme-type: light,
-//     primary: mat.$azure-palette,
-//     tertiary: mat.$blue-palette,
-//   ),
-//   density: (
-//     scale: 0,
+// $my-theme: mat.define-theme(
+//   (
+//     color: (
+//       theme-type: light,
+//       primary: mat.$chartreuse-palette,
+//       tertiary: mat.$azure-palette,
+//     ),
+//     density: (
+//       scale: 0,
+//     ),
 //   )
-// ));
+// );
+
+// $button-theme: mat.define-theme(
+//   (
+//     color: (
+//       theme-type: dark,
+//       primary: mat.$rose-palette,
+//       tertiary: mat.$azure-palette,
+//     ),
+//     density: (
+//       scale: -1,
+//     ),
+//   )
+// );
+
+// html {
+//   // Apply the light theme by default
+//   @include mat.button-theme($button-theme);
+// }
 
 // // Include theme styles for core and each component used in your app.
 // // Alternatively, you can import and @include the theme mixins for each component
 // // that you are using.
 // :root {
-//   @include mat.all-component-themes($nature-harvest-frontend-theme);
+//   @include mat.all-component-themes($my-theme);
 // }
 
-// Comment out the line below if you want to use the pre-defined typography utility classes.
-// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
-// @include mat.typography-hierarchy($theme);
+// // Comment out the line below if you want to use the pre-defined typography utility classes.
+// // For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// // @include mat.typography-hierarchy($theme);
 
-// Comment out the line below if you want to use the deprecated `color` inputs.
-// @include mat.color-variants-backwards-compatibility($theme);
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-@use "@angular/material" as mat;
+// // Comment out the line below if you want to use the deprecated `color` inputs.
+// // @include mat.color-variants-backwards-compatibility($theme);
 
-// Plus imports for other components in your app.
+// // html,
+// // body {
+// //   height: 100%;
+// // }
+// // body {
+// //   margin: 0;
+// //   font-family: Roboto, "Helvetica Neue", sans-serif;
+// // }
 
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-@include mat.core();
+// // html, body { height: 100%; }
+// // body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-// Define the theme object.
-$my-theme: mat.define-theme(
-  (
-    color: (
-      theme-type: light,
-      primary: mat.$chartreuse-palette,
-      tertiary: mat.$azure-palette,
-    ),
-    density: (
-      scale: 0,
-    ),
-  )
-);
-
-$button-theme: mat.define-theme(
-  (
-    color: (
-      theme-type: dark,
-      primary: mat.$rose-palette,
-      tertiary: mat.$azure-palette,
-    ),
-    density: (
-      scale: -1,
-    ),
-  )
-);
-
-html {
-  // Apply the light theme by default
-  @include mat.button-theme($button-theme);
-}
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-:root {
-  @include mat.all-component-themes($my-theme);
-}
-
-// Comment out the line below if you want to use the pre-defined typography utility classes.
-// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
-// @include mat.typography-hierarchy($theme);
-
-// Comment out the line below if you want to use the deprecated `color` inputs.
-// @include mat.color-variants-backwards-compatibility($theme);
-
-// html,
-// body {
-//   height: 100%;
-// }
-// body {
-//   margin: 0;
-//   font-family: Roboto, "Helvetica Neue", sans-serif;
-// }
-
-// html, body { height: 100%; }
-// body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-// html,
-// body {
-//   height: 100%;
-// }
-// body {
-//   margin: 0;
-//   font-family: Roboto, "Helvetica Neue", sans-serif;
-// }
+// // html,
+// // body {
+// //   height: 100%;
+// // }
+// // body {
+// //   margin: 0;
+// //   font-family: Roboto, "Helvetica Neue", sans-serif;
+// // }

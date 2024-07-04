@@ -17,6 +17,11 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
+    private String thumbnail;
+
+    @Column(nullable = false, unique = true)
+    private String slug;
+
     @Column(name = "name", nullable = false)
     private String name;
 }

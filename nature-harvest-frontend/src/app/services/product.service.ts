@@ -1,4 +1,3 @@
-import { ProductResponse } from './../responses/product/product.response';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -6,6 +5,12 @@ import { HttpUtilService } from './http.util.service';
 import { ProductListResponse } from '../responses/product/product-list.response';
 import { ProductDetailResponse } from '../responses/product/product-detail.response';
 import { environment } from '../environments/environment.development';
+import { CreateProductDto } from '../dtos/product/create.dto';
+import { ProductResponse } from '../responses/product/product.response';
+import { ProductImage } from '../responses/product/product-image.response';
+import { ProductImageDto } from '../dtos/product/product-image.dto';
+import { UpdateProductDto } from '../dtos/product/update.dto';
+import { BaseResponse } from '../responses/base/base.response';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +25,38 @@ export class ProductService {
     private http: HttpClient,
     private httpUtilService: HttpUtilService
   ) {}
+
+  createProduct(
+    createProductDto: CreateProductDto
+  ): Observable<ProductResponse> {
+    return this.http.post<ProductResponse>(
+      `${this.apiBaseUrl}/products`,
+      createProductDto,
+      this.apiConfig
+    );
+  }
+
+  updateProduct(
+    productId: number,
+    updateProductDto: UpdateProductDto
+  ): Observable<ProductDetailResponse> {
+    return this.http.put<ProductDetailResponse>(
+      `${this.apiBaseUrl}/products/${productId}`,
+      updateProductDto,
+      this.apiConfig
+    );
+  }
+
+  updateProductImage(
+    productId: number,
+    productImageDto: ProductImageDto
+  ): Observable<ProductImage[]> {
+    return this.http.post<ProductImage[]>(
+      `${this.apiBaseUrl}/products/update-images/${productId}`,
+      productImageDto,
+      this.apiConfig
+    );
+  }
 
   getProducts(
     keyword: string,
@@ -41,6 +78,12 @@ export class ProductService {
     return this.http.get<ProductListResponse>(`${this.apiBaseUrl}/products`, {
       params,
     });
+  }
+
+  getDetailProductBySlug(slug: string): Observable<ProductDetailResponse> {
+    return this.http.get<ProductDetailResponse>(
+      `${this.apiBaseUrl}/products/slug/${slug}`
+    );
   }
 
   getProductsByCondition(
@@ -98,5 +141,12 @@ export class ProductService {
     return this.http.get<ProductListResponse>(`${this.apiBaseUrl}/products`, {
       params,
     });
+  }
+
+  deleteProduct(productId: number): Observable<BaseResponse> {
+    return this.http.patch<BaseResponse>(
+      `${this.apiBaseUrl}/products/${productId}`,
+      this.apiConfig
+    );
   }
 }

@@ -69,19 +69,21 @@ public class CategoryController {
 
     @GetMapping("/with-subcategories")
     public ResponseEntity<List<CategoryWithSubcategoriesDto>> getAllCategoriesWithSubcategories() throws Exception {
-        List<Category> categories = categoryRedisService.getAllCategories();
-        if (categories == null) {
-            categories = categoryService.getAllCategories();
-            categoryRedisService.saveAllCategories(categories);
-        }
+//        List<Category> categories = categoryRedisService.getAllCategories();
+//        if (categories == null) {
+//            categories = categoryService.getAllCategories();
+//            categoryRedisService.saveAllCategories(categories);
+//        }
+        List<Category> categories = categoryService.getAllCategories();
         List<CategoryWithSubcategoriesDto> categoriesWithSubcategories = new ArrayList<>();
 
         for (Category category : categories) {
-            List<SubCategory> subcategories = subCategoryRedisService.getAllSubCategoriesByCategory(category.getId());
-            if (subcategories == null) {
-                subcategories = subCategoryService.getSubCategoriesByCategory(category.getId());
-                subCategoryRedisService.saveAllSubCategoriesByCategory(subcategories, category.getId());
-            }
+//            List<SubCategory> subcategories = subCategoryRedisService.getAllSubCategoriesByCategory(category.getId());
+//            if (subcategories == null) {
+//                subcategories = subCategoryService.getSubCategoriesByCategory(category.getId());
+//                subCategoryRedisService.saveAllSubCategoriesByCategory(subcategories, category.getId());
+//            }
+            List<SubCategory> subcategories = subCategoryService.getSubCategoriesByCategory(category.getId());
             CategoryWithSubcategoriesDto categoryWithSubcategories = new CategoryWithSubcategoriesDto(
                     category.getId(),
                     category.getName(),
