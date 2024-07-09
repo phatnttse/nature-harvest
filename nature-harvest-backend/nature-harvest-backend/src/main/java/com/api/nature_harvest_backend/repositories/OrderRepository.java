@@ -15,7 +15,7 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, String> {
     List<Order> findByUser(User user);
 
-    @Query("SELECT o FROM Order o WHERE o.user = :user AND o.reviewed = :reviewed")
+    @Query("SELECT o FROM Order o WHERE o.user = :user AND o.reviewed = :reviewed AND o.active = true")
     List<Order> findByUserAndReviewed(@Param("user") User user, @Param("reviewed") boolean reviewed);
 
     @Query("SELECT o FROM Order o WHERE o.active = true AND (:keyword IS NULL OR :keyword = '' OR " +

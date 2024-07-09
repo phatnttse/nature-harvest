@@ -1,4 +1,3 @@
-import { ProductImage } from './../../../../responses/product/product-image.response';
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -24,8 +23,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ProductDetailResponse } from '../../../../responses/product/product-detail.response';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { cloudinary } from '../../../../environments/environment.development';
-import { ProductImageDto } from '../../../../dtos/product/product-image.dto';
+import { CLOUDINARY } from '../../../../environments/environment.development';
 import { UpdateProductDto } from '../../../../dtos/product/update.dto';
 
 @Component({
@@ -77,7 +75,7 @@ export class EditProductComponent implements OnInit {
 
     this.productForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
-      price: ['', [Validators.required, Validators.min(1000)]],
+      originalPrice: ['', [Validators.required, Validators.min(1000)]],
       description: ['', [Validators.required, Validators.minLength(100)]],
       quantity: ['', [Validators.required, Validators.min(1)]],
       discount: ['', [Validators.min(0)]],
@@ -87,9 +85,6 @@ export class EditProductComponent implements OnInit {
   ngOnInit(): void {
     const slug = this.activatedRoute.snapshot.paramMap.get('slug');
     if (slug) {
-      this.uploadedImages = JSON.parse(
-        localStorage.getItem('uploadedProductImages') || '[]'
-      );
       this.getProductDetails(slug);
     }
   }
@@ -102,28 +97,7 @@ export class EditProductComponent implements OnInit {
         this.selectedSubCategoryId = response.subCategory.id;
         this.selectedCategoryName = response.category.name;
         this.selectedSubCategoryName = response.subCategory.name;
-        this.productForm = this.formBuilder.group({
-          title: [
-            response.title,
-            [Validators.required, Validators.minLength(5)],
-          ],
-          price: [
-            response.originalPrice,
-            [Validators.required, Validators.min(1000)],
-          ],
-          description: [
-            response.description,
-            [Validators.required, Validators.minLength(100)],
-          ],
-          quantity: [
-            response.quantity,
-            [Validators.required, Validators.min(1)],
-          ],
-          discount: [
-            response.discount,
-            [Validators.min(0), Validators.max(100)],
-          ],
-        });
+        this.productForm.patchValue(response);
       },
       complete: () => {
         debugger;
@@ -224,8 +198,8 @@ export class EditProductComponent implements OnInit {
     this.isDisabled = true;
     window.cloudinary.openUploadWidget(
       {
-        cloudName: cloudinary.cloudName,
-        uploadPreset: cloudinary.uploadPreset,
+        cloudName: CLOUDINARY.cloudName,
+        uploadPreset: CLOUDINARY.uploadPreset,
         sources: ['local', 'url'],
         tags: ['myphotoalbum-nature-harvest'],
         clientAllowedFormats: ['image'],

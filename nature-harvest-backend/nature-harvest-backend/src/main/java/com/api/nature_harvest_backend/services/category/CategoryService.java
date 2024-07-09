@@ -1,10 +1,12 @@
 package com.api.nature_harvest_backend.services.category;
 
-import com.api.nature_harvest_backend.dtos.CategoryDto;
+import com.api.nature_harvest_backend.dtos.category.CategoryDto;
 import com.api.nature_harvest_backend.models.Category;
 import com.api.nature_harvest_backend.models.Product;
+import com.api.nature_harvest_backend.models.SubCategory;
 import com.api.nature_harvest_backend.repositories.CategoryRepository;
 import com.api.nature_harvest_backend.repositories.ProductRepository;
+import com.api.nature_harvest_backend.repositories.SubCategoryRepository;
 import com.api.nature_harvest_backend.responses.category.CategoryProductCountResponse;
 import com.api.nature_harvest_backend.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.List;
 public class CategoryService implements ICategoryService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+    private final SubCategoryRepository subCategoryRepository;
 
     @Override
     @Transactional
@@ -28,6 +31,7 @@ public class CategoryService implements ICategoryService {
                 .name(categoryDto.getName())
                 .slug(StringUtils.toSlug(categoryDto.getName()))
                 .thumbnail(categoryDto.getThumbnail())
+                .active(true)
                 .build();
         return categoryRepository.save(newCategory);
     }
@@ -40,7 +44,7 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        return categoryRepository.findAllActive();
     }
 
     @Override
@@ -50,26 +54,29 @@ public class CategoryService implements ICategoryService {
 
     @Override
     @Transactional
-    public Category updateCategory(long categoryId,
-                                   CategoryDto categoryDto) {
+    public void updateCategory(long categoryId,
+                               CategoryDto categoryDto) {
         Category existingCategory = getCategoryById(categoryId);
         existingCategory.setName(categoryDto.getName());
+        existingCategory.setSlug(StringUtils.toSlug(categoryDto.getName()));
+        existingCategory.setThumbnail(categoryDto.getThumbnail());
         categoryRepository.save(existingCategory);
-        return existingCategory;
     }
 
     @Override
     @Transactional
-    public Category deleteCategory(long id) throws Exception {
+    public void deleteCategory(long id) throws Exception {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
-
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        category.setActive(false);
+        categoryRepository.save(category);
+        // Update related products
         List<Product> products = productRepository.findByCategory(category);
-        if (!products.isEmpty()) {
-            throw new IllegalStateException("Cannot delete category with associated products");
-        } else {
-            categoryRepository.deleteById(id);
-            return category;
-        }
+        products.forEach(product -> product.setActive(false));
+        productRepository.saveAll(products);
+
+        List<SubCategory> subCategories = subCategoryRepository.findByCategoryAndActive(category, false);
+        subCategories.forEach(subCategory -> subCategory.setActive(false));
+        subCategoryRepository.saveAll(subCategories);
     }
 }

@@ -61,32 +61,29 @@ export class ProductDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    debugger;
-    const productId = this.activatedRoute.snapshot.paramMap.get('id');
+    this.activatedRoute.paramMap.subscribe((params) => {
+      const slug = params.get('slug');
+      if (slug) {
+        this.getProductDetail(slug);
+      } else {
+        console.error('Invalid slug:', slug);
+      }
+    });
 
-    if (productId !== null) {
-      this.productId = +productId;
-    }
-    if (!isNaN(this.productId)) {
-      this.productService.getDetailProduct(this.productId).subscribe({
-        next: (response: ProductDetailResponse) => {
-          debugger;
-          this.product = response;
-        },
-        complete: () => {
-          debugger;
-        },
-        error: (error: HttpErrorResponse) => {
-          debugger;
-          console.error(error?.error?.message ?? '');
-        },
-      });
-    } else {
-      console.error('Invalid productId:', productId);
-    }
     this.currentPage =
       Number(this.localStorage?.getItem('currentCommentPage')) || 0;
     this.getComments();
+  }
+
+  getProductDetail(slug: string): void {
+    this.productService.getDetailProductBySlug(slug).subscribe({
+      next: (response: ProductDetailResponse) => {
+        this.product = response;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error?.error?.message ?? '');
+      },
+    });
   }
 
   thumbnailClick(index: number) {
@@ -151,7 +148,7 @@ export class ProductDetailComponent implements OnInit {
 
   getComments() {
     this.commentService
-      .getComments(this.productId, this.currentPage, this.itemsPerPage)
+      .getComments(this.product?.id!, this.currentPage, this.itemsPerPage)
       .subscribe({
         next: (response: CommentListResponse) => {
           this.comments = response.comments.map(
@@ -171,7 +168,7 @@ export class ProductDetailComponent implements OnInit {
   filterComments(starRating: number | null, hasImage: boolean | null) {
     this.commentService
       .getFilteredComments(
-        this.productId,
+        this.product?.id!,
         starRating,
         hasImage,
         this.currentPage,

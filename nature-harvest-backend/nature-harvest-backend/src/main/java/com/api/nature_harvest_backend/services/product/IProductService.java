@@ -1,6 +1,6 @@
 package com.api.nature_harvest_backend.services.product;
 
-import com.api.nature_harvest_backend.dtos.ProductDto;
+import com.api.nature_harvest_backend.dtos.product.ProductDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.models.Product;
 import com.api.nature_harvest_backend.models.ProductImage;
@@ -18,6 +18,8 @@ public interface IProductService {
     public Page<ProductResponse> getAllProducts(String keyword,
                                                 Long categoryId,
                                                 Long subcategoryId,
+                                                String categorySlug,
+                                                String subcategorySlug,
                                                 Long minPrice,
                                                 Long maxPrice,
                                                 PageRequest pageRequest);

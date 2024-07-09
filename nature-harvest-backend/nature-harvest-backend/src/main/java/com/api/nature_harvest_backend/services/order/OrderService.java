@@ -1,6 +1,7 @@
 package com.api.nature_harvest_backend.services.order;
 
-import com.api.nature_harvest_backend.dtos.OrderDto;
+import com.api.nature_harvest_backend.dtos.order.HandleOrderDto;
+import com.api.nature_harvest_backend.dtos.order.OrderDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.models.*;
 import com.api.nature_harvest_backend.repositories.*;
@@ -80,37 +81,54 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Order getOrder(String id) throws Exception {
+    public OrderAndOrderDetailsResponse getOrderById(String id) throws Exception {
         Order order = orderRepository.findById(id).orElseThrow(() ->
                 new DataNotFoundException("Cannot find order with id: " + id));
-        return order;
+        OrderResponse orderResponse = OrderResponse.fromOrder(order);
+        List<OrderDetailResponse> orderDetailResponses = OrderDetailResponse.fromOrderDetails(orderDetailRepository.findAllByOrder(order));
+        return OrderAndOrderDetailsResponse.builder()
+                .order(orderResponse)
+                .orderDetails(orderDetailResponses)
+                .build();
     }
 
     @Override
     @Transactional
-    public Order updateOrder(String id, OrderDto orderDto) throws DataNotFoundException {
+    public OrderAndOrderDetailsResponse updateOrder(String id, OrderDto orderDto) throws Exception {
         Order order = orderRepository.findById(id).orElseThrow(() ->
                 new DataNotFoundException("Cannot find order with id: " + id));
         User existingUser = userRepository.findById(
                 orderDto.getUserId()).orElseThrow(() ->
                 new DataNotFoundException("Cannot find user with id: " + id));
+        String existingEmail = order.getEmail();
+        String existingPaymentMethod = order.getPaymentMethod();
         // Tạo một luồng bảng ánh xạ riêng để kiểm soát việc ánh xạ
         modelMapper.typeMap(OrderDto.class, Order.class)
                 .addMappings(mapper -> mapper.skip(Order::setId));
         // Cập nhật các trường của đơn hàng từ orderDTO
         modelMapper.map(orderDto, order);
-        order.setUser(existingUser);
-        return orderRepository.save(order);
+        // Restore existing values if null in DTO
+        if (orderDto.getEmail() == null) {
+            order.setEmail(existingEmail);
+        }
+        if (orderDto.getPaymentMethod() == null) {
+            order.setPaymentMethod(existingPaymentMethod);
+        }
+        orderRepository.save(order);
+        OrderResponse orderResponse = OrderResponse.fromOrder(order);
+        List<OrderDetailResponse> orderDetailResponses = OrderDetailResponse.fromOrderDetails(orderDetailRepository.findAllByOrder(order));
+        return OrderAndOrderDetailsResponse.builder()
+                .order(orderResponse)
+                .orderDetails(orderDetailResponses)
+                .build();
     }
 
     @Override
     @Transactional
-    public void deleteOrder(String id) {
-        Order order = orderRepository.findById(id).orElse(null);
-        if (order != null) {
-            order.setActive(false);
-            orderRepository.save(order);
-        }
+    public void deleteOrder(String id) throws DataNotFoundException {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
+        order.setActive(false);
+        orderRepository.save(order);
     }
 
     @Override
@@ -136,5 +154,20 @@ public class OrderService implements IOrderService {
     @Override
     public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
         return orderRepository.findByKeyword(keyword, pageable);
+    }
+
+    @Override
+    @Transactional
+    public OrderAndOrderDetailsResponse handleOrder(HandleOrderDto handleOrderDto) throws Exception {
+        Order order = orderRepository.findById(handleOrderDto.getOrderId()).orElseThrow(() ->
+                new DataNotFoundException("Cannot find order with id: " + handleOrderDto.getOrderId()));
+        order.setStatus(handleOrderDto.getStatus().toLowerCase());
+        orderRepository.save(order);
+        OrderResponse orderResponse = OrderResponse.fromOrder(order);
+        List<OrderDetailResponse> orderDetailResponses = OrderDetailResponse.fromOrderDetails(orderDetailRepository.findAllByOrder(order));
+        return OrderAndOrderDetailsResponse.builder()
+                .order(orderResponse)
+                .orderDetails(orderDetailResponses)
+                .build();
     }
 }

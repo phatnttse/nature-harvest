@@ -26,11 +26,21 @@
   </div>
   <div class="container px-0">
     <nav class="navbar navbar-light navbar-expand-xl bg-white">
-      <a routerLink="/" class="navbar-brand"
+      <!-- <a routerLink="/" class="navbar-brand"
         ><h1 class="display-6 text-primary" style="font-size: 22px">
           Nature'sHarvest
         </h1></a
-      >
+      > -->
+      <a routerLink="/" class="navbar-brand">
+        <img
+          width="120px"
+          src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720436456/ebhqmo659apqbsoigbmy.png"
+          alt=""
+          class="img-fluid"
+          style="object-fit: cover"
+        />
+      </a>
+
       <button
         class="navbar-toggler px-3 py-2"
         type="button"
@@ -50,7 +60,7 @@
           >
           <li class="nav-item dropdown-hover position-static">
             <a
-              routerLink="/products/all"
+              routerLink="/products/list/all"
               class="nav-item nav-link fw-bold"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
@@ -85,7 +95,9 @@
                                   (click)="
                                     getProductsByCondition(
                                       category.id,
-                                      subcategory.id
+                                      subcategory.id,
+                                      category.slug,
+                                      subcategory.slug
                                     )
                                   "
                                   >{{ subcategory.name }}
@@ -134,6 +146,7 @@
 
           <a href="#" class="nav-item nav-link fw-bold">Liên hệ</a>
           <a href="#" class="nav-item nav-link fw-bold">Tin tức</a>
+          <a href="#" class="nav-item nav-link fw-bold">Khuyến mãi</a>
         </div>
         <div class="d-flex m-3 me-0">
           <button
@@ -194,71 +207,5 @@
 <!-- Navbar End -->
 
 <!-- Modal Search Start -->
-<!-- Modal Search Start -->
-<div
-  class="modal fade"
-  id="searchModal"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-fullscreen">
-    <div class="modal-content rounded-0">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Tìm kiếm sản phẩm</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body d-block align-items-center">
-        <div class="input-group w-75 d-flex mx-auto">
-          <input
-            type="search"
-            class="form-control p-3"
-            placeholder="Tìm kiếm"
-            aria-describedby="search-icon-1"
-            [(ngModel)]="keyword"
-            (input)="onSearch()"
-          />
-          <span
-            id="search-icon-1"
-            class="input-group-text p-3"
-            style="background-color: #008b4b"
-            ><i
-              (click)="search()"
-              data-bs-dismiss="modal"
-              class="fa fa-search"
-              style="color: #fff; cursor: pointer"
-            ></i
-          ></span>
-        </div>
-        <div class="input-group w-75 d-flex mx-auto mt-4">
-          <div class="" style="width: 100%">
-            @if (searchProductsResult.length > 0) { @for (product of
-            searchProductsResult; track $index) {
-            <div class="product-list mt-2">
-              <div class="product-item">
-                <img [src]="product.thumbnail" class="product-image" />
-                <div class="product-details">
-                  <span class="product-name">{{ product.title }}</span>
-                  <span class="product-price text-start text-primary"
-                    >{{ product.officialPrice | number : "1.0" }}₫</span
-                  >
-                </div>
-              </div>
-            </div>
-            } } @if (searchProductsResult.length === 0 && keyword) {
-            <div class="text-primary" style="font-size: 20px">
-              Không tìm thấy sản phẩm nào phù hợp.
-            </div>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<app-search></app-search>
 <!-- Modal Search End -->

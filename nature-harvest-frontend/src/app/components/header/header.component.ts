@@ -13,22 +13,27 @@ import { FormsModule } from '@angular/forms';
 import { ProductResponse } from '../../responses/product/product.response';
 import { ProductService } from '../../services/product.service';
 import { ProductListResponse } from '../../responses/product/product-list.response';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
-  imports: [RouterModule, CommonModule, CommonModule, FormsModule],
+  imports: [
+    RouterModule,
+    CommonModule,
+    CommonModule,
+    FormsModule,
+    SearchComponent,
+  ],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
   userResponse?: UserResponse | null;
   cartSize: number = 0;
   cartSubscription: Subscription | null = null;
   showProductNavbar: boolean = false;
   categoriesWithSubcategories$: Observable<CategoryWithSubcategoriesResponse[]>;
-  keyword: string = '';
-  searchProductsResult: ProductResponse[] = [];
   products: ProductResponse[] = [];
   subscriptions: Subscription[] = [];
 
@@ -45,24 +50,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const subscription = this.userService.userResponse$.subscribe(
-      (userResponse) => {
-        this.userResponse = userResponse;
-        if (this.userResponse != null) this.getCart();
-      }
-    );
+    this.userService.userResponse$.subscribe((userResponse) => {
+      this.userResponse = userResponse;
+      if (this.userResponse != null) this.getCart();
+    });
 
     this.cartSubscription = this.cartService.cart$.subscribe(
       (cartData: CartListResponse) => {
         this.cartSize = cartData.cart.length;
       }
     );
-    this.subscriptions.push(subscription);
-    this.categoryService.getCategoriesWithSubcategories().subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.categoryService.categoriesWithSubcategories$;
   }
 
   logOut() {
@@ -80,46 +78,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       },
     });
   }
-  onSearch() {
-    if (this.keyword.trim() === '') {
-      this.searchProductsResult = [];
-      return;
-    }
-
-    this.productService
-      .getProducts(this.keyword, 0, 0, '', '', 0, 100)
-      .subscribe({
-        next: (response) => {
-          this.searchProductsResult = response.products;
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-  }
-
-  search() {
-    if (this.keyword.trim() === '') {
-      this.searchProductsResult = [];
-      return;
-    }
-    this.productService
-      .getProducts(this.keyword, 0, 0, '', '', 0, 100)
-      .subscribe({
-        next: (response) => {
-          this.searchProductsResult = response.products;
-          this.router.navigate(['/products/search'], {
-            queryParams: { q: this.keyword },
-          });
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-  }
   getProductsByCondition(
     selectedCategoryId: number,
-    selectedSubCategoryId: number
+    selectedSubCategoryId: number,
+    categorySlug: string,
+    subcategorySlug: string
   ) {
     debugger;
     this.productService
@@ -129,10 +92,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         '',
         selectedCategoryId,
         selectedSubCategoryId,
+        categorySlug,
+        subcategorySlug,
         'id',
         'ascending',
         0,
-        8
+        2
       )
       .subscribe({
         next: (response: ProductListResponse) => {

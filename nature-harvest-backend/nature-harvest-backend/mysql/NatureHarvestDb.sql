@@ -40,7 +40,8 @@ CREATE TABLE `categories` (
     `category_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `thumbnail` VARCHAR(300),
     `slug` VARCHAR(255) UNIQUE,
-    `name` VARCHAR(100) NOT NULL
+    `name` VARCHAR(100) NOT NULL,
+    `active` BOOLEAN DEFAULT TRUE
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 CREATE TABLE `subcategories` (
@@ -48,6 +49,7 @@ CREATE TABLE `subcategories` (
     `category_id` INT NOT NULL,
     `slug` VARCHAR(255) UNIQUE,
     `name` VARCHAR(100) NOT NULL,
+	`active` BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
@@ -99,7 +101,7 @@ CREATE TABLE `orders` (
     `phone` VARCHAR(12) NOT NULL,
     `delivery_address` VARCHAR(255) NOT NULL,
     `note` LONGTEXT,
-    `status` ENUM('pending', 'confirmed', 'picked_up', 'on_the_way', 'successful_delivery', 'cancelled')CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI DEFAULT NULL COMMENT 'Trạng thái đơn hàng',
+    `status` ENUM('pending', 'confirmed', 'picked_up', 'on_the_way', 'successful_delivery', 'cancelled', 'refused') CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI DEFAULT NULL COMMENT 'Trạng thái đơn hàng',
     `payment_status` ENUM('paid', 'unpaid') CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI DEFAULT NULL COMMENT 'Trạng thái thanh toán',
     `payment_method` VARCHAR(10) NOT NULL,
     `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -109,8 +111,6 @@ CREATE TABLE `orders` (
     `coupon_id` INT,
     `active` BOOLEAN DEFAULT TRUE NOT NULL
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
-
-
 
 CREATE TABLE `order_details` (
     `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -144,16 +144,17 @@ CREATE TABLE `tokens` (
 CREATE TABLE `coupons` (
     `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `code` VARCHAR(50) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
-    `active` BOOLEAN DEFAULT TRUE
-)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
-
-CREATE TABLE `coupon_conditions` (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `coupon_id` INT NOT NULL,
+    `discount_type` ENUM('percentage', 'fixed') CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL COMMENT 'Loại giảm giá (phần trăm hay cố định)',
     `attribute` VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
     `operator` VARCHAR(10) NOT NULL,
 	`value` VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
-    `discount_amount` INT NOT NULL
+	`discount_amount` INT NOT NULL,
+    `description` LONGTEXT CHARACTER SET UTF8MB4 COLLATE UTF8MB4_GENERAL_CI NOT NULL,
+    `start_date` DATE,
+    `end_date` DATE,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `active` BOOLEAN DEFAULT TRUE
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI;
 
 CREATE TABLE `comments` (

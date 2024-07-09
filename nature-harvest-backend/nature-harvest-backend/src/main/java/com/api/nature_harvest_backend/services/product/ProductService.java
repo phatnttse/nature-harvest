@@ -1,6 +1,6 @@
 package com.api.nature_harvest_backend.services.product;
 
-import com.api.nature_harvest_backend.dtos.ProductDto;
+import com.api.nature_harvest_backend.dtos.product.ProductDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.InvalidParamException;
 import com.api.nature_harvest_backend.models.Category;
@@ -155,12 +155,14 @@ public class ProductService implements IProductService {
     public Page<ProductResponse> getAllProducts(String keyword,
                                                 Long categoryId,
                                                 Long subcategoryId,
+                                                String categorySlug,
+                                                String subcategorySlug,
                                                 Long minPrice,
                                                 Long maxPrice,
                                                 PageRequest pageRequest) {
         // Lấy danh sách sản phẩm theo trang (page), giới hạn (limit), và categoryId (nếu có)
         Page<Product> productsPage;
-        productsPage = productRepository.searchProducts(categoryId, subcategoryId, keyword, minPrice, maxPrice, pageRequest);
+        productsPage = productRepository.searchProducts(categoryId, subcategoryId, categorySlug, subcategorySlug, keyword, minPrice, maxPrice, pageRequest);
         return productsPage.map(ProductResponse::fromProduct);
     }
 

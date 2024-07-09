@@ -1,6 +1,6 @@
 package com.api.nature_harvest_backend.controllers;
 
-import com.api.nature_harvest_backend.dtos.*;
+import com.api.nature_harvest_backend.dtos.auth.*;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
 import com.api.nature_harvest_backend.models.Token;

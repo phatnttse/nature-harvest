@@ -1,7 +1,7 @@
 package com.api.nature_harvest_backend.services.user;
 
-import com.api.nature_harvest_backend.dtos.SignUpDto;
-import com.api.nature_harvest_backend.dtos.UpdateUserDto;
+import com.api.nature_harvest_backend.dtos.auth.SignUpDto;
+import com.api.nature_harvest_backend.dtos.auth.UpdateUserDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
 import com.api.nature_harvest_backend.models.User;

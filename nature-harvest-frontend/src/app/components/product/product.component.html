@@ -37,6 +37,8 @@
                             '',
                             category.id,
                             0,
+                            category.slug,
+                            '',
                             '',
                             '',
                             0,
@@ -72,6 +74,8 @@
                                 '',
                                 category.id,
                                 subcategory.id,
+                                '',
+                                subcategory.slug,
                                 '',
                                 '',
                                 0,
@@ -162,7 +166,7 @@
                 <span class="material-icons mt-2"> view_list </span>
               </button>
               <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="arrageDefault()">
+                <button mat-menu-item (click)="arrangeDefault()">
                   <span> Mặc định</span>
                 </button>
                 <button mat-menu-item (click)="arrangeByTitleAtoZ()">

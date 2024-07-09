@@ -24,6 +24,10 @@ import { CartService } from '../../services/cart.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CategoryWithSubcategoriesResponse } from '../../responses/category/category-subcategory-response';
 import { Observable, min } from 'rxjs';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatLabel } from '@angular/material/form-field';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-product',
@@ -44,12 +48,17 @@ import { Observable, min } from 'rxjs';
     BreadcrumbComponent,
     MatListModule,
     RouterModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatLabel,
   ],
 })
 export class ProductComponent implements OnInit {
   products: ProductResponse[] = [];
   selectedCategoryId: number = 0;
   selectedSubCategoryId: number = 0;
+  categorySlug: string = '';
+  subcategorySlug: string = '';
   currentPage: number = 0;
   itemsPerPage: number = 8;
   pages: number[] = [];
@@ -59,7 +68,7 @@ export class ProductComponent implements OnInit {
   localStorage?: Storage;
   panelOpenState = false;
   minPrice: number = 0;
-  maxPrice: number = 0;
+  maxPrice: number = 1000000;
   product?: ProductDetailResponse | null = null;
   modalStyle: boolean = false;
   currentImage?: string = this.product?.thumbnail;
@@ -70,6 +79,7 @@ export class ProductComponent implements OnInit {
   arrange: string = '';
   typeArrange: string = 'Mặc định';
   isFiltering: boolean = false;
+  checked: boolean = true;
 
   constructor(
     private categoryService: CategoryService,
@@ -84,21 +94,55 @@ export class ProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      const selectedCategoryId = +params['c'] || 0;
-      const selectedSubCategoryId = +params['sc'] || 0;
+    const categorySlug = this.route.snapshot.paramMap.get('category-slug');
+    const subcategorySlug =
+      this.route.snapshot.paramMap.get('subcategory-slug');
+    debugger;
+    if (categorySlug) {
       this.getProductsByCondition(
         this.minPrice,
-        10000000,
+        this.maxPrice,
         this.keyword,
-        selectedCategoryId,
-        selectedSubCategoryId,
+        this.selectedCategoryId,
+        this.selectedSubCategoryId,
+        categorySlug,
+        '',
         this.sortBy,
         this.arrange,
         this.currentPage,
         this.itemsPerPage
       );
-    });
+      this.categorySlug = categorySlug;
+    } else if (subcategorySlug) {
+      this.getProductsByCondition(
+        this.minPrice,
+        this.maxPrice,
+        this.keyword,
+        this.selectedCategoryId,
+        this.selectedSubCategoryId,
+        '',
+        subcategorySlug,
+        this.sortBy,
+        this.arrange,
+        this.currentPage,
+        this.itemsPerPage
+      );
+      this.subcategorySlug = subcategorySlug;
+    } else {
+      this.getProductsByCondition(
+        this.minPrice,
+        this.maxPrice,
+        this.keyword,
+        this.selectedCategoryId,
+        this.selectedSubCategoryId,
+        this.categorySlug,
+        this.subcategorySlug,
+        this.sortBy,
+        this.arrange,
+        this.currentPage,
+        this.itemsPerPage
+      );
+    }
     this.currentPage =
       Number(this.localStorage?.getItem('currentProductPage')) || 0;
   }
@@ -109,6 +153,8 @@ export class ProductComponent implements OnInit {
     keyword: string,
     selectedCategoryId: number,
     selectedSubCategoryId: number,
+    categorySlug: string,
+    subcategorySlug: string,
     sortBy: string,
     arrange: string,
     page: number,
@@ -128,6 +174,8 @@ export class ProductComponent implements OnInit {
         keyword,
         selectedCategoryId,
         selectedSubCategoryId,
+        categorySlug,
+        subcategorySlug,
         sortBy,
         arrange,
         page,
@@ -166,6 +214,8 @@ export class ProductComponent implements OnInit {
         this.keyword,
         this.selectedCategoryId,
         this.selectedSubCategoryId,
+        this.categorySlug,
+        this.subcategorySlug,
         this.sortBy,
         this.arrange,
         this.currentPage,
@@ -197,6 +247,8 @@ export class ProductComponent implements OnInit {
         this.keyword,
         this.selectedCategoryId,
         this.selectedSubCategoryId,
+        this.categorySlug,
+        this.subcategorySlug,
         this.sortBy,
         this.arrange,
         this.currentPage,
@@ -260,13 +312,15 @@ export class ProductComponent implements OnInit {
     });
   }
 
-  arrageDefault() {
+  arrangeDefault() {
     this.getProductsByCondition(
       this.minPrice,
       this.maxPrice,
       this.keyword,
       this.selectedCategoryId,
       this.selectedSubCategoryId,
+      this.categorySlug,
+      this.subcategorySlug,
       'id',
       'ascending',
       this.currentPage,
@@ -284,6 +338,8 @@ export class ProductComponent implements OnInit {
       this.keyword,
       this.selectedCategoryId,
       this.selectedSubCategoryId,
+      this.categorySlug,
+      this.subcategorySlug,
       'title',
       'ascending',
       this.currentPage,
@@ -301,6 +357,8 @@ export class ProductComponent implements OnInit {
       this.keyword,
       this.selectedCategoryId,
       this.selectedSubCategoryId,
+      this.categorySlug,
+      this.subcategorySlug,
       'title',
       'descending',
       this.currentPage,
@@ -318,6 +376,8 @@ export class ProductComponent implements OnInit {
       this.keyword,
       this.selectedCategoryId,
       this.selectedSubCategoryId,
+      this.categorySlug,
+      this.subcategorySlug,
       'officialPrice',
       'ascending',
       this.currentPage,
@@ -335,6 +395,8 @@ export class ProductComponent implements OnInit {
       this.keyword,
       this.selectedCategoryId,
       this.selectedSubCategoryId,
+      this.categorySlug,
+      this.subcategorySlug,
       'officialPrice',
       'descending',
       this.currentPage,

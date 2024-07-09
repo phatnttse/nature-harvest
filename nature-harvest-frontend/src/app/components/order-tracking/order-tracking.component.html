@@ -29,7 +29,17 @@
         </div>
       </article>
       <div class="track custom-track">
-        @for (step of steps; track $index) {
+        @if (order.order.status === 'refused') {
+        <div class="step active-fail">
+          <span class="icon"> <i [class]="refusedStatus.icon"></i> </span>
+          <span class="text">{{ refusedStatus.label }}</span>
+        </div>
+        }@else if (order.order.status === 'cancelled') {
+        <div class="step active-fail">
+          <span class="icon"> <i [class]="cancelledStatus.icon"></i> </span>
+          <span class="text">{{ cancelledStatus.label }}</span>
+        </div>
+        }@else { @for (step of steps; track $index) {
         <div
           class="step"
           [ngClass]="{
@@ -39,7 +49,7 @@
           <span class="icon"> <i [class]="step.icon"></i> </span>
           <span class="text">{{ step.label }}</span>
         </div>
-        }
+        } }
       </div>
       <hr />
       <ul class="row">

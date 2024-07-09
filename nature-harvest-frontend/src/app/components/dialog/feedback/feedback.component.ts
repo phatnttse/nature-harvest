@@ -25,7 +25,7 @@ import { MatIcon } from '@angular/material/icon';
 import { CommentService } from '../../../services/comment.service';
 import { ToastrService } from 'ngx-toastr';
 import { OrderAndOrderDetailsResponse } from '../../../responses/order/order-orderdetails-response';
-import { cloudinary } from '../../../environments/environment.development';
+import { CLOUDINARY } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-feedback',
@@ -160,8 +160,8 @@ export class FeedbackComponent {
     }
     window.cloudinary.openUploadWidget(
       {
-        cloudName: cloudinary.cloudName,
-        uploadPreset: cloudinary.uploadPreset,
+        cloudName: CLOUDINARY.cloudName,
+        uploadPreset: CLOUDINARY.uploadPreset,
         sources: ['local', 'url'],
         tags: ['myphotoalbum-nature-harvest'],
         clientAllowedFormats: ['image'],

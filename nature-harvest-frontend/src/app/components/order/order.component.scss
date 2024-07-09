@@ -2613,3 +2613,20 @@ td.printable-only {
   max-height: 200px;
   overflow-y: auto;
 }
+.voucher {
+  grid-column-end: 4;
+  grid-column-start: 2;
+  -ms-grid-column-span: 2;
+  align-items: center;
+  display: flex;
+  padding: 0.75rem 0;
+}
+.voucher-btn {
+  background: none;
+  border: 0;
+  color: #05a;
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0;
+  white-space: nowrap;
+}

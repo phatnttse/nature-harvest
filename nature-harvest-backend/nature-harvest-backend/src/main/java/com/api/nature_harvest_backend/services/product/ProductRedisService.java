@@ -25,6 +25,8 @@ public class ProductRedisService implements IProductRedisService {
     private String getKeyFrom(String keyword,
                               Long categoryId,
                               Long subcategoryId,
+                              String categorySlug,
+                              String subcategorySlug,
                               Long minPrice,
                               Long maxPrice,
                               PageRequest pageRequest) {
@@ -38,8 +40,8 @@ public class ProductRedisService implements IProductRedisService {
         }
         String sortKey = sortBuilder.toString();
         // Tạo key cho redis
-        String key = String.format("all_products:%s:%d:%d:%d:%d:%d:%d:%s",
-                keyword, categoryId, subcategoryId, minPrice, maxPrice, pageNumber, pageSize, sortKey);
+        String key = String.format("all_products:%s:%d:%d:%s:%s:%d:%d:%d:%d:%s",
+                keyword, categoryId, subcategoryId, categorySlug, subcategorySlug, minPrice, maxPrice, pageNumber, pageSize, sortKey);
         return key;
     }
 
@@ -48,6 +50,8 @@ public class ProductRedisService implements IProductRedisService {
     public List<ProductResponse> getAllProducts(String keyword,
                                                 Long categoryId,
                                                 Long subcategoryId,
+                                                String categorySlug,
+                                                String subcategorySlug,
                                                 Long minPrice,
                                                 Long maxPrice,
                                                 PageRequest pageRequest) throws JsonProcessingException {
@@ -55,7 +59,7 @@ public class ProductRedisService implements IProductRedisService {
         if (useRedisCache == false) {
             return null;
         }
-        String key = this.getKeyFrom(keyword, categoryId, subcategoryId, minPrice, maxPrice, pageRequest);
+        String key = this.getKeyFrom(keyword, categoryId, subcategoryId, categorySlug, subcategorySlug, minPrice, maxPrice, pageRequest);
         String json = (String) redisTemplate.opsForValue().get(key);
         List<ProductResponse> productResponses =
                 json != null ?
@@ -76,10 +80,12 @@ public class ProductRedisService implements IProductRedisService {
                                 String keyword,
                                 Long categoryId,
                                 Long subcategoryId,
+                                String categorySlug,
+                                String subcategorySlug,
                                 Long minPrice,
                                 Long maxPrice,
                                 PageRequest pageRequest) throws JsonProcessingException {
-        String key = this.getKeyFrom(keyword, categoryId, subcategoryId, minPrice, maxPrice, pageRequest);
+        String key = this.getKeyFrom(keyword, categoryId, subcategoryId, categorySlug, subcategorySlug, minPrice, maxPrice, pageRequest);
         String json = redisObjectMapper.writeValueAsString(productResponses);
         redisTemplate.opsForValue().set(key, json);
     }

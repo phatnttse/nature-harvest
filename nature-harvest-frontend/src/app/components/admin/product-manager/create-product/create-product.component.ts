@@ -19,7 +19,7 @@ import { CategoryService } from '../../../../services/category.service';
 import { Observable } from 'rxjs';
 import { CategoryWithSubcategoriesResponse } from '../../../../responses/category/category-subcategory-response';
 import { CommonModule } from '@angular/common';
-import { cloudinary } from '../../../../environments/environment.development';
+import { CLOUDINARY } from '../../../../environments/environment.development';
 import { CreateProductDto } from '../../../../dtos/product/create.dto';
 import { ProductResponse } from '../../../../responses/product/product.response';
 import { Router } from '@angular/router';
@@ -145,8 +145,8 @@ export class CreateProductComponent {
     this.isDisabled = true;
     window.cloudinary.openUploadWidget(
       {
-        cloudName: cloudinary.cloudName,
-        uploadPreset: cloudinary.uploadPreset,
+        cloudName: CLOUDINARY.cloudName,
+        uploadPreset: CLOUDINARY.uploadPreset,
         sources: ['local', 'url'],
         tags: ['myphotoalbum-nature-harvest'],
         clientAllowedFormats: ['image'],

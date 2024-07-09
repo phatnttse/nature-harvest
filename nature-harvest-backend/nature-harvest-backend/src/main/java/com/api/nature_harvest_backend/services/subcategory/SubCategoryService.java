@@ -1,6 +1,6 @@
 package com.api.nature_harvest_backend.services.subcategory;
 
-import com.api.nature_harvest_backend.dtos.SubCategoryDto;
+import com.api.nature_harvest_backend.dtos.category.SubCategoryDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.models.Category;
 import com.api.nature_harvest_backend.models.SubCategory;
@@ -31,13 +31,14 @@ public class SubCategoryService implements ISubCategoryService {
                 .name(subCategoryDto.getName())
                 .slug(StringUtils.toSlug(subCategoryDto.getName()))
                 .category(existingCategory)
+                .active(true)
                 .build();
         return subcategoryRepository.save(newSubCategory);
     }
 
     @Override
     public SubCategory getSubCategoryById(long id) throws DataNotFoundException {
-        return subcategoryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("SubCategory Not Found"));
+        return subcategoryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Subcategory Not Found"));
     }
 
     @Override
@@ -47,11 +48,11 @@ public class SubCategoryService implements ISubCategoryService {
                 .orElseThrow(() ->
                         new DataNotFoundException(
                                 "Cannot find category with id: " + categoryId));
-        return subcategoryRepository.findByCategory(existingCategory);
+        return subcategoryRepository.findByCategoryAndActive(existingCategory, true);
     }
 
     @Override
-    public SubCategory updateSubCategory(long subcategoryId, SubCategoryDto subCategoryDto) throws DataNotFoundException {
+    public void updateSubCategory(long subcategoryId, SubCategoryDto subCategoryDto) throws DataNotFoundException {
         SubCategory subCategory = getSubCategoryById(subcategoryId);
 
         if (subCategoryDto.getName() != null) {
@@ -61,12 +62,13 @@ public class SubCategoryService implements ISubCategoryService {
             Category category = categoryRepository.findById(subCategoryDto.getCategoryId()).orElseThrow(() -> new DataNotFoundException("Category not found"));
             subCategory.setCategory(category);
         }
-
-        return subcategoryRepository.save(subCategory);
+        subcategoryRepository.save(subCategory);
     }
 
     @Override
-    public SubCategory deleteSubCategory(long id) throws Exception {
-        return null;
+    public void deleteSubCategory(long id) throws Exception {
+        SubCategory subCategory = getSubCategoryById(id);
+        subCategory.setActive(false);
+        subcategoryRepository.save(subCategory);
     }
 }

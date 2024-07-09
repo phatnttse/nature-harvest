@@ -14,6 +14,8 @@ public interface IProductRedisService {
             String keyword,
             Long categoryId,
             Long subcategoryId,
+            String categorySlug,
+            String subcategorySlug,
             Long minPrice,
             Long maxPrice,
             PageRequest pageRequest) throws JsonProcessingException;
@@ -22,6 +24,8 @@ public interface IProductRedisService {
                          String keyword,
                          Long categoryId,
                          Long subcategoryId,
+                         String categorySlug,
+                         String subcategorySlug,
                          Long minPrice,
                          Long maxPrice,
                          PageRequest pageRequest) throws JsonProcessingException;

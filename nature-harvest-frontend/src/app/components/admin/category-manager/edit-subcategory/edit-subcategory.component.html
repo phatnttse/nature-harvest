@@ -1,0 +1,45 @@
+<h2 mat-dialog-title [align]="'center'">Tạo danh mục con</h2>
+<mat-dialog-content>
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="subcategoryForm" (submit)="onSubmit()">
+        <h6 class="mb-3">Tên danh mục</h6>
+        <mat-form-field class="w-100 fs-16" appearance="outline">
+          <mat-label>Nhập tên danh mục</mat-label>
+          <input
+            matInput
+            type="text"
+            required
+            formControlName="name"
+            [class.is-invalid]="
+              subcategoryForm.get('name')?.invalid &&
+              subcategoryForm.get('name')?.touched
+            "
+          />
+          @if (subcategoryForm.get('name')?.hasError('required')) {
+          <mat-error>Tên danh mục không được để trống</mat-error>
+          }@else if (subcategoryForm.get('name')?.hasError('minlength')) {
+          <mat-error>Tên danh mục quá ngắn. Ít nhất 5 ký tự</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="d-flex justify-content-end mt-5">
+          <button
+            mat-raised-button
+            class="fs-20 p-20"
+            color="accent"
+            type="submit"
+            extend
+            (click)="onSubmit()"
+          >
+            Lưu thay đổi
+            <mat-icon>task_alt</mat-icon>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions [align]="'center'">
+  <button mat-raised-button mat-dialog-close>Huỷ</button>
+</mat-dialog-actions>

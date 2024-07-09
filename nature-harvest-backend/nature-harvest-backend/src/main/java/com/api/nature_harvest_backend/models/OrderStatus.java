@@ -14,4 +14,5 @@ public class OrderStatus {
     public static final String ON_THE_WAY = "on_the_way";
     public static final String SUCCESSFUL_DELIVERY = "successful_delivery";
     public static final String CANCELLED = "cancelled";
+    public static final String REFUSED = "refused";
 }

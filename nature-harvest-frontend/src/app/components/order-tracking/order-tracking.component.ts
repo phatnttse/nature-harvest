@@ -59,6 +59,16 @@ export class OrderTrackingComponent implements OnInit {
       icon: 'fa fa-box',
     },
   ];
+  refusedStatus = {
+    label: 'Đơn hàng bị từ chối',
+    status: 'refused',
+    icon: 'fa fa-times-circle',
+  };
+  cancelledStatus = {
+    label: 'Đơn hàng bị hủy',
+    status: 'cancelled',
+    icon: 'fa fa-ban',
+  };
 
   constructor(
     private orderService: OrderService,

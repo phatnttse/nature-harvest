@@ -1,6 +1,6 @@
 package com.api.nature_harvest_backend.controllers;
 
-import com.api.nature_harvest_backend.dtos.CartDto;
+import com.api.nature_harvest_backend.dtos.cart.CartDto;
 import com.api.nature_harvest_backend.models.Cart;
 import com.api.nature_harvest_backend.responses.cart.CartListResponse;
 import com.api.nature_harvest_backend.responses.cart.CartResponse;
@@ -27,7 +27,7 @@ public class CartController {
             return ResponseEntity.ok(CartListResponse.builder()
                     .cart(CartResponse.fromCart(cart))
                     .build());
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
 
@@ -42,7 +42,7 @@ public class CartController {
             return ResponseEntity.ok(CartListResponse.builder()
                     .cart(CartResponse.fromCart(cart))
                     .build());
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
@@ -56,10 +56,11 @@ public class CartController {
             return ResponseEntity.ok(CartListResponse.builder()
                     .cart(CartResponse.fromCart(cart))
                     .build());
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
     @PostMapping("update-quantity")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<CartListResponse> updateQuantity(
@@ -69,10 +70,11 @@ public class CartController {
             return ResponseEntity.ok(CartListResponse.builder()
                     .cart(CartResponse.fromCart(cart))
                     .build());
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
     @GetMapping("/cart-size")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<CartSizeResponse> getTotalQuantity(@RequestHeader("Authorization") String token) {
@@ -85,6 +87,7 @@ public class CartController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
     @PostMapping("/clear-cart")
 //    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> clearCart(@RequestBody CartDto cartDto) {

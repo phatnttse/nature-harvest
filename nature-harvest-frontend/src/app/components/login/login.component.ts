@@ -28,6 +28,7 @@ import { UserResponse } from '../../responses/user/user.response';
 import { MatIconModule } from '@angular/material/icon';
 import { filter } from 'rxjs';
 import { ROLE_ADMIN, ROLE_USER } from '../../responses/user/role.response';
+import { GOOGLE } from '../../environments/environment.development';
 declare var google: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -89,18 +90,10 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        // Khởi tạo lại các thành phần tại đây
-        // Ví dụ: gọi lại hàm khởi tạo nút đăng nhập Google
-        this.initializeGoogleSignIn();
-      });
     if (this.platformLocation instanceof BrowserPlatformLocation) {
       // Chỉ chạy mã khi ở trong trình duyệt web
       google.accounts.id.initialize({
-        client_id:
-          '719610777931-akg597p377ho29jabqje6749hegpvhfd.apps.googleusercontent.com',
+        client_id: GOOGLE.clientId,
         callback: (response: any) => {
           this.loginGoogle(response.credential);
         },
@@ -114,23 +107,6 @@ export class LoginComponent implements OnInit {
         logo_alignment: 'left',
       });
     }
-  }
-  initializeGoogleSignIn() {
-    google.accounts.id.initialize({
-      client_id:
-        '719610777931-akg597p377ho29jabqje6749hegpvhfd.apps.googleusercontent.com',
-      callback: (response: any) => {
-        this.loginGoogle(response.credential);
-      },
-    });
-
-    google.accounts.id.renderButton(document.getElementById('google-btn'), {
-      theme: 'filled_blue',
-      size: 'large',
-      shape: 'rectangular',
-      with: '350',
-      logo_alignment: 'left',
-    });
   }
 
   login() {

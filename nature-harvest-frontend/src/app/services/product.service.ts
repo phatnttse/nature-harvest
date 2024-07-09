@@ -92,6 +92,8 @@ export class ProductService {
     keyword: string,
     categoryId: number,
     subcategoryId: number,
+    categorySlug: string,
+    subcategorySlug: string,
     sortBy: string,
     arrange: string,
     page: number,
@@ -101,6 +103,8 @@ export class ProductService {
       .set('keyword', keyword)
       .set('categoryId', categoryId)
       .set('subcategoryId', subcategoryId)
+      .set('categorySlug', categorySlug)
+      .set('subcategorySlug', subcategorySlug)
       .set('sortBy', sortBy)
       .set('arrange', arrange)
       .set('minPrice', minPrice)
@@ -123,6 +127,8 @@ export class ProductService {
     keyword: string,
     categoryId: number,
     subcategoryId: number,
+    categorySlug: string,
+    subcategorySlug: string,
     sortBy: string,
     arrange: string,
     page: number,
@@ -132,6 +138,8 @@ export class ProductService {
       .set('keyword', keyword)
       .set('categoryId', categoryId)
       .set('subcategoryId', subcategoryId)
+      .set('categorySlug', categorySlug)
+      .set('subcategorySlug', subcategorySlug)
       .set('sortBy', sortBy)
       .set('arrange', arrange)
       .set('minPrice', minPrice)

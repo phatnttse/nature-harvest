@@ -1,7 +1,7 @@
 package com.api.nature_harvest_backend.controllers;
 
-import com.api.nature_harvest_backend.dtos.ProductDto;
-import com.api.nature_harvest_backend.dtos.ProductImageDto;
+import com.api.nature_harvest_backend.dtos.product.ProductDto;
+import com.api.nature_harvest_backend.dtos.product.ProductImageDto;
 import com.api.nature_harvest_backend.models.Product;
 import com.api.nature_harvest_backend.models.ProductImage;
 import com.api.nature_harvest_backend.responses.base.BaseResponse;
@@ -65,6 +65,8 @@ public class ProductController {
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0", name = "categoryId") Long categoryId,
             @RequestParam(defaultValue = "0", name = "subcategoryId") Long subcategoryId,
+            @RequestParam(defaultValue = "", name = "categorySlug") String categorySlug,
+            @RequestParam(defaultValue = "", name = "subcategorySlug") String subcategorySlug,
             @RequestParam(defaultValue = "id", name = "sortBy") String sortBy,
             @RequestParam(defaultValue = "ascending", name = "arrange") String arrange,
             @RequestParam(defaultValue = "0") Long minPrice,
@@ -128,6 +130,8 @@ public class ProductController {
         Page<ProductResponse> productPage = productService
                 .getAllProducts(keyword, categoryId,
                         subcategoryId,
+                        categorySlug,
+                        subcategorySlug,
                         minPrice,
                         maxPrice,
                         pageRequest);

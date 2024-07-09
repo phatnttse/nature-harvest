@@ -1,0 +1,70 @@
+<div
+  class="modal fade"
+  id="searchModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content rounded-0">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Tìm kiếm sản phẩm</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body d-block align-items-center">
+        <div class="input-group w-75 d-flex mx-auto">
+          <input
+            type="search"
+            class="form-control p-3"
+            placeholder="Tìm kiếm"
+            aria-describedby="search-icon-1"
+            [(ngModel)]="keyword"
+            (input)="onSearch($event)"
+          />
+          <span
+            id="search-icon-1"
+            class="input-group-text p-3"
+            style="background-color: #008b4b"
+            ><i
+              (click)="search()"
+              data-bs-dismiss="modal"
+              class="fa fa-search"
+              style="color: #fff; cursor: pointer"
+            ></i
+          ></span>
+        </div>
+        <div class="input-group w-75 d-flex mx-auto mt-4">
+          <div class="" style="width: 100%">
+            @if (searchProductsResult.length > 0) { @for (product of
+            searchProductsResult; track $index) {
+            <div class="product-list mt-2">
+              <div
+                class="product-item"
+                (click)="viewProduct(product.slug)"
+                data-bs-dismiss="modal"
+              >
+                <img [src]="product.thumbnail" class="product-image" />
+                <div class="product-details">
+                  <span class="product-name">{{ product.title }}</span>
+                  <span class="product-price text-start text-primary"
+                    >{{ product.officialPrice | number : "1.0" }}₫</span
+                  >
+                </div>
+              </div>
+            </div>
+            } } @if (searchProductsResult.length === 0 && keyword === '') {
+            <div class="text-primary" style="font-size: 20px">
+              Không tìm thấy sản phẩm nào phù hợp.
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

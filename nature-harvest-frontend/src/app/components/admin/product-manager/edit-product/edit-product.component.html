@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-body">
-    <h4 class="mb-32" style="color: #03c9d7">Thông tin sản phẩm</h4>
+    <h4 class="mb-32 text-primary">Thông tin sản phẩm</h4>
     <form [formGroup]="productForm" (submit)="saveChanges()">
       <h6 class="mb-3 mt-5">Ảnh sản phẩm</h6>
       <div class="upload-section">
@@ -151,16 +151,16 @@
               <input
                 matInput
                 type="number"
-                formControlName="price"
+                formControlName="originalPrice"
                 min="1000"
                 [class.is-invalid]="
-                  productForm.get('price')?.invalid &&
-                  productForm.get('price')?.touched
+                  productForm.get('originalPrice')?.invalid &&
+                  productForm.get('originalPrice')?.touched
                 "
               />
-              @if (productForm.get('price')?.hasError('required')) {
+              @if (productForm.get('originalPrice')?.hasError('required')) {
               <mat-error>Giá không được để trống</mat-error>
-              }@else if (productForm.get('price')?.hasError('min')) {
+              }@else if (productForm.get('originalPrice')?.hasError('min')) {
               <mat-error>Giá sản phẩm phải trên 1.000đ</mat-error>
               }
             </mat-form-field>
@@ -267,7 +267,7 @@
         <button
           mat-raised-button
           class="fs-20 p-24"
-          color="accent"
+          color="primary"
           type="submit"
           extend
         >

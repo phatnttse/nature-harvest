@@ -54,6 +54,9 @@ body {
 .track .step.active:before {
   background: #008b4b;
 }
+.track .step.active-fail:before {
+  background: #aa1906;
+}
 .track .step::before {
   height: 7px;
   position: absolute;
@@ -66,6 +69,11 @@ body {
   background: #008b4b;
   color: #fff;
 }
+.track .step.active .icon {
+  background: #008b4b;
+  color: #fff;
+}
+
 .track .icon {
   display: inline-block;
   width: 40px;

@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 public class CategoryProductCountResponse {
-    private Long categoryId;
+    private Long id;
     private String name;
-    private Long productCount;
+    private String thumbnail;
+    private Long count;
 }

@@ -23,11 +23,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE " +
             "(:categoryId IS NULL OR :categoryId = 0 OR p.category.id = :categoryId) " +
             "AND (:subcategoryId IS NULL OR :subcategoryId = 0 OR p.subcategory.id = :subcategoryId) " +
+            "AND (:categorySlug IS NULL OR :categorySlug = '' OR p.category.slug = :categorySlug) " +
+            "AND (:subcategorySlug IS NULL OR :subcategorySlug = '' OR p.subcategory.slug = :subcategorySlug) " +
             "AND (:keyword IS NULL OR :keyword = '' OR p.title LIKE %:keyword%) " +
             "AND (p.officialPrice >= :minPrice AND p.officialPrice <= :maxPrice) " +
             "AND p.active = true")
     Page<Product> searchProducts(@Param("categoryId") Long categoryId,
                                  @Param("subcategoryId") Long subcategoryId,
+                                 @Param("categorySlug") String categorySlug,
+                                 @Param("subcategorySlug") String subcategorySlug,
                                  @Param("keyword") String keyword,
                                  @Param("minPrice") Long minPrice,
                                  @Param("maxPrice") Long maxPrice,

@@ -1,6 +1,6 @@
 package com.api.nature_harvest_backend.services.orderdetails;
 
-import com.api.nature_harvest_backend.dtos.OrderDetailDto;
+import com.api.nature_harvest_backend.dtos.order.OrderDetailDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.models.Order;
 import com.api.nature_harvest_backend.models.OrderDetail;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderDetailService implements IOrderDetailService{
+public class OrderDetailService implements IOrderDetailService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
 

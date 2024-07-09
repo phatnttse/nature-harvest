@@ -1,0 +1,315 @@
+<mat-card class="w-100">
+  <mat-card-content>
+    <h4 class="text-primary">Thông tin sản phẩm</h4>
+    <div class="table-responsive mt-20">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        class="w-100 text-nowrap"
+      >
+        <ng-container matColumnDef="thumbnail">
+          <th mat-header-cell *matHeaderCellDef>Hình ảnh</th>
+          <td mat-cell *matCellDef="let product">
+            <a [href]="product.thumbnail">
+              <img
+                class="rounded"
+                width="50px"
+                height="50px"
+                [src]="product.thumbnail"
+                [alt]="product.productName"
+              />
+            </a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="productName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="productName">
+            Tên
+          </th>
+          <td mat-cell *matCellDef="let product">
+            <p class="mb-0">{{ product.productName }}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="price">Giá</th>
+          <td mat-cell *matCellDef="let product">
+            <p class="fw-medium mb-0">{{ product.price | number : "1.0" }}₫</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="quantity">
+            Số lượng
+          </th>
+          <td mat-cell *matCellDef="let product">
+            <p class="fw-medium mb-0">x{{ product.quantity }} kg</p>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<div class="card">
+  <div class="card-body">
+    <h4 class="mb-32 text-primary">Thông tin nhận hàng</h4>
+    <form
+      [formGroup]="orderForm"
+      (submit)="saveChanges(order?.id!, order?.userId!)"
+    >
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <h6 class="mb-3">Mã đơn hàng</h6>
+            <mat-form-field class="w-100 fs-16" appearance="fill">
+              <input
+                matInput
+                type="text"
+                required
+                formControlName="id"
+                [class.is-invalid]="
+                  orderForm.get('id')?.invalid && orderForm.get('id')?.touched
+                "
+              />
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Tên người nhận</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <input
+                matInput
+                type="text"
+                required
+                formControlName="name"
+                [class.is-invalid]="
+                  orderForm.get('name')?.invalid &&
+                  orderForm.get('name')?.touched
+                "
+              />
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Email</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <input
+                matInput
+                type="email"
+                required
+                formControlName="email"
+                [class.is-invalid]="
+                  orderForm.get('email')?.invalid &&
+                  orderForm.get('email')?.touched
+                "
+              />
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <h6 class="mb-3">Số điện thoại</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <input
+                matInput
+                type="phone"
+                required
+                formControlName="phone"
+                [class.is-invalid]="
+                  orderForm.get('phone')?.invalid &&
+                  orderForm.get('phone')?.touched
+                "
+              />
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Địa chỉ giao hàng</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <input
+                matInput
+                type="text"
+                required
+                formControlName="deliveryAddress"
+                [class.is-invalid]="
+                  orderForm.get('deliveryAddress')?.invalid &&
+                  orderForm.get('deliveryAddress')?.touched
+                "
+              />
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <h6 class="mb-3">Trạng thái đơn hàng</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <input
+                matInput
+                type="text"
+                formControlName="status"
+                [class.is-invalid]="
+                  orderForm.get('status')?.invalid &&
+                  orderForm.get('status')?.touched
+                "
+              />
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Phương thức thanh toán</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <input
+                matInput
+                type="text"
+                formControlName="paymentMethod"
+                [class.is-invalid]="
+                  orderForm.get('paymentMethod')?.invalid &&
+                  orderForm.get('paymentMethod')?.touched
+                "
+              />
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Trạng thái thanh toán</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <input
+                matInput
+                type="text"
+                formControlName="paymentStatus"
+                [class.is-invalid]="
+                  orderForm.get('paymentStatus')?.invalid &&
+                  orderForm.get('paymentStatus')?.touched
+                "
+              />
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <h6 class="mb-3">Ngày đặt hàng</h6>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [matDatepicker]="orderDatePicker"
+                formControlName="orderDate"
+                [class.is-invalid]="
+                  orderForm.get('orderDate')?.invalid &&
+                  orderForm.get('orderDate')?.touched
+                "
+              />
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="orderDatePicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #orderDatePicker></mat-datepicker>
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Ngày giao hàng</h6>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [matDatepicker]="deliveryDatePicker"
+                formControlName="deliveryDate"
+                [class.is-invalid]="
+                  orderForm.get('deliveryDate')?.invalid &&
+                  orderForm.get('deliveryDate')?.touched
+                "
+              />
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="deliveryDatePicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #deliveryDatePicker></mat-datepicker>
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Doanh thu đơn hàng (VNĐ)</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <input
+                matInput
+                type="number"
+                min="0"
+                formControlName="amount"
+                [class.is-invalid]="
+                  orderForm.get('amount')?.invalid &&
+                  orderForm.get('amount')?.touched
+                "
+              />
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+
+      <h6 class="mb-3 mt-3">Ghi chú</h6>
+      <mat-form-field class="w-100 fs-16" appearance="outline">
+        <mat-label>Nhập ghi chú</mat-label>
+        <textarea
+          matInput
+          rows="6"
+          formControlName="note"
+          [class.is-invalid]="
+            orderForm.get('note')?.invalid && orderForm.get('note')?.touched
+          "
+        ></textarea>
+      </mat-form-field>
+
+      <div class="d-flex justify-content-end mt-5">
+        <button
+          mat-raised-button
+          class="fs-15 me-3 p-20"
+          color="primary"
+          type="submit"
+          extend
+        >
+          Lưu thay đổi
+          <mat-icon>task_alt</mat-icon>
+        </button>
+        @if (order?.status === 'pending') {
+        <button
+          mat-raised-button
+          class="fs-15 me-3 p-20"
+          color="warn"
+          type="button"
+          extend
+          (click)="handleOrder(order?.id!, 'refused')"
+        >
+          Từ chối đơn hàng
+          <mat-icon>event_busy</mat-icon>
+        </button>
+        <button
+          mat-raised-button
+          class="fs-15 p-20"
+          color="primary"
+          type="button"
+          extend
+          (click)="handleOrder(order?.id!, 'confirmed')"
+        >
+          Xác nhận đơn hàng
+          <mat-icon>task_alt</mat-icon>
+        </button>
+        }@else {
+        <button
+          mat-raised-button
+          class="fs-15 p-20"
+          color="primary"
+          type="button"
+          extend
+          (click)="handleOrder(order?.id!, '')"
+        >
+          Chuyển trạng thái
+          <mat-icon>trending_flat</mat-icon>
+        </button>
+        }
+      </div>
+    </form>
+  </div>
+</div>

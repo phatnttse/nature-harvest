@@ -1,13 +1,15 @@
-import { CommentDto } from '../dtos/product/comment.dto';
+import { HandleOrderDto } from './../dtos/order/handle-order.dto';
 import { OrderResponse } from './../responses/order/order.response';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpUtilService } from './http.util.service';
 import { OrderDto } from '../dtos/order/order.dto';
 import { OrderAndOrderDetailsResponse } from '../responses/order/order-orderdetails-response';
 import { environment } from '../environments/environment.development';
-import { CommentResponse } from '../responses/comment/comment.response';
+import { OrderListResponse } from '../responses/order/order-list.response';
+import { BaseResponse } from '../responses/base/base.response';
+import { UpdateOrderDto } from '../dtos/order/update.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -31,8 +33,8 @@ export class OrderService {
       this.apiConfig
     );
   }
-  getOrderByOrderId(orderId: string): Observable<OrderResponse> {
-    return this.http.get<OrderResponse>(
+  getOrderByOrderId(orderId: string): Observable<OrderAndOrderDetailsResponse> {
+    return this.http.get<OrderAndOrderDetailsResponse>(
       `${this.apiBaseUrl}/orders/${orderId}`,
       this.apiConfig
     );
@@ -43,6 +45,48 @@ export class OrderService {
   ): Observable<OrderAndOrderDetailsResponse[]> {
     return this.http.get<OrderAndOrderDetailsResponse[]>(
       `${this.apiBaseUrl}/orders/user/${userId}`,
+      this.apiConfig
+    );
+  }
+
+  getOrders(
+    keyword: string,
+    page: number,
+    limit: number
+  ): Observable<OrderListResponse> {
+    const params = new HttpParams()
+      .set('keyword', keyword)
+      .set('page', page)
+      .set('limit', limit);
+    return this.http.get<OrderListResponse>(`${this.apiBaseUrl}/orders`, {
+      params,
+    });
+  }
+
+  handleOrder(
+    handleOrderDto: HandleOrderDto
+  ): Observable<OrderAndOrderDetailsResponse> {
+    return this.http.patch<OrderAndOrderDetailsResponse>(
+      `${this.apiBaseUrl}/orders/handle`,
+      handleOrderDto,
+      this.apiConfig
+    );
+  }
+
+  updateOrder(
+    orderId: string,
+    updateOrderDto: UpdateOrderDto
+  ): Observable<OrderAndOrderDetailsResponse> {
+    return this.http.patch<OrderAndOrderDetailsResponse>(
+      `${this.apiBaseUrl}/orders/${orderId}`,
+      updateOrderDto,
+      this.apiConfig
+    );
+  }
+
+  deleteOrder(orderId: string): Observable<BaseResponse> {
+    return this.http.delete<BaseResponse>(
+      `${this.apiBaseUrl}/orders/${orderId}`,
       this.apiConfig
     );
   }

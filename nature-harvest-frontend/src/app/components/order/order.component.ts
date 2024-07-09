@@ -22,6 +22,8 @@ import { ClearCartDto } from '../../dtos/cart/clear-cart.dto';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { PaymentService } from '../../services/payment.service';
+import { MatDialog } from '@angular/material/dialog';
+import { VoucherComponent } from '../voucher/voucher.component';
 
 @Component({
   selector: 'app-order',
@@ -40,13 +42,6 @@ import { PaymentService } from '../../services/payment.service';
   ],
 })
 export class OrderComponent implements OnInit {
-  private userService = inject(UserService);
-  private cartService = inject(CartService);
-  private orderService = inject(OrderService);
-  private paymentService = inject(PaymentService);
-  private router = inject(Router);
-  private formBuilder = inject(FormBuilder);
-
   cart: CartResponse[] = [];
   userResponse?: UserResponse | null;
   orderForm: FormGroup;
@@ -61,7 +56,15 @@ export class OrderComponent implements OnInit {
     amount: 0,
   };
 
-  constructor() {
+  constructor(
+    private userService: UserService,
+    private cartService: CartService,
+    private orderService: OrderService,
+    private paymentService: PaymentService,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog
+  ) {
     this.orderForm = this.formBuilder.group({
       name: ['Nguyen Tran Tan Phat', Validators.required],
       email: ['phatntt1923@gmail.com', [Validators.email, Validators.required]],
@@ -143,6 +146,13 @@ export class OrderComponent implements OnInit {
       error: (err) => {
         console.log(err);
       },
+    });
+  }
+
+  selectVoucher() {
+    this.dialog.open(VoucherComponent, {
+      maxWidth: 'auto',
+      maxHeight: 'auto',
     });
   }
 }

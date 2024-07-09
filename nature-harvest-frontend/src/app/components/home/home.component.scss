@@ -1091,12 +1091,13 @@ svg {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
+  font-size: 12px;
   color: #ffffff;
+  padding: 16px;
   background-color: #ff6200;
-  padding: 10px 20px;
-  border-radius: 30px;
-  margin-top: 20px;
+  border-radius: 230px 100px;
+  margin-top: 50px;
+  margin-bottom: 60px;
 }
 
 #countdown span {

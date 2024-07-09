@@ -7,6 +7,7 @@ export class ProductResponse {
   officialPrice: number;
   thumbnail: string;
   description: string;
+  slug: string;
   quantity: number;
   discount: number;
   purchases: number;
@@ -22,6 +23,7 @@ export class ProductResponse {
     this.officialPrice = data.officialPrice;
     this.thumbnail = data.thumbnail;
     this.description = data.description;
+    this.slug = data.slug;
     this.quantity = data.quantity;
     this.discount = data.discount;
     this.purchases = data.purchases;

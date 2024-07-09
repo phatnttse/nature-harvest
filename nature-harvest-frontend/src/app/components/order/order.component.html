@@ -1,13 +1,44 @@
-<div data-tg-refresh="checkout" id="checkout" class="content">
+<header class="banner">
+  <div class="wrap">
+    <div class="logo logo--center">
+      <a href="/">
+        <img
+          class="logo__image logo__image--medium"
+          alt="Nature's Harvest"
+          src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720436456/ebhqmo659apqbsoigbmy.png"
+        />
+      </a>
+    </div>
+  </div>
+</header>
+<aside>
+  <button
+    class="order-summary-toggle toggled"
+    data-toggle="#order-summary"
+    data-toggle-class="order-summary--is-collapsed"
+  >
+    <span class="wrap">
+      <span class="order-summary-toggle__inner">
+        <span class=""> Đơn hàng (1 sản phẩm) </span>
+        <span class="order-summary-toggle__total-recap">180.000₫</span>
+      </span>
+    </span>
+  </button>
+</aside>
+<div id="checkout" class="content">
   <form [formGroup]="orderForm" (ngSubmit)="placeOrder()">
-    <input type="hidden" name="_method" value="patch" />
     <div class="wrap">
       <main class="main">
         <header class="main__header">
           <div class="logo logo--left">
-            <h1 class="shop__name">
-              <a class="text-primary" routerLink="/">Nature's Harvest</a>
-            </h1>
+            <a href="">
+              <img
+                src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720436456/ebhqmo659apqbsoigbmy.png"
+                width="120px"
+                class="img-fluid"
+                alt=""
+              />
+            </a>
           </div>
         </header>
         <div class="main__content">
@@ -21,15 +52,6 @@
                     >
                       Thông tin nhận hàng
                     </h2>
-                    <span
-                      class=""
-                      style="
-                        font-size: 14px;
-                        color: rgb(188, 5, 5);
-                        font-weight: 600;
-                      "
-                      >{{ userResponse?.name }}
-                    </span>
                   </div>
                 </div>
                 <div class="section__content">
@@ -372,7 +394,6 @@
                 class="order-summary__section order-summary__section--discount-code"
                 id="discountCode"
               >
-                <h3 class="visually-hidden">Mã khuyến mại</h3>
                 <div class="edit_checkout animate-floating-labels">
                   <div class="fieldset">
                     <div class="field">
@@ -401,6 +422,40 @@
                           >
                             <use href="#spinner"></use>
                           </svg>
+                        </button>
+                      </div>
+                      <div class="voucher mt-3">
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect
+                            x="2"
+                            y="4"
+                            width="20"
+                            height="16"
+                            rx="2"
+                            fill="#A8E6A1"
+                            stroke="#4CAF50"
+                            stroke-width="2"
+                          />
+                          <path d="M8 8H16V10H8V8Z" fill="#4CAF50" />
+                          <path d="M8 12H16V14H8V12Z" fill="#4CAF50" />
+                        </svg>
+
+                        <div class="ms-1" style="color: #3e4a5e">
+                          Nature's Harvest Voucher
+                        </div>
+                        <div style="flex: 1"></div>
+                        <button
+                          type="button"
+                          class="voucher-btn"
+                          (click)="selectVoucher()"
+                        >
+                          Chọn hoặc nhập mã
                         </button>
                       </div>
                     </div>

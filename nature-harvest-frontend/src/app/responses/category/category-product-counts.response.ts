@@ -1,6 +1,6 @@
 export interface CategoryProductCountResponse {
-  categoryId: number;
+  id: number;
   name: string;
   thumbnail: string;
-  productCount: number;
+  count: number;
 }

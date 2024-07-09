@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EntityListeners(ProductListener.class)
+@EntityListeners(CategoryListener.class)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +24,6 @@ public class Category {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    private boolean active;
 }

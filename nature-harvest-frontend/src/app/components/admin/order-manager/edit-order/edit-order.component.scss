@@ -1,0 +1,32 @@
+.table-responsive {
+  overflow-x: auto;
+}
+th,
+td {
+  min-width: 100px; /* Hoặc một giá trị phù hợp với nội dung của bạn */
+}
+@media (max-width: 768px) {
+  .example-full-width {
+    display: grid;
+    grid-template-columns: 1fr; /* Tất cả các mục sẽ chồng lên nhau */
+  }
+  .example-full-width td,
+  .example-full-width th {
+    display: block;
+  }
+}
+@media (max-width: 768px) {
+  button {
+    padding: 8px 10px; /* Giảm kích thước padding */
+  }
+  .fs-16 {
+    /* Giảm kích thước font */
+    font-size: 14px;
+  }
+}
+.example-full-width {
+  width: 100%;
+}
+td {
+  padding-right: 8px;
+}

@@ -1,6 +1,6 @@
 package com.api.nature_harvest_backend.services.comment;
 
-import com.api.nature_harvest_backend.dtos.CommentDto;
+import com.api.nature_harvest_backend.dtos.product.CommentDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.InvalidParamException;
 import com.api.nature_harvest_backend.models.*;

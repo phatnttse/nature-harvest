@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ScriptService } from '../../services/script.service';
 import { MatDialogModule } from '@angular/material/dialog';
-import { cloudinary } from '../../environments/environment.development';
+import { CLOUDINARY } from '../../environments/environment.development';
 
 @Component({
   selector: 'app-profile',
@@ -118,8 +118,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.isDisabled = true;
     window.cloudinary.openUploadWidget(
       {
-        cloudName: cloudinary.cloudName,
-        uploadPreset: cloudinary.uploadPreset,
+        cloudName: CLOUDINARY.cloudName,
+        uploadPreset: CLOUDINARY.uploadPreset,
         sources: ['local', 'url'],
         tags: ['myphotoalbum-nature-harvest'],
         clientAllowedFormats: ['image'],

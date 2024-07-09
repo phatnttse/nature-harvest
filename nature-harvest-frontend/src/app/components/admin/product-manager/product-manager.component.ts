@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ProductService } from '../../../services/product.service';
@@ -16,12 +10,10 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { EditProductComponent } from './edit-product/edit-product.component';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FeatherModule } from 'angular-feather';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { DeleteProductComponent } from './delete-product/delete-product.component';
@@ -53,6 +45,8 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
   products: ProductResponse[] = [];
   selectedCategoryId: number = 0;
   selectedSubCategoryId: number = 0;
+  categorySlug: string = '';
+  subcategorySlug: string = '';
   currentPage: number = 0;
   itemsPerPage: number = 8;
   pages: number[] = [];
@@ -67,7 +61,7 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
   currentImage?: string = this.product?.thumbnail;
   quantity: number = 1;
   sortBy: string = 'createdAt';
-  arrange: string = 'descending';
+  arrange: string = 'ascending';
   typeArrange: string = 'Mặc định';
   isFiltering: boolean = false;
   dataSource: MatTableDataSource<ProductResponse> =
@@ -84,8 +78,6 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
   constructor(
     private productService: ProductService,
     private dialog: MatDialog,
-    private router: Router,
-    private _liveAnnouncer: LiveAnnouncer,
     private toastr: ToastrService
   ) {}
 
@@ -96,6 +88,8 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
       this.keyword,
       this.selectedCategoryId,
       this.selectedSubCategoryId,
+      this.categorySlug,
+      this.subcategorySlug,
       this.sortBy,
       this.arrange,
       this.currentPage,
@@ -112,6 +106,8 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
     keyword: string,
     selectedCategoryId: number,
     selectedSubCategoryId: number,
+    categorySlug: string,
+    subcategorySlug: string,
     sortBy: string,
     arrange: string,
     page: number,
@@ -131,6 +127,8 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
         keyword,
         selectedCategoryId,
         selectedSubCategoryId,
+        categorySlug,
+        subcategorySlug,
         sortBy,
         arrange,
         page,
@@ -138,36 +136,28 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
       )
       .subscribe({
         next: (response: ProductListResponse) => {
-          debugger;
           this.products = response.products;
           this.totalPages = response.totalPages;
           this.visiblePages = this.generateVisiblePageArray(
             this.currentPage,
             this.totalPages
           );
-          this.isFiltering = false;
           this.dataSource = new MatTableDataSource(response.products);
           this.dataSource.sort = this.sort;
         },
-        complete: () => {
-          debugger;
-        },
         error: (error: any) => {
-          debugger;
           console.error('Error fetching products:', error);
         },
       });
   }
 
   openDialog(productId: number) {
-    debugger;
     const dialogRef = this.dialog.open(DeleteProductComponent, {
       width: '400px',
       data: { productId },
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
-      debugger;
       if (result) {
         this.getProductsByCondition(
           this.minPrice,
@@ -175,6 +165,8 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
           this.keyword,
           this.selectedCategoryId,
           this.selectedSubCategoryId,
+          this.categorySlug,
+          this.subcategorySlug,
           this.sortBy,
           this.arrange,
           this.currentPage,
@@ -186,59 +178,22 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
   }
 
   onPageChange(page: number) {
-    debugger;
     this.currentPage = page < 0 ? 0 : page;
     this.localStorage?.setItem('currentProductPage', String(this.currentPage));
-    if (this.isFiltering) {
-      this.filterProductsByPrice();
-    } else {
-      this.getProductsByCondition(
-        this.minPrice,
-        this.maxPrice,
-        this.keyword,
-        this.selectedCategoryId,
-        this.selectedSubCategoryId,
-        this.sortBy,
-        this.arrange,
-        this.currentPage,
-        this.itemsPerPage
-      );
-    }
-  }
-  filterProductsByPrice() {
-    debugger;
-    this.productService
-      .filterProductsByPrice(
-        this.minPrice,
-        this.maxPrice,
-        this.keyword,
-        this.selectedCategoryId,
-        this.selectedSubCategoryId,
-        this.sortBy,
-        this.arrange,
-        this.currentPage,
-        this.itemsPerPage
-      )
-      .subscribe({
-        next: (response: ProductListResponse) => {
-          debugger;
-          this.products = response.products;
-          this.totalPages = response.totalPages;
-          this.visiblePages = this.generateVisiblePageArray(
-            this.currentPage,
-            this.totalPages
-          );
-          this.isFiltering = true;
-        },
-        complete: () => {
-          debugger;
-        },
-        error: (error: any) => {
-          debugger;
-          console.error('Error fetching products:', error);
-          console.log(error);
-        },
-      });
+
+    this.getProductsByCondition(
+      this.minPrice,
+      this.maxPrice,
+      this.keyword,
+      this.selectedCategoryId,
+      this.selectedSubCategoryId,
+      this.categorySlug,
+      this.subcategorySlug,
+      this.sortBy,
+      this.arrange,
+      this.currentPage,
+      this.itemsPerPage
+    );
   }
 
   generateVisiblePageArray(currentPage: number, totalPages: number): number[] {

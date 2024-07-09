@@ -1,6 +1,6 @@
 package com.api.nature_harvest_backend.controllers;
 
-import com.api.nature_harvest_backend.dtos.CommentDto;
+import com.api.nature_harvest_backend.dtos.product.CommentDto;
 import com.api.nature_harvest_backend.models.Comment;
 import com.api.nature_harvest_backend.models.User;
 import com.api.nature_harvest_backend.responses.comment.CommentListResponse;
@@ -78,7 +78,7 @@ public class CommentController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<?> insertComment(
+    public ResponseEntity<?> comment(
             @Valid @RequestBody CommentDto commentDto
     ) {
         try {

@@ -1,7 +1,9 @@
 package com.api.nature_harvest_backend.controllers;
 
-import com.api.nature_harvest_backend.dtos.OrderDto;
+import com.api.nature_harvest_backend.dtos.order.HandleOrderDto;
+import com.api.nature_harvest_backend.dtos.order.OrderDto;
 import com.api.nature_harvest_backend.models.Order;
+import com.api.nature_harvest_backend.responses.base.BaseResponse;
 import com.api.nature_harvest_backend.responses.order.OrderAndOrderDetailsResponse;
 import com.api.nature_harvest_backend.responses.order.OrderListResponse;
 import com.api.nature_harvest_backend.responses.order.OrderResponse;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -48,7 +51,7 @@ public class OrderController {
 
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<List<OrderAndOrderDetailsResponse>> getOrders(@Valid @PathVariable("userId") String userId) {
+    public ResponseEntity<List<OrderAndOrderDetailsResponse>> getOrderByUser(@Valid @PathVariable("userId") String userId) {
         try {
             List<OrderAndOrderDetailsResponse> orderAndOrderDetailsResponses = orderService.getOrdersByUserId(userId);
             return ResponseEntity.ok(orderAndOrderDetailsResponses);
@@ -58,24 +61,23 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> getOrder(@Valid @PathVariable("id") String orderId) {
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<OrderAndOrderDetailsResponse> getOrderById(@Valid @PathVariable("id") String orderId) {
         try {
-            Order existingOrder = orderService.getOrder(orderId);
-            return ResponseEntity.ok(OrderResponse.fromOrder(existingOrder));
+            return ResponseEntity.ok(orderService.getOrderById(orderId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<OrderResponse> updateOrder(
+    public ResponseEntity<OrderAndOrderDetailsResponse> updateOrder(
             @Valid @PathVariable String id,
             @Valid @RequestBody OrderDto orderDto) {
 
         try {
-            Order order = orderService.updateOrder(id, orderDto);
-            return ResponseEntity.ok(OrderResponse.fromOrder(order));
+            return ResponseEntity.ok(orderService.updateOrder(id, orderDto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
@@ -83,9 +85,19 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteOrder(@Valid @PathVariable String id) {
-        orderService.deleteOrder(id);
-        return ResponseEntity.ok().body("Delete order successfully");
+    public ResponseEntity<BaseResponse> deleteOrder(@Valid @PathVariable String id) {
+        try {
+            orderService.deleteOrder(id);
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .message("Order deleted successfully")
+                    .status(HttpStatus.OK.value())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .message(e.getMessage())
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
+        }
     }
 
     @GetMapping("")
@@ -96,7 +108,7 @@ public class OrderController {
     ) {
         PageRequest pageRequest = PageRequest.of(
                 page, limit,
-                Sort.by("id").ascending()
+                Sort.by("orderDate").ascending()
         );
         Page<OrderResponse> orderPage = orderService
                 .getOrdersByKeyword(keyword, pageRequest)
@@ -109,5 +121,15 @@ public class OrderController {
                 .orders(orderResponses)
                 .totalPages(totalPages)
                 .build());
+    }
+
+    @PatchMapping("/handle")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<OrderAndOrderDetailsResponse> handleOrder(@Valid @RequestBody HandleOrderDto handleOrderDto) {
+        try {
+            return ResponseEntity.ok().body(orderService.handleOrder(handleOrderDto));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }
