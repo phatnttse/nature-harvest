@@ -11,6 +11,8 @@ import { HttpUtilService } from './http.util.service';
 import { DOCUMENT } from '@angular/common';
 import { UserResponse } from '../responses/user/user.response';
 import { environment } from '../environments/environment.development';
+import { ChangePasswordDto } from '../dtos/user/change-password.dto';
+import { ForgotPasswordDto } from '../dtos/user/forgot-password.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -145,5 +147,11 @@ export class UserService {
     debugger;
     this.userResponseSubject.next(null);
     this.removeUserFromLocalStorage();
+  }
+  changePassword(changePasswordDto: ChangePasswordDto): Observable<any> {
+    return this.http.patch<any>(`${this.apiBaseUrl}/users/change-password`, changePasswordDto, this.apiConfig);
+  }
+  forgotPassword(forgotPasswordDto: ForgotPasswordDto): Observable<any>{
+    return this.http.post<any>(`${this.apiBaseUrl}/users/forgot-password`, forgotPasswordDto, this.apiConfig);
   }
 }

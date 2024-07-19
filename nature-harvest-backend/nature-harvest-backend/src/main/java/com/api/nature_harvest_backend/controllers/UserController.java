@@ -5,6 +5,7 @@ import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
 import com.api.nature_harvest_backend.models.Token;
 import com.api.nature_harvest_backend.models.User;
+import com.api.nature_harvest_backend.responses.base.BaseResponse;
 import com.api.nature_harvest_backend.responses.user.LoginResponse;
 import com.api.nature_harvest_backend.responses.user.SignUpResponse;
 import com.api.nature_harvest_backend.responses.user.UserListResponse;
@@ -247,6 +248,16 @@ public class UserController {
         }
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody @Valid ForgotPasswordDto forgotPasswordDto){
+        try {
+            userService.forgotPassword(forgotPasswordDto);
+            return ResponseEntity.ok("Mail was sent successfully!");
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/block/{userId}/{active}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> blockOrEnable(
@@ -261,6 +272,30 @@ public class UserController {
             return ResponseEntity.badRequest().body("User not found.");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<BaseResponse> changePassword(@RequestBody ChangPasswordDto changePasswordDto) throws DataNotFoundException {
+        try {
+            boolean result = userService.changePassword(changePasswordDto);
+            if (result) {
+                return
+                        ResponseEntity.ok(BaseResponse.builder()
+                                .message("Password changed successfully")
+                                .status(HttpStatus.OK.value())
+                                .build());
+            } else {
+                return ResponseEntity.badRequest().body(BaseResponse.builder()
+                        .message("Fail to change password")
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .build());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(BaseResponse.builder()
+                    .message(e.getMessage())
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
         }
     }
 

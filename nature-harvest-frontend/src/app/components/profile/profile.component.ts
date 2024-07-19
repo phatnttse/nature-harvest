@@ -20,8 +20,9 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ScriptService } from '../../services/script.service';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CLOUDINARY } from '../../environments/environment.development';
+import { ChangePasswordComponent } from '../dialog/change-password/change-password.component';
 
 @Component({
   selector: 'app-profile',
@@ -49,12 +50,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   uploadedImage = '';
   uploadedImages: string[] = [];
   isDisabled = false;
+  showChangePassword: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
     private toastr: ToastrService,
-    private scriptService: ScriptService
+    private scriptService: ScriptService,
+    private dialog: MatDialog,
   ) {
     this.profileForm = this.formBuilder.group({
       name: ['', [Validators.required]],
@@ -156,5 +159,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.toastr.error(`Cập nhật thông tin không thành công`);
         },
       });
+  }
+
+  openChangePassword(){
+    const dialogRef = this.dialog.open(ChangePasswordComponent, {
+      width: '40%',
+      height: '40%'
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        // Xử lý khi đổi mật khẩu thành công
+        this.toastr.success('Đổi mật khẩu thành công');
+      }
+    });
   }
 }

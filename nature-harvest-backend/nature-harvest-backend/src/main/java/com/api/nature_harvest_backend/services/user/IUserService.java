@@ -1,10 +1,13 @@
 package com.api.nature_harvest_backend.services.user;
 
+import com.api.nature_harvest_backend.dtos.auth.ChangPasswordDto;
+import com.api.nature_harvest_backend.dtos.auth.ForgotPasswordDto;
 import com.api.nature_harvest_backend.dtos.auth.SignUpDto;
 import com.api.nature_harvest_backend.dtos.auth.UpdateUserDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
 import com.api.nature_harvest_backend.models.User;
+import com.api.nature_harvest_backend.responses.base.BaseResponse;
 import com.api.nature_harvest_backend.responses.user.LoginResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,5 +36,7 @@ public interface IUserService {
 
     boolean verifyUser(final String token) throws Exception;
 
+    public boolean changePassword(ChangPasswordDto changePasswordDto) throws DataNotFoundException;
 
+    public void forgotPassword(ForgotPasswordDto forgotPasswordDto) throws Exception;
 }

@@ -14,6 +14,7 @@ import { MomoPayComponent } from './components/momo-pay/momo-pay.component';
 import { SearchProductsComponent } from './components/search-products/search-products.component';
 import { OrderTrackingComponent } from './components/order-tracking/order-tracking.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -33,7 +34,7 @@ export const routes: Routes = [
   { path: 'order-success/:id', component: OrderSuccessComponent },
   { path: 'products/search', component: SearchProductsComponent },
   { path: 'order-tracking', component: OrderTrackingComponent },
-
+  { path: 'forgot-password', component: ForgotPasswordComponent},
   //admin
   { path: 'admin', component: AdminComponent },
 ];

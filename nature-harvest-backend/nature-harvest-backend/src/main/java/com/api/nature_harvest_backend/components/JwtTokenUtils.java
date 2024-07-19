@@ -39,6 +39,8 @@ public class JwtTokenUtils {
     private final TokenRepository tokenRepository;
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
 
+
+
     public String generateToken(com.api.nature_harvest_backend.models.User user) throws Exception {
         //properties => claims
         Map<String, Object> claims = new HashMap<>();

@@ -1,10 +1,13 @@
 package com.api.nature_harvest_backend.services.user;
 
 import com.api.nature_harvest_backend.components.JwtTokenUtils;
+import com.api.nature_harvest_backend.dtos.auth.ChangPasswordDto;
+import com.api.nature_harvest_backend.dtos.auth.ForgotPasswordDto;
 import com.api.nature_harvest_backend.dtos.auth.SignUpDto;
 import com.api.nature_harvest_backend.dtos.auth.UpdateUserDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.ExpiredTokenException;
+import com.api.nature_harvest_backend.exceptions.InvalidParamException;
 import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
 import com.api.nature_harvest_backend.models.Role;
 import com.api.nature_harvest_backend.models.Token;
@@ -22,13 +25,17 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +59,8 @@ public class UserService implements IUserService {
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String GOOGLE_CLIENT_ID;
 
+    @Autowired
+    private JavaMailSender mailSender;
     @Override
     @Transactional
     public User createUser(SignUpDto signUpDTO) throws Exception {
@@ -198,6 +207,51 @@ public class UserService implements IUserService {
         }
         return false;
     }
+
+    @Override
+    public boolean changePassword(ChangPasswordDto changePasswordDto) throws DataNotFoundException {
+         User loginUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (loginUser == null) {
+            throw new DataNotFoundException("User not found!");
+        }
+
+        if (!passwordEncoder.matches(changePasswordDto.getCurrentPassword(), loginUser.getPassword())) {
+            throw new DataNotFoundException("Current password is incorrect!");
+        }
+
+        if (passwordEncoder.matches(changePasswordDto.getNewPassword(), loginUser.getPassword())) {
+            throw new DataNotFoundException("New password must be different from the current password!");
+        }
+
+        loginUser.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+        userRepository.save(loginUser);
+        List<Token> userTokens = tokenRepository.findByUser(loginUser);
+        tokenRepository.deleteAll(userTokens);
+        return true;
+    }
+
+    @Override
+    public void forgotPassword(ForgotPasswordDto forgotPasswordDto) throws Exception {
+        Optional<User> userOptional = userRepository.findByEmail(forgotPasswordDto.getEmail());
+        if (userOptional.isEmpty()) {
+            throw new InvalidParamException("No user found with the provided email");
+        }
+
+        User user = userOptional.get();
+        String token = jwtTokenUtil.generateTokenEmail(user);
+        String newPassword = generateNewPassword();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        //Send the email
+        emailService.sendResetPasswordEmail(user,token, newPassword);
+
+    }
+
+    private String generateNewPassword() {
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+    }
+
 
     @Override
     public User getUserDetailsFromToken(String token) throws Exception {

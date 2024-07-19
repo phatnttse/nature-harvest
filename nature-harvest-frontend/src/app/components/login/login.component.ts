@@ -22,13 +22,13 @@ import {
 import { UserService } from '../../services/user.service';
 import { LoginDto } from '../../dtos/user/login.dto';
 import { LoginResponse } from '../../responses/user/login.response';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { UserResponse } from '../../responses/user/user.response';
 import { MatIconModule } from '@angular/material/icon';
-import { filter } from 'rxjs';
 import { ROLE_ADMIN, ROLE_USER } from '../../responses/user/role.response';
 import { GOOGLE } from '../../environments/environment.development';
+import { MatDialog } from '@angular/material/dialog';
 declare var google: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -86,7 +86,8 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     private tokenService: TokenService,
-    private platformLocation: PlatformLocation
+    private platformLocation: PlatformLocation,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -182,12 +183,16 @@ export class LoginComponent implements OnInit {
           },
           error: (error: any) => {
             console.error(error);
-          },
+          }, 
         });
       },
       error: (error: any) => {
         console.error(error);
       },
     });
+  }
+
+  openForgotPasswordDialog(){
+    
   }
 }
