@@ -56,7 +56,6 @@ public class CategoryController {
                 .build());
     }
 
-    //Hiện tất cả các categories
     @GetMapping("")
     public ResponseEntity<List<Category>> getCategories() throws JsonProcessingException {
         List<Category> categories = categoryRedisService.getAllCategories();
@@ -69,21 +68,19 @@ public class CategoryController {
 
     @GetMapping("/with-subcategories")
     public ResponseEntity<List<CategoryWithSubcategoriesDto>> getAllCategoriesWithSubcategories() throws Exception {
-//        List<Category> categories = categoryRedisService.getAllCategories();
-//        if (categories == null) {
-//            categories = categoryService.getAllCategories();
-//            categoryRedisService.saveAllCategories(categories);
-//        }
-        List<Category> categories = categoryService.getAllCategories();
+        List<Category> categories = categoryRedisService.getAllCategories();
+        if (categories == null) {
+            categories = categoryService.getAllCategories();
+            categoryRedisService.saveAllCategories(categories);
+        }
         List<CategoryWithSubcategoriesDto> categoriesWithSubcategories = new ArrayList<>();
 
         for (Category category : categories) {
-//            List<SubCategory> subcategories = subCategoryRedisService.getAllSubCategoriesByCategory(category.getId());
-//            if (subcategories == null) {
-//                subcategories = subCategoryService.getSubCategoriesByCategory(category.getId());
-//                subCategoryRedisService.saveAllSubCategoriesByCategory(subcategories, category.getId());
-//            }
-            List<SubCategory> subcategories = subCategoryService.getSubCategoriesByCategory(category.getId());
+            List<SubCategory> subcategories = subCategoryRedisService.getAllSubCategoriesByCategory(category.getId());
+            if (subcategories == null) {
+                subcategories = subCategoryService.getSubCategoriesByCategory(category.getId());
+                subCategoryRedisService.saveAllSubCategoriesByCategory(subcategories, category.getId());
+            }
             CategoryWithSubcategoriesDto categoryWithSubcategories = new CategoryWithSubcategoriesDto(
                     category.getId(),
                     category.getName(),
@@ -103,6 +100,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getCategoryById(
             @PathVariable("id") Long categoryId
     ) {

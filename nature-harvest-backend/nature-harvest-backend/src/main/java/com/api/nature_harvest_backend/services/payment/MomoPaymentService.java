@@ -15,16 +15,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MomoPaymentService {
-    private String partnerCode;
-    private String requestId;
-    private long amount;
-    private String orderId;
-    private String orderInfo;
-    private String redirectUrl;
-    private String ipnUrl;
-    private String requestType;
-    private String extraData;
-    private String lang;
+    private final String partnerCode;
+    private final String requestId;
+    private final long amount;
+    private final String orderId;
+    private final String orderInfo;
+    private final String redirectUrl;
+    private final String ipnUrl;
+    private final String requestType;
+    private final String extraData;
+    private final String lang;
     private String signature;
 
     public MomoPaymentService(String partnerCode, String requestId, long amount, String orderId, String orderInfo, String redirectUrl, String ipnUrl, String requestType, String extraData, String lang) {

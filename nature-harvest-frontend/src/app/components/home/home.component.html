@@ -1,3 +1,4 @@
+@defer () {
 <div
   id="spinner"
   class="w-100 vh-100 position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center bg-white"
@@ -11,9 +12,9 @@
   <div class="container py-5">
     <div class="row g-5 align-items-center">
       <div class="col-md-12 col-lg-7">
-        <h4 class="mb-3 text-secondary">100% Organic Foods</h4>
-        <h1 class="display-3 mb-5 text-primary">
-          Organic Veggies & Fruits Foods
+        <h4 class="mb-3 text-secondary">100% Thực phẩm hữu cơ</h4>
+        <h1 class="display-3 mb-5" style="color: #3e4a5e">
+          Rau củ quả & các loại thực phẩm
         </h1>
         <div class="position-relative mx-auto">
           <input
@@ -42,6 +43,7 @@
                 src="https://res.cloudinary.com/dlpust9lj/image/upload/v1719201225/cld-sample-4.jpg"
                 class="img-fluid w-100 h-100 rounded bg-secondary"
                 alt="First slide"
+                style="object-fit: cover"
               />
               <a href="#" class="btn rounded px-4 py-2 text-white">Breakfast</a>
             </div>
@@ -50,6 +52,7 @@
                 src="https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215697/hero-img-2_x2thzo.jpg"
                 class="img-fluid w-100 h-100 rounded"
                 alt="Second slide"
+                style="object-fit: cover"
               />
               <a href="#" class="btn rounded px-4 py-2 text-white"
                 >Vegetables</a
@@ -60,6 +63,7 @@
                 src="https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215697/hero-img-1_xht0jo.png"
                 class="img-fluid w-100 h-100 rounded bg-secondary"
                 alt="First slide"
+                style="object-fit: cover"
               />
               <a href="#" class="btn rounded px-4 py-2 text-white">Fruits</a>
             </div>
@@ -91,7 +95,13 @@
 <section class="section_cate container mb-5">
   <div class="box-title">
     <h2 class="title-module item-title">
-      <a href="/collections/all" title="Danh mục nổi bật"> Danh mục nổi bật </a>
+      <a
+        href="/products/list/all"
+        title="Danh mục nổi bật"
+        style="color: #3e4a5e"
+      >
+        Danh mục nổi bật
+      </a>
     </h2>
     <div class="cate-next-prev item-title">
       <div class="section-1-prev">
@@ -143,112 +153,12 @@
       class="swiper-wrapper box_cate_index"
       style="transform: translate3d(0px, 0px, 0px); transition-duration: 0ms"
     >
-      <div
-        class="swiper-slide swiper-slide-active"
-        style="width: 126.667px; margin-right: 15px"
-      >
-        <div class="item-cate">
-          <a href="rau-cu-qua" title="Rau củ" class="opaci_href"></a>
-          <div class="icon_cate">
-            <img
-              width="100"
-              height="100"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_1.png?1719377594344"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_1.png?1719377594344"
-              alt="Rau củ"
-              data-was-processed="true"
-            />
-          </div>
-          <h3>Rau củ</h3>
-          <span>17 sản phẩm</span>
-        </div>
-      </div>
-
-      <div
-        class="swiper-slide swiper-slide-next"
-        style="width: 126.667px; margin-right: 15px"
-      >
-        <div class="item-cate">
-          <a href="trai-cay" title="Trái cây" class="opaci_href"></a>
-          <div class="icon_cate">
-            <img
-              width="100"
-              height="100"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_2.png?1719377594344"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_2.png?1719377594344"
-              alt="Trái cây"
-              data-was-processed="true"
-            />
-          </div>
-          <h3>Trái cây</h3>
-          <span>12 sản phẩm</span>
-        </div>
-      </div>
-
-      <div class="swiper-slide" style="width: 126.667px; margin-right: 15px">
-        <div class="item-cate">
-          <a href="thit-heo" title="Thịt" class="opaci_href"></a>
-          <div class="icon_cate">
-            <img
-              width="100"
-              height="100"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_3.png?1719377594344"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_3.png?1719377594344"
-              alt="Thịt"
-              data-was-processed="true"
-            />
-          </div>
-          <h3>Thịt</h3>
-          <span>10 sản phẩm</span>
-        </div>
-      </div>
-
-      <div class="swiper-slide" style="width: 126.667px; margin-right: 15px">
-        <div class="item-cate">
-          <a href="san-pham-khuyen-mai" title="Trứng" class="opaci_href"></a>
-          <div class="icon_cate">
-            <img
-              width="100"
-              height="100"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_4.png?1719377594344"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_4.png?1719377594344"
-              alt="Trứng"
-              data-was-processed="true"
-            />
-          </div>
-          <h3>Trứng</h3>
-          <span>8 sản phẩm</span>
-        </div>
-      </div>
-
-      <div class="swiper-slide" style="width: 126.667px; margin-right: 15px">
-        <div class="item-cate">
-          <a href="thuc-uong" title="Đồ uống" class="opaci_href"></a>
-          <div class="icon_cate">
-            <img
-              width="100"
-              height="100"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_5.png?1719377594344"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_5.png?1719377594344"
-              alt="Đồ uống"
-              data-was-processed="true"
-            />
-          </div>
-          <h3>Đồ uống</h3>
-          <span>11 sản phẩm</span>
-        </div>
-      </div>
-
+      @for (category of categories; track $index) {
       <div class="swiper-slide" style="width: 126.667px; margin-right: 15px">
         <div class="item-cate">
           <a
-            href="banh-mi-dong-lanh"
-            title="Bánh và sữa"
+            routerLink="/products/listc/{{ category.slug }}"
+            [title]="category.name"
             class="opaci_href"
           ></a>
           <div class="icon_cate">
@@ -256,83 +166,27 @@
               width="100"
               height="100"
               class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_6.png?1719377594344"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_6.png?1719377594344"
-              alt="Bánh và sữa"
+              [src]="category.thumbnail"
+              [alt]="category.name"
               data-was-processed="true"
             />
           </div>
-          <h3>Bánh và sữa</h3>
-          <span>0 sản phẩm</span>
+          <h3>{{ category.name }}</h3>
+          <span>{{ category.count }} sản phẩm</span>
         </div>
       </div>
-
-      <div class="swiper-slide" style="width: 126.667px; margin-right: 15px">
-        <div class="item-cate">
-          <a href="thuy-hai-san" title="Hải sản" class="opaci_href"></a>
-          <div class="icon_cate">
-            <img
-              width="100"
-              height="100"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_7.png?1719377594344"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_7.png?1719377594344"
-              alt="Hải sản"
-              data-was-processed="true"
-            />
-          </div>
-          <h3>Hải sản</h3>
-          <span>10 sản phẩm</span>
-        </div>
-      </div>
-
-      <div class="swiper-slide" style="width: 126.667px; margin-right: 15px">
-        <div class="item-cate">
-          <a href="mi-cac-loai" title="Bánh mì" class="opaci_href"></a>
-          <div class="icon_cate">
-            <img
-              width="100"
-              height="100"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_8.png?1719377594344"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/danhmuc_8.png?1719377594344"
-              alt="Bánh mì"
-              data-was-processed="true"
-            />
-          </div>
-          <h3>Bánh mì</h3>
-          <span>3 sản phẩm</span>
-        </div>
-      </div>
-      <div class="swiper-slide" style="width: 126.667px; margin-right: 15px">
-        <div class="item-cate">
-          <a href="mi-cac-loai" title="Bánh mì" class="opaci_href"></a>
-          <div class="icon_cate">
-            <img
-              width="100"
-              height="100"
-              class="lazyload loaded"
-              src="https://res.cloudinary.com/dlpust9lj/image/upload/v1719643256/vpvy7bry03wzf1rn5668.png"
-              data-src="https://res.cloudinary.com/dlpust9lj/image/upload/v1719643256/vpvy7bry03wzf1rn5668.png"
-              alt="Bánh mì"
-              data-was-processed="true"
-            />
-          </div>
-          <h3>Đồ khô</h3>
-          <span>3 sản phẩm</span>
-        </div>
-      </div>
+      }
     </div>
   </div>
 </section>
 
-<section class="awe-section-3" style="margin: 100px 0">
+<section class="awe-section-3" style="margin-top: 140px; margin-bottom: 100px">
   <div class="section_best_deal" id="section_best_deal">
     <div class="container">
       <div class="border-red">
         <div class="block-title">
           <h2>
-            <a href="san-pham-noi-bat" title="Ưu đãi trong tuần">
+            <a routerLink="/products/list/all" title="Ưu đãi đặc biệt">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -341,8 +195,8 @@
                 viewBox="0 0 511.548 511.548"
                 style="enable-background: new 0 0 511.548 511.548"
                 xml:space="preserve"
-                width="512"
-                height="512"
+                width="500"
+                height="500"
                 class="lightning-icon me-2"
               >
                 <g>
@@ -395,9 +249,9 @@
                 </g>
               </svg>
               <img
-                width="54"
-                height="54"
-                src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/flash.png?1719377594344"
+                width="50"
+                height="50"
+                src="https://res.cloudinary.com/dlpust9lj/image/upload/v1721031521/keyqeomkistku34a4v4h.png"
                 alt="Khuyến mãi đặc biệt"
                 class="lightning-icon me-2"
               />
@@ -412,36 +266,82 @@
         <div class="tab-content mt-5">
           <div id="tab-1" class="tab-pane fade show active p-0">
             <div class="row">
-              <div class="col-lg-12">
+              <div class="col-lg-3">
+                <!-- Your banner content here -->
+                <div class="banner_pro">
+                  <img
+                    width="300"
+                    height="670"
+                    class="lazyload loaded"
+                    src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720988230/qtxkte7wutgeewmfeyet.jpg"
+                    alt="Bán chạy nhất hàng ngày"
+                    data-was-processed="true"
+                  />
+                  <div class="content_banner_pro">
+                    <h2 class="title-module">
+                      <a routerLink="/products/list/all"
+                        >Bán chạy nhất hàng ngày</a
+                      >
+                    </h2>
+
+                    <p class="title_banpro_2">
+                      Ưu đãi độc quyền - Giảm giá 20%
+                    </p>
+
+                    <p class="title_banpro_3">
+                      Mua sắm thoải mái chỉ từ 20.000 VNĐ
+                    </p>
+
+                    <p class="title_banpro_4">
+                      Chỉ trong tuần này. Đừng bỏ lỡ...
+                    </p>
+                    <a
+                      class="a-buy-now"
+                      routerLink="/products/list/all"
+                      title="Mua ngay"
+                      >Mua ngay</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-9">
                 <div class="row g-4">
                   @for (product of promotionalProducts; track $index) {
                   <div class="col-6 col-md-6 col-lg-3 text-center">
                     <div class="card">
+                      @if (product.discount > 0) {
                       <div
                         class="badge card-badge card-badge-start text-uppercase bg-primary"
-                        style="left: 5px; background-color: red !important"
+                        style="
+                          background-color: red !important;
+                          left: 5px;
+                          top: 10px;
+                        "
                       >
                         -{{ product.discount }}%
                       </div>
+                      }
 
                       <div class="card-img">
                         <a
                           class="card-img-hover"
-                          routerLink="product-detail/{{ product.id }}"
+                          routerLink="product-detail/{{ product.slug }}"
                         >
                           <img
                             class="card-img-top card-img-back"
                             [src]="product.thumbnail"
                             alt="..."
                             width="304"
-                            height="213"
+                            height="160"
+                            style="object-fit: cover"
                           />
                           <img
                             class="card-img-top card-img-front"
                             [src]="product.thumbnail"
                             alt="..."
                             width="304"
-                            height="213"
+                            height="160"
+                            style="object-fit: cover"
                           />
                         </a>
 
@@ -492,7 +392,7 @@
                         <div class="fw-bold">
                           <a
                             class="text-body"
-                            routerLink="product-detail/{{ product.id }}"
+                            routerLink="product-detail/{{ product.slug }}"
                           >
                             {{ product.title }}
                           </a>
@@ -518,7 +418,7 @@
                             (click)="
                               addProductToCart(product.id, product.title)
                             "
-                            class="btn rounded-pill my-2 border border-secondary px-3 text-primary"
+                            class="btn rounded-pill my-2 border border-secondary text-primary"
                           >
                             <i class="fa fa-shopping-bag me-2 text-primary"></i>
                             Thêm vào giỏ
@@ -539,88 +439,6 @@
   </div>
 </section>
 
-<section class="section_3_banner py-5">
-  <div class="container">
-    <div class="box_banner_index row">
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
-        <div class="box_3_banner">
-          <div class="three_banner">
-            <img
-              width="520"
-              height="305"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/img_3banner_1.jpg?1718181939137"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/img_3banner_1.jpg?1718181939137"
-              alt="Nông sản tươi mới <br> Sản phẩm 100% từ <br> Thiên nhiên "
-              data-was-processed="true"
-            />
-          </div>
-          <div class="banner-text">
-            <h2>
-              Nông sản tươi mới <br />
-              Sản phẩm 100% từ <br />
-              Thiên nhiên
-            </h2>
-            <a routerLink="/products/all" class="btn btn-xs" title="Xem ngay"
-              >Xem ngay</a
-            >
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
-        <div class="box_3_banner">
-          <div class="three_banner">
-            <img
-              width="520"
-              height="305"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/img_3banner_2.jpg?1718181939137"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/img_3banner_2.jpg?1718181939137"
-              alt="Bữa sáng lành mạnh <br> Sữa tươi nguyên chất <br> Tiệt trùng "
-              data-was-processed="true"
-            />
-          </div>
-          <div class="banner-text">
-            <h2>
-              Bữa sáng lành mạnh <br />
-              Sữa tươi nguyên chất <br />
-              Tiệt trùng
-            </h2>
-            <a routerLink="/products/all" class="btn btn-xs" title="Xem ngay"
-              >Xem ngay</a
-            >
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
-        <div class="box_3_banner">
-          <div class="three_banner">
-            <img
-              width="520"
-              height="305"
-              class="lazyload loaded"
-              src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/img_3banner_3.jpg?1718181939137"
-              data-src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/img_3banner_3.jpg?1718181939137"
-              alt="Rau củ hữu cơ 100% <br> Sạch sẻ và an toàn  <br> Chất lượng "
-              data-was-processed="true"
-            />
-          </div>
-          <div class="banner-text">
-            <h2>
-              Rau củ hữu cơ 100% <br />
-              Sạch sẻ và an toàn <br />
-              Chất lượng
-            </h2>
-            <a routerLink="/products/all" class="btn btn-xs" title="Xem ngay"
-              >Xem ngay</a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <div class="container-fluid fruite py-5">
   <div class="container">
     <div class="tab-class text-center">
@@ -628,9 +446,10 @@
         <h2 class="heading mx-auto w-auto text-center font-semibold">
           <a
             class="tab-url"
-            href="/san-pham-noi-bat"
+            href="javascript:;"
             title="Trái cây"
             style="color: #3e4a5e"
+            (click)="getFruits(0)"
           >
             Trái cây
           </a>
@@ -665,33 +484,39 @@
             <div class="col-lg-12">
               <div class="row g-4">
                 @for (product of fruits; track $index) {
-                <div class="col-6 col-md-6 col-lg-3">
+                <div class="col-6 col-md-6 col-lg-2">
                   <div class="card">
+                    @if (product.discount > 0) {
                     <div
                       class="badge card-badge card-badge-start text-uppercase bg-primary"
-                      style="left: 5px; background-color: red !important"
+                      style="
+                        background-color: red !important;
+                        left: 5px;
+                        top: 10px;
+                      "
                     >
                       -{{ product.discount }}%
                     </div>
+                    }
 
                     <div class="card-img">
                       <a
                         class="card-img-hover"
-                        routerLink="product-detail/{{ product.id }}"
+                        routerLink="product-detail/{{ product.slug }}"
                       >
                         <img
                           class="card-img-top card-img-back"
                           [src]="product.thumbnail"
                           alt="..."
                           width="304"
-                          height="213"
+                          height="160"
                         />
                         <img
                           class="card-img-top card-img-front"
                           [src]="product.thumbnail"
                           alt="..."
                           width="304"
-                          height="213"
+                          height="160"
                         />
                       </a>
 
@@ -736,7 +561,7 @@
                       <div class="fw-bold">
                         <a
                           class="text-body"
-                          routerLink="product-detail/{{ product.id }}"
+                          routerLink="product-detail/{{ product.slug }}"
                         >
                           {{ product.title }}
                         </a>
@@ -751,16 +576,16 @@
                         <span
                           class="fs-xs text-gray-350 text-decoration-line-through"
                           style="padding: 10px; font-size: 14px"
-                          >{{ product.officialPrice | number : "1.0" }}₫</span
+                          >{{ product.originalPrice | number : "1.0" }}₫</span
                         >
                         <span class="text-primary" style="font-size: 14px"
-                          >{{ product.originalPrice | number : "1.0" }}₫</span
+                          >{{ product.officialPrice | number : "1.0" }}₫</span
                         >
                       </div>
                       <div>
                         <button
                           (click)="addProductToCart(product.id, product.title)"
-                          class="btn rounded-pill my-2 border border-secondary px-3 text-primary"
+                          class="btn rounded-pill my-2 border border-secondary text-primary"
                         >
                           <i class="fa fa-shopping-bag me-2 text-primary"></i>
                           Thêm vào giỏ
@@ -770,6 +595,264 @@
                   </div>
                 </div>
                 }
+              </div>
+              <div class="see-more">
+                <a title="Xem tất cả" routerLink="/products/listc/trai-cay"
+                  >Xem tất cả</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section_3_banner py-5">
+  <div class="container">
+    <div class="box_banner_index row">
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="box_3_banner">
+          <div class="three_banner">
+            <img
+              width="520"
+              height="305"
+              class="lazyload loaded"
+              src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720988653/xyu1uk9orlc9ug6xijnu.jpg"
+              alt="Nông sản tươi mới <br> Sản phẩm 100% từ <br> Thiên nhiên "
+              data-was-processed="true"
+            />
+          </div>
+          <div class="banner-text">
+            <h2>
+              Nông sản tươi mới <br />
+              Sản phẩm 100% từ <br />
+              Thiên nhiên
+            </h2>
+            <a
+              routerLink="/products/list/all"
+              class="btn btn-xs"
+              title="Xem ngay"
+              >Xem ngay</a
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="box_3_banner">
+          <div class="three_banner">
+            <img
+              width="520"
+              height="305"
+              class="lazyload loaded"
+              src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720988670/spywu1jkdv3n3ahhrcdr.jpg"
+              alt="Bữa sáng lành mạnh <br> Sữa tươi nguyên chất <br> Tiệt trùng "
+              data-was-processed="true"
+            />
+          </div>
+          <div class="banner-text">
+            <h2>
+              Bữa sáng lành mạnh <br />
+              Sữa tươi nguyên chất <br />
+              Tiệt trùng
+            </h2>
+            <a
+              routerLink="/products/list/all"
+              class="btn btn-xs"
+              title="Xem ngay"
+              >Xem ngay</a
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="box_3_banner">
+          <div class="three_banner">
+            <img
+              width="520"
+              height="305"
+              class="lazyload loaded"
+              src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720988689/uqefmv8gbrk1sxsavsmw.jpg"
+              alt="Rau củ hữu cơ 100% <br> Sạch sẻ và an toàn  <br> Chất lượng "
+              data-was-processed="true"
+            />
+          </div>
+          <div class="banner-text">
+            <h2>
+              Rau củ hữu cơ 100% <br />
+              Sạch sẻ và an toàn <br />
+              Chất lượng
+            </h2>
+            <a
+              routerLink="/products/list/all"
+              class="btn btn-xs"
+              title="Xem ngay"
+              >Xem ngay</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container-fluid fruite py-5">
+  <div class="container">
+    <div class="tab-class text-center">
+      <div class="heading-bar mb-3">
+        <h2 class="heading mx-auto w-auto text-center font-semibold">
+          <a
+            class="tab-url"
+            href="javascript:;"
+            title="Rau củ quả"
+            style="color: #3e4a5e"
+            (click)="getVegetables(0)"
+          >
+            Rau củ quả
+          </a>
+        </h2>
+      </div>
+      <div class="col-lg-12 text-center">
+        <ul class="nav nav-pills d-inline-flex mb-5 text-center">
+          @for (category of categoriesWithSubcategories$ | async; track
+          category.id ;let i =$index) { @if (category.id == 1) { @for
+          (subcategory of category.subcategories; track $index) {
+          <li class="nav-item">
+            <a
+              class="d-flex bg-light m-2 py-2"
+              [ngClass]="{ active: selectedCategoryId === subcategory.id }"
+              data-bs-toggle="pill"
+              href="javascript:void(0);"
+              (click)="getVegetables(subcategory.id)"
+            >
+              <span style="width: 200px; color: #181818">{{
+                subcategory.name
+              }}</span>
+            </a>
+          </li>
+
+          } } }
+        </ul>
+      </div>
+
+      <div class="tab-content">
+        <div id="tab-1" class="tab-pane fade show active p-0">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="row g-8">
+                @for (product of vegetables; track $index) {
+                <div class="col-6 col-md-6 col-lg-2">
+                  <div class="card">
+                    @if (product.discount > 0) {
+                    <div
+                      class="badge card-badge card-badge-start text-uppercase bg-primary"
+                      style="
+                        background-color: red !important;
+                        left: 5px;
+                        top: 10px;
+                      "
+                    >
+                      -{{ product.discount }}%
+                    </div>
+                    }
+
+                    <div class="card-img">
+                      <a
+                        class="card-img-hover"
+                        routerLink="product-detail/{{ product.slug }}"
+                      >
+                        <img
+                          class="card-img-top card-img-back"
+                          [src]="product.thumbnail"
+                          alt="..."
+                          width="304"
+                          height="160"
+                        />
+                        <img
+                          class="card-img-top card-img-front"
+                          [src]="product.thumbnail"
+                          alt="..."
+                          width="304"
+                          height="160"
+                        />
+                      </a>
+
+                      <div class="card-actions">
+                        <span class="card-action">
+                          <button
+                            class="btn btn-xs btn-circle btn-white-primary"
+                            (click)="quickViewProduct(product.id)"
+                          >
+                            <i style="color: #008b4b" class="fas fa-eye"></i>
+                          </button>
+                        </span>
+                        <span class="card-action">
+                          <button
+                            class="btn btn-xs btn-circle btn-white-primary"
+                            data-toggle="button"
+                          >
+                            <i
+                              style="color: #008b4b"
+                              class="fas fa-shopping-cart"
+                            ></i>
+                          </button>
+                        </span>
+                        <span class="card-action">
+                          <button
+                            class="btn btn-xs btn-circle btn-white-primary"
+                            data-toggle="button"
+                          >
+                            <i style="color: #008b4b" class="fas fa-heart"></i>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="card-body px-0">
+                      <div class="fs-xs"></div>
+
+                      <div class="fw-bold">
+                        <a
+                          class="text-body"
+                          routerLink="product-detail/{{ product.slug }}"
+                        >
+                          {{ product.title }}
+                        </a>
+                      </div>
+
+                      <div class="fx-bold">
+                        <p class="text-center"></p>
+                      </div>
+
+                      <div class="fw-bold">
+                        <span
+                          class="fs-xs text-gray-350 text-decoration-line-through"
+                          style="padding: 10px; font-size: 14px"
+                          >{{ product.originalPrice | number : "1.0" }}₫</span
+                        >
+                        <span class="text-primary" style="font-size: 14px"
+                          >{{ product.officialPrice | number : "1.0" }}₫</span
+                        >
+                      </div>
+                      <div>
+                        <button
+                          (click)="addProductToCart(product.id, product.title)"
+                          class="btn rounded-pill my-2 border border-secondary text-primary"
+                        >
+                          <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                          Thêm vào giỏ
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                }
+              </div>
+              <div class="see-more">
+                <a title="Xem tất cả" routerLink="/products/listc/rau-cu"
+                  >Xem tất cả</a
+                >
               </div>
             </div>
           </div>
@@ -838,266 +921,355 @@
   </div>
 </div>
 
-<div class="container-fluid fruite py-5">
-  <div class="container">
-    <div class="tab-class text-center">
-      <div class="heading-bar mb-3">
-        <h2 class="heading mx-auto w-auto text-center font-semibold">
-          <a
-            class="tab-url"
-            href="/san-pham-noi-bat"
-            title="Trái cây"
-            style="color: #3e4a5e"
-          >
-            Rau củ quả
+<section class="section_product_2 container py-5">
+  <div class="title_index">
+    <h2 class="title-module">
+      <a
+        routerLink="/products/listc/thit"
+        title="Thịt nhập khẩu"
+        style="color: #000"
+        >Thịt nhập khẩu
+      </a>
+    </h2>
+    <div class="link_title">
+      @for (category of categoriesWithSubcategories$ | async; track $index) {
+      @if (category.id === 3) { @for (subcategory of category.subcategories;
+      track $index) {
+      <a
+        href="javascript:;"
+        class="item_cate_index"
+        [title]="subcategory.name"
+        (click)="getMeats(subcategory.id)"
+        style="color: #000"
+      >
+        <p class="title_cate">{{ subcategory.name }}</p>
+      </a>
+      } } }
+    </div>
+  </div>
+  <div class="box_pro_2">
+    <div class="row">
+      <div
+        class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 col-12 order-lg-1 order-2"
+      >
+        <div class="banner_col_2">
+          <a class="banner_men" routerLink="/products/list/all" title="Banner">
+            <img
+              width="400"
+              height="260"
+              class="lazyload loaded"
+              src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720988588/tt1gmh3e4ovc0jurzaop.jpg"
+              alt="Banner"
+              data-was-processed="true"
+            />
           </a>
-        </h2>
-      </div>
-      <div class="col-lg-12 text-center">
-        <ul class="nav nav-pills d-inline-flex mb-5 text-center">
-          @for (category of categoriesWithSubcategories$ | async; track
-          category.id ;let i =$index) { @if (category.id == 1) { @for
-          (subcategory of category.subcategories; track $index) {
-          <li class="nav-item">
-            <a
-              class="d-flex bg-light m-2 py-2"
-              [ngClass]="{ active: selectedCategoryId === subcategory.id }"
-              data-bs-toggle="pill"
-              href="javascript:void(0);"
-              (click)="getVegetables(subcategory.id)"
-            >
-              <span class="text-dark" style="width: 200px">{{
-                subcategory.name
-              }}</span>
-            </a>
-          </li>
-
-          } } }
-        </ul>
-      </div>
-
-      <div class="tab-content">
-        <div id="tab-1" class="tab-pane fade show active p-0">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="row g-8">
-                @for (product of vegetables; track $index) {
-                <div class="col-6 col-md-6 col-lg-3">
-                  <div class="card">
-                    <div
-                      class="badge card-badge card-badge-start text-uppercase bg-primary"
-                      style="left: 5px; background-color: red !important"
-                    >
-                      -{{ product.discount }}%
-                    </div>
-
-                    <div class="card-img">
-                      <a
-                        class="card-img-hover"
-                        routerLink="product-detail/{{ product.id }}"
-                      >
-                        <img
-                          class="card-img-top card-img-back"
-                          [src]="product.thumbnail"
-                          alt="..."
-                          width="304"
-                          height="213"
-                        />
-                        <img
-                          class="card-img-top card-img-front"
-                          [src]="product.thumbnail"
-                          alt="..."
-                          width="304"
-                          height="213"
-                        />
-                      </a>
-
-                      <!-- Actions -->
-                      <div class="card-actions">
-                        <span class="card-action">
-                          <button
-                            class="btn btn-xs btn-circle btn-white-primary"
-                            (click)="quickViewProduct(product.id)"
-                          >
-                            <i style="color: #008b4b" class="fas fa-eye"></i>
-                          </button>
-                        </span>
-                        <span class="card-action">
-                          <button
-                            class="btn btn-xs btn-circle btn-white-primary"
-                            data-toggle="button"
-                          >
-                            <i
-                              style="color: #008b4b"
-                              class="fas fa-shopping-cart"
-                            ></i>
-                          </button>
-                        </span>
-                        <span class="card-action">
-                          <button
-                            class="btn btn-xs btn-circle btn-white-primary"
-                            data-toggle="button"
-                          >
-                            <i style="color: #008b4b" class="fas fa-heart"></i>
-                          </button>
-                        </span>
-                      </div>
-                    </div>
-
-                    <!-- Body -->
-                    <div class="card-body px-0">
-                      <!-- Category -->
-                      <div class="fs-xs"></div>
-
-                      <!-- Title -->
-                      <div class="fw-bold">
-                        <a
-                          class="text-body"
-                          routerLink="product-detail/{{ product.id }}"
-                        >
-                          {{ product.title }}
-                        </a>
-                      </div>
-
-                      <div class="fx-bold">
-                        <p class="text-center"></p>
-                      </div>
-
-                      <!-- Price -->
-                      <div class="fw-bold">
-                        <span
-                          class="fs-xs text-gray-350 text-decoration-line-through"
-                          style="padding: 10px; font-size: 14px"
-                          >{{ product.officialPrice | number : "1.0" }}₫</span
-                        >
-                        <span class="text-primary" style="font-size: 14px"
-                          >{{ product.originalPrice | number : "1.0" }}₫</span
-                        >
-                      </div>
-                      <div>
-                        <button
-                          (click)="addProductToCart(product.id, product.title)"
-                          class="btn rounded-pill my-2 border border-secondary px-3 text-primary"
-                        >
-                          <i class="fa fa-shopping-bag me-2 text-primary"></i>
-                          Thêm vào giỏ
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="container-fluid banner my-5 bg-secondary">
-  <div class="container py-5">
-    <div class="row g-4 align-items-center">
-      <div class="col-lg-6">
-        <div class="py-4">
-          <h1 class="display-3 text-white">Trái cây tươi</h1>
-          <p class="fw-normal display-3 mb-4 text-dark">
-            trong cửa hàng chúng tôi
-          </p>
-          <p class="mb-4 text-dark">
-            The generated Lorem Ipsum is therefore always free from repetition
-            injected humour, or non-characteristic words etc.
-          </p>
           <a
-            href="#"
-            class="banner-btn btn rounded-pill border-2 border-white px-5 py-3 text-dark"
-            >BUY</a
+            class="banner_men banner_men_2"
+            routerLink="/products/list/all"
+            title="Banner"
           >
+            <img
+              width="400"
+              height="260"
+              class="lazyload loaded"
+              src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720988607/veuighcefbltottdfjfe.jpg"
+              alt="Banner"
+              data-was-processed="true"
+            />
+          </a>
         </div>
       </div>
-      <div class="col-lg-6">
-        <div class="position-relative">
-          <img
-            src="https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215697/YmFuZXItMV9wbmhwOTY=/drilldown"
-            class="img-fluid w-100 rounded"
-            alt=""
-          />
-          <div
-            class="d-flex align-items-center justify-content-center rounded-circle position-absolute bg-white"
-            style="width: 140px; height: 140px; top: 0; left: 0"
-          >
-            <div class="d-flex flex-column">
-              <span class="h6 mb-0">Giảm giá sốc</span>
-              <span class="h4 text-muted mb-0">20.000đ</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Banner Section End -->
-
-<!-- Bestsaler Product Start -->
-<div class="container-fluid py-5">
-  <div class="container py-5">
-    <div class="mx-auto mb-5 text-center" style="max-width: 700px">
-      <h1 class="display-4">Bestseller</h1>
-      <p>
-        Latin words, combined with a handful of model sentence structures, to
-        generate Lorem Ipsum which looks reasonable.
-      </p>
-    </div>
-    <div class="row g-4">
-      @for (product of bestSellerProducts; track $index) {
-      <div class="col-lg-6 col-xl-4">
-        <div class="bg-light rounded p-4">
-          <div class="row align-items-center">
-            <div class="col-6">
-              <img
-                [src]="product.thumbnail"
-                class="rounded-circle w-100"
-                width="142px"
-                height="99px"
-                alt=""
-              />
-            </div>
-            <div class="col-6">
-              <a href="#" class="h5">{{ product.title }}</a>
-              <div class="d-flex my-3">
-                @for (star of [1, 2, 3, 4, 5]; track $index; let i = $index) {
-                @if (product.averageRating >= i + 1) {
-                <i class="fas fa-star text-primary"></i>
-                }@else if ( product.averageRating > i && product.averageRating <
-                i + 1) {
-                <i class="fas fa-star-half-alt text-primary"></i>
-
-                } @else {
-                <i class="fas fa-star"></i>
-                } }
-              </div>
-              <h6 class="mb-2">
-                {{ product.officialPrice | number : "1.0" }}₫
-              </h6>
-              <h6 class="mb-2">Lượt mua: {{ product.purchases }}</h6>
-              <button
-                type="button"
-                (click)="addProductToCart(product.id, product.title)"
-                class="btn rounded-pill me-2 border border-secondary text-primary"
+      <div
+        class="col-xl-9 col-lg-9 col-md-12 col-sm-12 order-lg-2 col-xs-12 col-12 order-1 text-center"
+      >
+        <div class="row g-4">
+          @for (product of meats; track $index) {
+          <div class="col-6 col-md-6 col-lg-3">
+            <div class="card">
+              @if (product.discount > 0) {
+              <div
+                class="badge card-badge card-badge-start text-uppercase bg-primary"
+                style="background-color: red !important; left: 5px; top: 10px"
               >
-                <i class="fa fa-shopping-bag me-2 text-primary"></i> Thêm vào
-                giỏ
-              </button>
+                -{{ product.discount }}%
+              </div>
+              }
+
+              <div class="card-img">
+                <a
+                  class="card-img-hover"
+                  routerLink="product-detail/{{ product.slug }}"
+                >
+                  <img
+                    class="card-img-top card-img-back"
+                    [src]="product.thumbnail"
+                    alt="..."
+                    width="304"
+                    height="160"
+                  />
+                  <img
+                    class="card-img-top card-img-front"
+                    [src]="product.thumbnail"
+                    alt="..."
+                    width="304"
+                    height="160"
+                  />
+                </a>
+
+                <!-- Actions -->
+                <div class="card-actions">
+                  <span class="card-action">
+                    <button
+                      class="btn btn-xs btn-circle btn-white-primary"
+                      (click)="quickViewProduct(product.id)"
+                    >
+                      <i style="color: #008b4b" class="fas fa-eye"></i>
+                    </button>
+                  </span>
+                  <span class="card-action">
+                    <button
+                      class="btn btn-xs btn-circle btn-white-primary"
+                      data-toggle="button"
+                    >
+                      <i
+                        style="color: #008b4b"
+                        class="fas fa-shopping-cart"
+                      ></i>
+                    </button>
+                  </span>
+                  <span class="card-action">
+                    <button
+                      class="btn btn-xs btn-circle btn-white-primary"
+                      data-toggle="button"
+                    >
+                      <i style="color: #008b4b" class="fas fa-heart"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+              <div class="card-body px-0">
+                <div class="fs-xs"></div>
+
+                <div class="fw-bold">
+                  <a
+                    class="text-body"
+                    routerLink="product-detail/{{ product.slug }}"
+                  >
+                    {{ product.title }}
+                  </a>
+                </div>
+
+                <div class="fx-bold">
+                  <p class="text-center"></p>
+                </div>
+
+                <div class="fw-bold">
+                  <span
+                    class="fs-xs text-gray-350 text-decoration-line-through"
+                    style="padding: 10px; font-size: 14px"
+                    >{{ product.originalPrice | number : "1.0" }}₫</span
+                  >
+                  <span class="text-primary" style="font-size: 14px"
+                    >{{ product.officialPrice | number : "1.0" }}₫</span
+                  >
+                </div>
+                <div>
+                  <button
+                    (click)="addProductToCart(product.id, product.title)"
+                    class="btn rounded-pill my-2 border border-secondary text-primary"
+                  >
+                    <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                    Thêm vào giỏ
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+          }
+        </div>
+        <div class="see-more">
+          <a title="Xem tất cả" routerLink="/products/listc/thit">Xem tất cả</a>
         </div>
       </div>
-      }
     </div>
   </div>
-</div>
-<!-- Bestsaler Product End -->
+</section>
+
+<section class="section_product_2 container py-5">
+  <div class="title_index">
+    <h2 class="title-module">
+      <a
+        routerLink="/products/listc/hai-san"
+        title="Hải sản tươi"
+        style="color: #000"
+        >Hải sản tươi
+      </a>
+    </h2>
+    <div class="link_title">
+      @for (category of categoriesWithSubcategories$ | async; track $index) {
+      @if (category.id === 6) { @for (subcategory of category.subcategories;
+      track $index) {
+      <a
+        href="javascript:;"
+        class="item_cate_index"
+        [title]="subcategory.name"
+        (click)="getSeaFoods(subcategory.id)"
+        style="color: #000"
+      >
+        <p class="title_cate">{{ subcategory.name }}</p>
+      </a>
+      } } }
+    </div>
+  </div>
+  <div class="box_pro_2">
+    <div class="row">
+      <div
+        class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 col-12 text-center"
+      >
+        <div class="row">
+          @for (product of seafoods; track $index) {
+          <div class="col-6 col-md-6 col-lg-3">
+            <div class="card">
+              @if (product.discount > 0) {
+              <div
+                class="badge card-badge card-badge-start text-uppercase bg-primary"
+                style="background-color: red !important; left: 5px; top: 10px"
+              >
+                -{{ product.discount }}%
+              </div>
+              }
+
+              <div class="card-img">
+                <a
+                  class="card-img-hover"
+                  routerLink="product-detail/{{ product.slug }}"
+                >
+                  <img
+                    class="card-img-top card-img-back"
+                    [src]="product.thumbnail"
+                    alt="..."
+                    width="304"
+                    height="160"
+                  />
+                  <img
+                    class="card-img-top card-img-front"
+                    [src]="product.thumbnail"
+                    alt="..."
+                    width="304"
+                    height="160"
+                  />
+                </a>
+
+                <!-- Actions -->
+                <div class="card-actions">
+                  <span class="card-action">
+                    <button
+                      class="btn btn-xs btn-circle btn-white-primary"
+                      (click)="quickViewProduct(product.id)"
+                    >
+                      <i style="color: #008b4b" class="fas fa-eye"></i>
+                    </button>
+                  </span>
+                  <span class="card-action">
+                    <button
+                      class="btn btn-xs btn-circle btn-white-primary"
+                      data-toggle="button"
+                    >
+                      <i
+                        style="color: #008b4b"
+                        class="fas fa-shopping-cart"
+                      ></i>
+                    </button>
+                  </span>
+                  <span class="card-action">
+                    <button
+                      class="btn btn-xs btn-circle btn-white-primary"
+                      data-toggle="button"
+                    >
+                      <i style="color: #008b4b" class="fas fa-heart"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+              <div class="card-body px-0">
+                <div class="fs-xs"></div>
+
+                <div class="fw-bold">
+                  <a
+                    class="text-body"
+                    routerLink="product-detail/{{ product.slug }}"
+                  >
+                    {{ product.title }}
+                  </a>
+                </div>
+
+                <div class="fx-bold">
+                  <p class="text-center"></p>
+                </div>
+
+                <div class="fw-bold">
+                  <span
+                    class="fs-xs text-gray-350 text-decoration-line-through"
+                    style="padding: 10px; font-size: 14px"
+                    >{{ product.originalPrice | number : "1.0" }}₫</span
+                  >
+                  <span class="text-primary" style="font-size: 14px"
+                    >{{ product.officialPrice | number : "1.0" }}₫</span
+                  >
+                </div>
+                <div>
+                  <button
+                    (click)="addProductToCart(product.id, product.title)"
+                    class="btn rounded-pill my-2 border border-secondary text-primary"
+                  >
+                    <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                    Thêm vào giỏ
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        <div class="see-more">
+          <a title="Xem tất cả" routerLink="/products/listc/hai-san"
+            >Xem tất cả</a
+          >
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 col-12">
+        <div class="banner_col_2">
+          <a class="banner_men" routerLink="/products/list/all" title="Banner">
+            <img
+              width="400"
+              height="260"
+              class="lazyload loaded"
+              src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720989038/xd4yvrsk2jvecfhxqrso.jpg"
+              alt="Banner"
+              data-was-processed="true"
+            />
+          </a>
+          <a
+            class="banner_men banner_men_2"
+            routerLink="/products/list/all"
+            title="Banner"
+          >
+            <img
+              width="400"
+              height="260"
+              class="lazyload loaded"
+              src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720989060/jilhagvbu4glkilbyo5d.jpg"
+              alt="Banner"
+              data-was-processed="true"
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- Fact Start -->
 <div class="container-fluid py-5">
@@ -1136,124 +1308,6 @@
     </div>
   </div>
 </div>
-<!-- Fact Start -->
-
-<!-- Tastimonial Start -->
-<div class="container-fluid testimonial py-5">
-  <div class="container py-5">
-    <div class="testimonial-header text-center">
-      <h4 class="text-primary">Our Testimonial</h4>
-      <h1 class="display-5 mb-5 text-dark">Our Client Saying!</h1>
-    </div>
-    <div class="testimonial-carousel">
-      <div class="testimonial-item img-border-radius bg-light rounded p-4">
-        <div class="position-relative">
-          <i
-            class="fa fa-quote-right fa-2x position-absolute text-secondary"
-            style="bottom: 30px; right: 0"
-          ></i>
-          <div class="border-bottom mb-4 border-secondary pb-4">
-            <p class="mb-0">
-              Lorem Ipsum is simply dummy text of the printing Ipsum has been
-              the industry's standard dummy text ever since the 1500s,
-            </p>
-          </div>
-          <div class="d-flex align-items-center flex-nowrap">
-            <div class="rounded bg-secondary">
-              <img
-                src="https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215697/hero-img-1_xht0jo.png"
-                class="img-fluid rounded"
-                style="width: 100px; height: 100px"
-                alt=""
-              />
-            </div>
-            <div class="d-block ms-4">
-              <h4 class="text-dark">Client Name</h4>
-              <p class="m-0 pb-3">Profession</p>
-              <div class="d-flex pe-5">
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-item img-border-radius bg-light rounded p-4">
-        <div class="position-relative">
-          <i
-            class="fa fa-quote-right fa-2x position-absolute text-secondary"
-            style="bottom: 30px; right: 0"
-          ></i>
-          <div class="border-bottom mb-4 border-secondary pb-4">
-            <p class="mb-0">
-              Lorem Ipsum is simply dummy text of the printing Ipsum has been
-              the industry's standard dummy text ever since the 1500s,
-            </p>
-          </div>
-          <div class="d-flex align-items-center flex-nowrap">
-            <div class="rounded bg-secondary">
-              <img
-                src="https://res.cloudinary.com/dl3rsgucq/image/upload/v1717215697/hero-img-1_xht0jo.png"
-                class="img-fluid rounded"
-                style="width: 100px; height: 100px"
-                alt=""
-              />
-            </div>
-            <div class="d-block ms-4">
-              <h4 class="text-dark">Client Name</h4>
-              <p class="m-0 pb-3">Profession</p>
-              <div class="d-flex pe-5">
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-item img-border-radius bg-light rounded p-4">
-        <div class="position-relative">
-          <i
-            class="fa fa-quote-right fa-2x position-absolute text-secondary"
-            style="bottom: 30px; right: 0"
-          ></i>
-          <div class="border-bottom mb-4 border-secondary pb-4">
-            <p class="mb-0">
-              Lorem Ipsum is simply dummy text of the printing Ipsum has been
-              the industry's standard dummy text ever since the 1500s,
-            </p>
-          </div>
-          <div class="d-flex align-items-center flex-nowrap">
-            <div class="rounded bg-secondary">
-              <img
-                src="https://res-console.cloudinary.com/dl3rsgucq/thumbnails/v1/image/upload/v1717215698/dGVzdGltb25pYWwtMV9jZWhicGE=/drilldown"
-                class="img-fluid rounded"
-                style="width: 100px; height: 100px"
-                alt=""
-              />
-            </div>
-            <div class="d-block ms-4">
-              <h4 class="text-dark">Client Name</h4>
-              <p class="m-0 pb-3">Profession</p>
-              <div class="d-flex pe-5">
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-                <i class="fas fa-star text-primary"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <app-footer></app-footer>
 <a
@@ -1261,6 +1315,11 @@
   class="btn btn-primary border-3 rounded-circle back-to-top border-primary"
   ><i class="fa fa-arrow-up"></i
 ></a>
+}@loading {
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <mat-spinner></mat-spinner>
+</div>
+}
 
 <div
   id="quick-view-product"
@@ -1319,8 +1378,6 @@
                 </li>
                 }
               </ul>
-              <div class="swiper-button-prev swiper-button-disabled"></div>
-              <div class="swiper-button-next swiper-button-disabled"></div>
             </div>
           </div>
         </div>

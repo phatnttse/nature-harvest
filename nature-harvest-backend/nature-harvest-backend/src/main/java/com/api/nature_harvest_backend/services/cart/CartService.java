@@ -52,8 +52,7 @@ public class CartService implements ICartService {
             cartRepository.save(newCartItem);
         }
 
-        List<Cart> cartItems = cartRepository.findByUser(user);
-        return cartItems;
+        return cartRepository.findByUser(user);
     }
 
     @Override
@@ -62,8 +61,7 @@ public class CartService implements ICartService {
         User user = userRepository.findById(cartDto.getUserId()).orElseThrow(() -> new DataNotFoundException("User not found"));
         Product product = productRepository.findById(cartDto.getProductId()).orElseThrow(() -> new DataNotFoundException("Product not found"));
         cartRepository.deleteByUserAndProduct(user, product);
-        List<Cart> cartItems = cartRepository.findByUser(user);
-        return cartItems;
+        return cartRepository.findByUser(user);
     }
 
     @Override
@@ -80,8 +78,7 @@ public class CartService implements ICartService {
                 cartRepository.save(cart.get());
             }
         }
-        List<Cart> cartItems = cartRepository.findByUser(user);
-        return cartItems;
+        return cartRepository.findByUser(user);
     }
 
     @Override

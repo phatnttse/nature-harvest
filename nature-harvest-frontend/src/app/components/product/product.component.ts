@@ -21,13 +21,17 @@ import { CartDto } from '../../dtos/cart/cart.dto';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user.service';
 import { CartService } from '../../services/cart.service';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterModule,
+} from '@angular/router';
 import { CategoryWithSubcategoriesResponse } from '../../responses/category/category-subcategory-response';
-import { Observable, min } from 'rxjs';
+import { Observable, filter } from 'rxjs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatLabel } from '@angular/material/form-field';
-import { TranslateModule } from '@ngx-translate/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-product',
@@ -50,7 +54,7 @@ import { TranslateModule } from '@ngx-translate/core';
     RouterModule,
     MatCheckboxModule,
     MatRadioModule,
-    MatLabel,
+    MatProgressSpinnerModule,
   ],
 })
 export class ProductComponent implements OnInit {
@@ -60,7 +64,7 @@ export class ProductComponent implements OnInit {
   categorySlug: string = '';
   subcategorySlug: string = '';
   currentPage: number = 0;
-  itemsPerPage: number = 8;
+  itemsPerPage: number = 24;
   pages: number[] = [];
   totalPages: number = 0;
   visiblePages: number[] = [];
@@ -87,13 +91,24 @@ export class ProductComponent implements OnInit {
     private cartService: CartService,
     private userService: UserService,
     private toastr: ToastrService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.categoriesWithSubcategories$ =
       this.categoryService.categoriesWithSubcategories$;
   }
 
   ngOnInit(): void {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.loadProducts();
+      });
+
+    this.loadProducts();
+  }
+
+  loadProducts() {
     const categorySlug = this.route.snapshot.paramMap.get('category-slug');
     const subcategorySlug =
       this.route.snapshot.paramMap.get('subcategory-slug');
@@ -106,7 +121,7 @@ export class ProductComponent implements OnInit {
         this.selectedCategoryId,
         this.selectedSubCategoryId,
         categorySlug,
-        '',
+        this.subcategorySlug,
         this.sortBy,
         this.arrange,
         this.currentPage,
@@ -120,7 +135,7 @@ export class ProductComponent implements OnInit {
         this.keyword,
         this.selectedCategoryId,
         this.selectedSubCategoryId,
-        '',
+        this.categorySlug,
         subcategorySlug,
         this.sortBy,
         this.arrange,
@@ -201,6 +216,7 @@ export class ProductComponent implements OnInit {
         },
       });
   }
+
   onPageChange(page: number) {
     debugger;
     this.currentPage = page < 0 ? 0 : page;
@@ -223,6 +239,7 @@ export class ProductComponent implements OnInit {
       );
     }
   }
+
   generateVisiblePageArray(currentPage: number, totalPages: number): number[] {
     const maxVisiblePages = 5;
     const halfVisiblePages = Math.floor(maxVisiblePages / 2);
@@ -238,6 +255,42 @@ export class ProductComponent implements OnInit {
       .fill(0)
       .map((_, index) => startPage + index);
   }
+
+  selectPrice(selectedPriceRange: string) {
+    switch (selectedPriceRange) {
+      case '100k':
+        this.minPrice = 0;
+        this.maxPrice = 100000;
+        break;
+      case '100k-200k':
+        this.minPrice = 100000;
+        this.maxPrice = 200000;
+        break;
+      case '200k-300k':
+        this.minPrice = 200000;
+        this.maxPrice = 300000;
+        break;
+      case '300k-500k':
+        this.minPrice = 300000;
+        this.maxPrice = 500000;
+        break;
+      case '500k-1000k':
+        this.minPrice = 500000;
+        this.maxPrice = 1000000;
+        break;
+      case '1000k-2000k':
+        this.minPrice = 1000000;
+        this.maxPrice = 2000000;
+        break;
+      default:
+        this.minPrice = 0;
+        this.maxPrice = 0;
+        break;
+    }
+    debugger;
+    this.filterProductsByPrice();
+  }
+
   filterProductsByPrice() {
     debugger;
     this.productService

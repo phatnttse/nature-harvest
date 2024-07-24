@@ -13,5 +13,6 @@ public class CategoryProductCountResponse {
     private Long id;
     private String name;
     private String thumbnail;
+    private String slug;
     private Long count;
 }

@@ -1,3 +1,4 @@
+@defer () {
 <app-header></app-header>
 <app-breadcrumb></app-breadcrumb>
 <section class="product layout-product">
@@ -23,6 +24,8 @@
                           [src]="image.imageUrl"
                           class="product-image rounded-3"
                           alt="Product Image"
+                          width="auto"
+                          height="auto"
                         />
                       </div>
                     </div>
@@ -97,6 +100,7 @@
                 <span class="price product-price-save"
                   >{{
                     product?.originalPrice! - product?.officialPrice!
+                      | number : "1.0"
                   }}₫</span
                 >
                 so với giá thị trường
@@ -160,7 +164,7 @@
                 <img
                   width="32"
                   height="32"
-                  src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/chinhsach_1.jpg?1716945232631"
+                  src="https://res.cloudinary.com/dlpust9lj/image/upload/v1721068040/eguj6dbidlborowfnext.png"
                   alt="Miễn phí vận chuyển tại TP.HCM"
                 />
                 <span>Miễn phí vận chuyển tại TP.HCM</span>
@@ -170,7 +174,7 @@
                 <img
                   width="32"
                   height="32"
-                  src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/chinhsach_2.jpg?1716945232631"
+                  src="https://res.cloudinary.com/dlpust9lj/image/upload/v1721068053/hqawxprtfplwdacuhrrb.png"
                   alt="Bảo hành chính hãng toàn quốc"
                 />
                 <span>Bảo hành chính hãng toàn quốc</span>
@@ -180,7 +184,7 @@
                 <img
                   width="32"
                   height="32"
-                  src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/chinhsach_3.jpg?1716945232631"
+                  src="https://res.cloudinary.com/dlpust9lj/image/upload/v1721068061/pgabzlkszcaqsbu1byzz.png"
                   alt="Cam kết chính hãng 100%"
                 />
                 <span>Cam kết chính hãng 100%</span>
@@ -190,7 +194,7 @@
                 <img
                   width="32"
                   height="32"
-                  src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/chinhsach_4.jpg?1716945232631"
+                  src="https://res.cloudinary.com/dlpust9lj/image/upload/v1721068072/bymnaegdwzt9aokslwzu.png"
                   alt="1 đổi 1 nếu sản phẩm lỗi"
                 />
                 <span>1 đổi 1 nếu sản phẩm lỗi</span>
@@ -612,3 +616,8 @@
   </div>
 </section>
 <app-footer></app-footer>
+}@loading {
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <mat-spinner></mat-spinner>
+</div>
+}

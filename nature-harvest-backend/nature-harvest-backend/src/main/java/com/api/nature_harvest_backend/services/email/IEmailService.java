@@ -5,4 +5,6 @@ import com.api.nature_harvest_backend.models.User;
 public interface IEmailService {
     void sendConfirmationEmail(User user, String token) throws Exception;
 
+    void sendResetPasswordEmail(User user, String newPassword) throws Exception;
+
 }

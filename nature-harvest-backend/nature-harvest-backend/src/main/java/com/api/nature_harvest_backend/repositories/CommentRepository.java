@@ -12,7 +12,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Page<Comment> findByProductIdAndHasPicture(Long productId, boolean hasImage, Pageable pageable);
 
-    Page<Comment> findByProductIdAndStarRatingAndHasPicture(Long productId, int starRating, boolean hasPicture, Pageable pageable);
+    Page<Comment> findByProductIdAndStarRatingAndHasPicture(Long productId, int starRating, Boolean hasPicture, Pageable pageable);
 
     long countByProductId(Long productId);
 

@@ -8,13 +8,17 @@ import com.api.nature_harvest_backend.dtos.payment.MomoPaymentDto;
 import com.api.nature_harvest_backend.dtos.payment.VnPayPaymentDto;
 import com.api.nature_harvest_backend.models.Order;
 import com.api.nature_harvest_backend.services.cart.ICartService;
+import com.api.nature_harvest_backend.services.order.IOrderRedisService;
 import com.api.nature_harvest_backend.services.order.IOrderService;
 import com.api.nature_harvest_backend.services.payment.MomoPaymentService;
 import com.api.nature_harvest_backend.utils.HashUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -35,10 +39,17 @@ public class PaymentController {
     private final ICartService cartService;
     private final VnpayConfig vnpayConfig;
     private final MomoConfig momoConfig;
+    private final IOrderRedisService orderRedisService;
+
+    @Value("${payment.url.order}")
+    private String ODER_URL;
+
+    @Value("${payment.url.order-success}")
+    private String ORDER_SUCCESS_URL;
 
     @PostMapping("/vnpay-pay")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<String> createPayment(@Valid @RequestBody VnPayPaymentDto vnPayPaymentDto) throws UnsupportedEncodingException {
+    public ResponseEntity<String> createPayment(@Valid @RequestBody VnPayPaymentDto vnPayPaymentDto, HttpSession session) throws UnsupportedEncodingException, JsonProcessingException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
@@ -71,15 +82,7 @@ public class PaymentController {
             vnp_Params.put("vnp_Locale", "vn");
         }
 
-        vnp_Params.put("vnp_ReturnUrl", vnpayConfig.getVnp_ReturnUrl()
-                + "?userId=" + vnPayPaymentDto.getOrder().getUserId()
-                + "&email=" + vnPayPaymentDto.getOrder().getEmail()
-                + "&name=" + URLEncoder.encode(vnPayPaymentDto.getOrder().getName(), StandardCharsets.UTF_8.toString())
-                + "&phone=" + vnPayPaymentDto.getOrder().getPhone()
-                + "&deliveryAddress=" + URLEncoder.encode(vnPayPaymentDto.getOrder().getDeliveryAddress(), StandardCharsets.UTF_8.toString())
-                + "&note=" + URLEncoder.encode(vnPayPaymentDto.getOrder().getNote(), StandardCharsets.UTF_8.toString())
-                + "&paymentMethod=" + vnPayPaymentDto.getOrder().getPaymentMethod()
-        );
+        vnp_Params.put("vnp_ReturnUrl", vnpayConfig.getVnp_ReturnUrl());
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -119,6 +122,9 @@ public class PaymentController {
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = vnpayConfig.getVnp_PayUrl() + "?" + queryUrl;
 
+        vnPayPaymentDto.getOrder().setId(vnp_TxnRef);
+        orderRedisService.saveOrder(vnPayPaymentDto.getOrder());
+
         return ResponseEntity.ok(paymentUrl);
     }
 
@@ -126,38 +132,25 @@ public class PaymentController {
     public void paymentCallback(@RequestParam Map<String, String> queryParams, HttpServletResponse response) throws Exception {
         try {
             String vnp_ResponseCode = queryParams.get("vnp_ResponseCode");
-            String userId = queryParams.get("userId");
             String orderId = queryParams.get("vnp_TxnRef");
-            String email = queryParams.get("email");
-            String name = queryParams.get("name");
-            String phone = queryParams.get("phone");
-            String deliveryAddress = queryParams.get("deliveryAddress");
-            String note = queryParams.get("note");
-            int amount = Integer.parseInt(queryParams.get("vnp_Amount"));
-            String paymentMethod = queryParams.get("paymentMethod");
-            OrderDto orderDto = OrderDto.builder()
-                    .id("Vit-" + orderId)
-                    .userId(userId)
-                    .email(email)
-                    .name(name)
-                    .phone(phone)
-                    .deliveryAddress(deliveryAddress)
-                    .note(note)
-                    .amount(amount)
-                    .paymentMethod(paymentMethod)
-                    .build();
+            OrderDto orderDto = orderRedisService.getOrder(orderId);
             if (orderDto != null) {
                 if ("00".equals(vnp_ResponseCode)) {
+                    orderDto.setId("Vit-" + orderId);
                     Order newOrder = orderService.createOrder(orderDto);
                     CartDto cartDto = CartDto.builder().userId(newOrder.getUser().getId()).build();
                     cartService.clearCart(cartDto);
-                    response.sendRedirect("http://localhost:4200/order-success/" + newOrder.getId());
+                    response.sendRedirect(ORDER_SUCCESS_URL + newOrder.getId());
                 } else {
-                    response.sendRedirect("http://localhost:4200/order");
+                    orderRedisService.clear();
+                    response.sendRedirect(ODER_URL);
                 }
+            } else {
+                orderRedisService.clear();
+                response.sendRedirect(ODER_URL);
             }
         } catch (Exception e) {
-            response.sendRedirect("http://localhost:4200/order");
+            response.sendRedirect(ODER_URL);
             System.out.println(e.getMessage());
         }
     }
@@ -207,17 +200,14 @@ public class PaymentController {
                 Order newOrder = orderService.createOrder(orderDto);
                 CartDto cartDto = CartDto.builder().userId(newOrder.getUser().getId()).build();
                 cartService.clearCart(cartDto);
-                response.sendRedirect("http://localhost:4200/order-success/" + newOrder.getId());
+                response.sendRedirect(ORDER_SUCCESS_URL + newOrder.getId());
             } else {
-                response.sendRedirect("http://localhost:4200/order");
+                response.sendRedirect(ODER_URL);
             }
 
         } catch (Exception e) {
-            response.sendRedirect("http://localhost:4200/order");
+            response.sendRedirect(ODER_URL);
             System.out.println(e.getMessage());
         }
-
     }
-
-
 }

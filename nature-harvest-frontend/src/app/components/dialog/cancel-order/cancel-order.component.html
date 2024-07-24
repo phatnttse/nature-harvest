@@ -1,0 +1,39 @@
+<mat-card class="d-flex align-items-center justify-content-center">
+  <mat-card-header>
+    <mat-card-title class="fs-30 fw-bold mb-5">Hủy Đơn Hàng</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="cancelOrderForm" (ngSubmit)="cancelOrder()">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Chọn lý do hủy đơn</mat-label>
+        <mat-select required="" formControlName="reasonSelect">
+          <mat-option value="foundCheaperElsewhere"
+            >Tìm thấy giá rẻ hơn ở nơi khác</mat-option
+          >
+          <mat-option value="changeOfMind">Thay đổi quyết định</mat-option>
+          <mat-option value="orderByMistake">Đặt hàng nhầm</mat-option>
+          <mat-option value="shippingCostTooHigh"
+            >Phí vận chuyển cao</mat-option
+          >
+          <mat-option value="longShippingTime"
+            >Thời gian vận chuyển lâu</mat-option
+          >
+          <mat-option value="other">Khác</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Lý do khác (nếu có)</mat-label>
+        <textarea
+          matInput
+          placeholder="Nhập lý do khác"
+          formControlName="reasonInput"
+        ></textarea>
+      </mat-form-field>
+      <div class="actions d-flex align-items-center justify-content-center">
+        <button mat-raised-button color="warn" type="submit">
+          Xác nhận huỷ
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

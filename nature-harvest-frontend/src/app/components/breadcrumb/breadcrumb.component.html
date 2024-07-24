@@ -25,7 +25,11 @@
       </li>
 
       <li>
-        <strong><span>Giỏ hàng</span></strong>
+        @if (breadcrumb) {
+        <strong
+          ><span>{{ breadcrumb }}</span></strong
+        >
+        }
       </li>
     </ul>
   </div>

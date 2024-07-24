@@ -8,16 +8,21 @@ import { OrderService } from '../../services/order.service';
 import { MatButtonModule } from '@angular/material/button';
 import { UserResponse } from '../../responses/user/user.response';
 import { OrderAndOrderDetailsResponse } from '../../responses/order/order-orderdetails-response';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-order-success',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './order-success.component.html',
   styleUrl: './order-success.component.scss',
 })
 export class OrderSuccessComponent implements OnInit {
-
   constructor(
     private orderDetailService: OrderDetailService,
     private orderService: OrderService,

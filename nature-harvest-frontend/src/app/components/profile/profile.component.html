@@ -49,12 +49,24 @@
                   <p class="text-muted font-size-sm">
                     {{ userResponse?.email }}
                   </p>
-                  <button
-                    class="btn btn-primary"
-                    style="padding: 0.8em 1.5em !important"
-                  >
-                    Đổi mật khẩu
-                  </button>
+                  <div class="d-flex align-items-center justify-content-center">
+                    <button
+                      type="button"
+                      class="btn btn-success me-2 px-3 text-white"
+                      style="padding: 0.8em 1.5em !important"
+                      (click)="openChangePasswordDialog()"
+                    >
+                      Đổi mật khẩu
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary ms-2 px-3 text-white"
+                      style="padding: 0.8em 1.5em !important"
+                      (click)="logOut()"
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -67,78 +79,93 @@
                 <div class="fieldset">
                   <div class="field">
                     <div class="field__input-wrapper">
-                      <label for="name" class="field__label"
-                        >Họ và tên <span style="color: red"> *</span></label
-                      >
-                      <input
-                        id="name"
-                        type="text"
-                        class="field__input"
-                        formControlName="name"
-                        required
-                        [class.is-invalid]="
-                          profileForm.get('name')!.invalid &&
-                          profileForm.get('name')!.touched
-                        "
-                      />
-                      @if(profileForm.get('name')!.invalid &&
-                      profileForm.get('name')!.touched) {
-                      <mat-error style="color: red">
-                        Họ và tên là trường <strong>bắt buộc</strong>
-                      </mat-error>
-                      }
+                      <mat-form-field class="w-100 fs-16" appearance="outline">
+                        <mat-label>Nhập họ và tên</mat-label>
+                        <input
+                          matInput
+                          type="text"
+                          formControlName="name"
+                          [class.is-invalid]="
+                            profileForm.get('name')!.invalid &&
+                            profileForm.get('name')!.touched
+                          "
+                        />
+                        @if(profileForm.get('name')!.invalid &&
+                        profileForm.get('name')!.touched) {
+                        <mat-error class="fs-12">
+                          Họ và tên là trường <strong>bắt buộc</strong>
+                        </mat-error>
+                        }
+                      </mat-form-field>
                     </div>
                   </div>
 
                   <div class="field">
                     <div class="field__input-wrapper">
-                      <label for="phone" class="field__label">
-                        Số điện thoại
-                      </label>
-                      <input
-                        id="phone"
-                        type="tel"
-                        class="field__input"
-                        required
-                        formControlName="phone"
-                        [class.is-invalid]="
-                          profileForm.get('phone')!.invalid &&
-                          profileForm.get('phone')!.touched
-                        "
-                      />
+                      <mat-form-field class="w-100 fs-16" appearance="outline">
+                        <mat-label>Nhập số điện thoại</mat-label>
 
-                      @if (profileForm.get('phone')?.hasError('pattern')) {
-                      <div class="error-message mt-2">
-                        <mat-error
+                        <input
+                          matInput
+                          type="tel"
+                          formControlName="phone"
+                          [class.is-invalid]="
+                            profileForm.get('phone')!.invalid &&
+                            profileForm.get('phone')!.touched
+                          "
+                        />
+
+                        @if (profileForm.get('phone')?.hasError('pattern')) {
+                        <mat-error class="fs-12"
                           >Số điện thoại phải có đúng 10 chữ số</mat-error
                         >
-                      </div>
-                      }
+                        }
+                      </mat-form-field>
                     </div>
                   </div>
 
                   <div class="field">
                     <div class="field__input-wrapper">
-                      <label for="address" class="field__label">
-                        Địa chỉ
-                      </label>
-                      <input
-                        id="address"
-                        type="text"
-                        class="field__input"
-                        required
-                        formControlName="address"
-                        [class.is-invalid]="
-                          profileForm.get('address')!.invalid &&
-                          profileForm.get('address')!.touched
-                        "
-                      />
-                      @if (profileForm.get('address')?.hasError('minlength')) {
-                      <div class="error-message mt-2">
-                        <mat-error>Địa chỉ phải ít nhất 10 ký tự </mat-error>
-                      </div>
+                      <mat-form-field class="w-100 fs-16" appearance="outline">
+                        <mat-label>Nhập địa chỉ</mat-label>
+                        <input
+                          matInput
+                          type="text"
+                          formControlName="address"
+                          [class.is-invalid]="
+                            profileForm.get('address')!.invalid &&
+                            profileForm.get('address')!.touched
+                          "
+                        />
+                        @if (profileForm.get('address')?.hasError('minlength'))
+                        {
+                        <mat-error class="fs-12"
+                          >Địa chỉ phải ít nhất 10 ký tự
+                        </mat-error>
+                        }
+                      </mat-form-field>
+                    </div>
+                  </div>
 
-                      }
+                  <div class="field">
+                    <div class="field__input-wrapper">
+                      <mat-form-field class="w-100 fs-16" appearance="outline">
+                        <mat-label>Chọn ngày tháng năm sinh</mat-label>
+                        <input
+                          matInput
+                          [matDatepicker]="dateOfBirthPicker"
+                          formControlName="dateOfBirth"
+                          [class.is-invalid]="
+                            profileForm.get('dateOfBirth')?.invalid &&
+                            profileForm.get('dateOfBirth')?.touched
+                          "
+                        />
+                        <mat-datepicker-toggle
+                          matIconSuffix
+                          [for]="dateOfBirthPicker"
+                        ></mat-datepicker-toggle>
+                        <mat-datepicker #dateOfBirthPicker></mat-datepicker>
+                      </mat-form-field>
                     </div>
                   </div>
                 </div>
@@ -146,13 +173,14 @@
 
               <div class="row mt-4">
                 <div class="col-sm-9 col-lg-12 text-center">
-                  <input
+                  <button
                     type="button"
                     (click)="saveChanges()"
-                    class="btn btn-primary px-5"
+                    class="btn-success btn px-5 text-white"
                     style="padding: 0.75em 1.5em !important"
-                    value="Lưu thay đổi"
-                  />
+                  >
+                    Lưu thay đổi
+                  </button>
                 </div>
               </div>
             </div>

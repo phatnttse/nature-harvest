@@ -32,6 +32,7 @@
     "@fullcalendar/daygrid": "^6.1.8",
     "@fullcalendar/interaction": "^6.1.8",
     "@fullcalendar/timegrid": "^6.1.8",
+    "@kolkov/angular-editor": "^3.0.0-beta.0",
     "@ng-select/ng-select": "^10.0.4",
     "@ngrx/store": "^15.4.0",
     "@ngx-translate/core": "^14.0.0",

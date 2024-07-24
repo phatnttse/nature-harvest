@@ -11,8 +11,8 @@ import com.api.nature_harvest_backend.responses.orderdetails.OrderDetailResponse
 import com.api.nature_harvest_backend.utils.HashUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -169,5 +169,41 @@ public class OrderService implements IOrderService {
                 .order(orderResponse)
                 .orderDetails(orderDetailResponses)
                 .build();
+    }
+
+    @Override
+    public Page<OrderAndOrderDetailsResponse> getOrdersByStatus(String status, Pageable pageable) throws Exception {
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Page<Order> orders = orderRepository.findByUserAndStatus(loggedInUser, status, pageable);
+        List<OrderAndOrderDetailsResponse> orderAndOrderDetailsResponses = new ArrayList<>();
+        for (Order order : orders) {
+            List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrder(order);
+            OrderResponse orderResponse = OrderResponse.fromOrder(order);
+            List<OrderDetailResponse> orderDetailResponses = OrderDetailResponse.fromOrderDetails(orderDetails);
+            OrderAndOrderDetailsResponse response = OrderAndOrderDetailsResponse.builder()
+                    .order(orderResponse)
+                    .orderDetails(orderDetailResponses)
+                    .build();
+            orderAndOrderDetailsResponses.add(response);
+        }
+        return new PageImpl<>(orderAndOrderDetailsResponses, pageable, orders.getTotalElements());
+    }
+
+    @Override
+    public long countByUserAndStatus(String status) {
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return orderRepository.countByUserAndStatus(loggedInUser, status);
+    }
+
+    @Override
+    public Page<OrderAndOrderDetailsResponse> cancelOrder(String id) throws Exception {
+        Order order = orderRepository.findById(id).orElseThrow(() ->
+                new DataNotFoundException("Cannot find order with id: " + id));
+        order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+        PageRequest pageRequest = PageRequest.of(
+                0, 3,
+                Sort.by("orderDate").ascending());
+        return getOrdersByStatus(OrderStatus.PENDING, pageRequest);
     }
 }

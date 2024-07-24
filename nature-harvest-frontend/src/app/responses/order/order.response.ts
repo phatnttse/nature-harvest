@@ -12,6 +12,7 @@ export class OrderResponse {
   orderDate: Date;
   deliveryDate: Date;
   amount: number;
+  reviewed: boolean;
 
   constructor(
     id: string,
@@ -26,7 +27,8 @@ export class OrderResponse {
     paymentMethod: string,
     orderDate: Date,
     deliveryDate: Date,
-    amount: number
+    amount: number,
+    reviewed: boolean
   ) {
     this.id = id;
     this.userId = userId;
@@ -41,5 +43,6 @@ export class OrderResponse {
     this.orderDate = orderDate;
     this.deliveryDate = deliveryDate;
     this.amount = amount;
+    this.reviewed = reviewed;
   }
 }

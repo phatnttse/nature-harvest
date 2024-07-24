@@ -125,5 +125,20 @@ export class AdminComponent implements OnInit, OnDestroy {
       icon: 'shopping-bag',
       menu: 'Orders',
     },
+    {
+      link: '/admin/coupons',
+      icon: 'zap',
+      menu: 'Coupons',
+    },
+    {
+      link: '/admin/users',
+      icon: 'users',
+      menu: 'Users',
+    },
+    {
+      link: '/admin/blogs',
+      icon: 'film',
+      menu: 'Blogs',
+    },
   ];
 }

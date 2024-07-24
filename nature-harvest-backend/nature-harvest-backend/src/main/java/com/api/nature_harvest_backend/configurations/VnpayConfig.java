@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
@@ -32,23 +33,15 @@ public class VnpayConfig {
     private String secretKey;
 
     @Value("${vnpay.version}")
-    private  String vnp_Version;
+    private String vnp_Version;
 
     @Value("${vnpay.command}")
-    private  String vnp_Command;
+    private String vnp_Command;
 
     @Value("${vnpay.apiUrl}")
     private String vnp_ApiUrl;
-
-//    public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-//    public static String vnp_ReturnUrl = "http://localhost:8080/api/v1/payment/vnpay-callback";
-//    public static String vnp_TmnCode = "DQ5GJA1J";
-//    public static String secretKey = "FYTLDOMYLYDQZSXFIUJQDTEKLEJEPOYR";
-//    public static String vnp_Version = "2.1.0";
-//    public static String vnp_Command = "pay";
-//    public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
-
-    public  String md5(String message) {
+    
+    public String md5(String message) {
         String digest = null;
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -66,7 +59,7 @@ public class VnpayConfig {
         return digest;
     }
 
-    public  String Sha256(String message) {
+    public String Sha256(String message) {
         String digest = null;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -102,10 +95,10 @@ public class VnpayConfig {
                 sb.append("&");
             }
         }
-        return hmacSHA512(secretKey,sb.toString());
+        return hmacSHA512(secretKey, sb.toString());
     }
 
-    public  String hmacSHA512(final String key, final String data) {
+    public String hmacSHA512(final String key, final String data) {
         try {
 
             if (key == null || data == null) {

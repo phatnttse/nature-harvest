@@ -15,6 +15,7 @@ import { CartDto } from '../../dtos/cart/cart.dto';
 import { CartListResponse } from '../../responses/cart/cart-list.response';
 import { CartService } from '../../services/cart.service';
 import { Observable } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-search-products',
@@ -28,13 +29,14 @@ import { Observable } from 'rxjs';
     CommonModule,
     FormsModule,
     RouterModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class SearchProductsComponent implements OnInit {
   products: ProductResponse[] = [];
   pages: number[] = [];
   totalPages: number = 0;
-  itemsPerPage: number = 8;
+  itemsPerPage: number = 12;
   selectedCategoryId: number = 0;
   selectedSubCategoryId: number = 0;
   visiblePages: number[] = [];

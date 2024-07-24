@@ -1,3 +1,4 @@
 deployment.yaml
 DockerfileJavaSpring
 DockerfileAngular
+kafka-deployment.yaml

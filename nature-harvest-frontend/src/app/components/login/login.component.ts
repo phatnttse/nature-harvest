@@ -12,7 +12,9 @@ import {
   PlatformLocation,
 } from '@angular/common';
 import {
+  FormBuilder,
   FormControl,
+  FormGroup,
   FormGroupDirective,
   FormsModule,
   NgForm,
@@ -22,29 +24,14 @@ import {
 import { UserService } from '../../services/user.service';
 import { LoginDto } from '../../dtos/user/login.dto';
 import { LoginResponse } from '../../responses/user/login.response';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { UserResponse } from '../../responses/user/user.response';
 import { MatIconModule } from '@angular/material/icon';
-import { filter } from 'rxjs';
 import { ROLE_ADMIN, ROLE_USER } from '../../responses/user/role.response';
 import { GOOGLE } from '../../environments/environment.development';
+import { HttpErrorResponse } from '@angular/common/http';
 declare var google: any;
-
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    form: FormGroupDirective | NgForm | null
-  ): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
-  }
-}
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -68,26 +55,22 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   ],
 })
 export class LoginComponent implements OnInit {
-  emailFormControl = new FormControl('phatnttse173202@fpt.edu.vn', [
-    Validators.required,
-    Validators.email,
-  ]);
-  passwordFormControl = new FormControl('Phat@123', [Validators.required]);
-  matcher = new MyErrorStateMatcher();
+  loginForm: FormGroup;
   userResponse?: UserResponse;
-  hide = true;
-  clickEvent(event: MouseEvent) {
-    this.hide = !this.hide;
-    event.stopPropagation();
-  }
 
   constructor(
     private userService: UserService,
     private toastr: ToastrService,
     private router: Router,
     private tokenService: TokenService,
-    private platformLocation: PlatformLocation
-  ) {}
+    private platformLocation: PlatformLocation,
+    private formBuilder: FormBuilder
+  ) {
+    this.loginForm = this.formBuilder.group({
+      email: ['', [Validators.email, Validators.required]],
+      password: ['', [Validators.required]],
+    });
+  }
 
   ngOnInit(): void {
     if (this.platformLocation instanceof BrowserPlatformLocation) {
@@ -103,32 +86,29 @@ export class LoginComponent implements OnInit {
         theme: 'filled_blue',
         size: 'large',
         shape: 'rectangular',
-        with: '350',
+        with: '500',
         logo_alignment: 'left',
       });
     }
   }
 
   login() {
-    if (this.emailFormControl.invalid && this.passwordFormControl.invalid) {
-      this.emailFormControl.markAllAsTouched();
-      this.passwordFormControl.markAllAsTouched();
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
       return;
     }
 
     const loginDto: LoginDto = {
-      email: this.emailFormControl.value!,
-      password: this.passwordFormControl.value!,
+      email: this.loginForm.get('email')?.value,
+      password: this.loginForm.get('password')?.value,
     };
 
     this.userService.login(loginDto).subscribe({
       next: (response: LoginResponse) => {
         const { token } = response;
         this.tokenService.setToken(token);
-        debugger;
         this.userService.getUserDetails(token).subscribe({
           next: (resp: UserResponse) => {
-            debugger;
             this.userResponse = {
               ...resp,
               dateOfBirth: new Date(resp.dateOfBirth),
@@ -140,23 +120,15 @@ export class LoginComponent implements OnInit {
               this.router.navigate(['/admin']);
             }
           },
-          complete: () => {
-            debugger;
-          },
           error: (error: any) => {
             console.log(error?.error?.message);
           },
         });
       },
-      complete: () => {
-        debugger;
-      },
-      error: (error: any) => {
+      error: (error: HttpErrorResponse) => {
         this.toastr.warning(error.error.message, 'Đăng nhập không thành công', {
           closeButton: true,
-          timeOut: 2000,
-          easeTime: 500,
-          positionClass: 'toast-top-right',
+          timeOut: 3000,
           progressBar: true,
         });
       },
@@ -164,10 +136,8 @@ export class LoginComponent implements OnInit {
   }
 
   loginGoogle(googleToken: string) {
-    debugger;
     this.userService.loginGoogle(googleToken).subscribe({
       next: (response: LoginResponse) => {
-        debugger;
         const { token } = response;
         this.tokenService.setToken(token);
         this.userService.getUserDetails(token).subscribe({
@@ -178,15 +148,33 @@ export class LoginComponent implements OnInit {
               dateOfBirth: new Date(resp.dateOfBirth) || null,
             };
             this.userService.setUserResponse(this.userResponse!);
-            this.router.navigate(['']);
+            if (this.userResponse?.role.name === ROLE_USER) {
+              this.router.navigate(['/']);
+            } else if (this.userResponse?.role.name === ROLE_ADMIN) {
+              this.router.navigate(['/admin']);
+            }
           },
-          error: (error: any) => {
-            console.error(error);
+          error: (error: HttpErrorResponse) => {
+            this.toastr.warning(
+              error.error.message,
+              'Đăng nhập không thành công',
+              {
+                closeButton: true,
+                timeOut: 3000,
+                progressBar: true,
+              }
+            );
+            console.log(error);
           },
         });
       },
-      error: (error: any) => {
-        console.error(error);
+      error: (error: HttpErrorResponse) => {
+        this.toastr.warning(error.error.message, 'Đăng nhập không thành công', {
+          closeButton: true,
+          timeOut: 3000,
+          progressBar: true,
+        });
+        console.log(error);
       },
     });
   }

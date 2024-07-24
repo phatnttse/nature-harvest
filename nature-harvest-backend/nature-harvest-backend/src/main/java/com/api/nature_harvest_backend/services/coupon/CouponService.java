@@ -47,10 +47,10 @@ public class CouponService implements ICouponService {
                 .active(true)
                 .build();
         if (createCouponDto.getStartDate() != null) {
-            coupon.setStartDate(java.time.LocalDate.parse(createCouponDto.getStartDate()));
+            coupon.setStartDate(createCouponDto.getStartDate());
         }
         if (createCouponDto.getEndDate() != null) {
-            coupon.setEndDate(java.time.LocalDate.parse(createCouponDto.getEndDate()));
+            coupon.setEndDate(createCouponDto.getEndDate());
         }
         couponRepository.save(coupon);
         return modelMapper.map(coupon, CouponResponse.class);

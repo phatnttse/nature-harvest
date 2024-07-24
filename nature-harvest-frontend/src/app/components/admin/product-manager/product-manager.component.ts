@@ -18,6 +18,11 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { DeleteProductComponent } from './delete-product/delete-product.component';
 import { ToastrService } from 'ngx-toastr';
+import { MatTabsModule } from '@angular/material/tabs';
+import { CategoryWithSubcategoriesResponse } from '../../../responses/category/category-subcategory-response';
+import { CategoryService } from '../../../services/category.service';
+import { first, Observable } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-product-manager',
@@ -35,6 +40,8 @@ import { ToastrService } from 'ngx-toastr';
     FeatherModule,
     MatSortModule,
     MatInputModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './product-manager.component.html',
   styleUrl: './product-manager.component.scss',
@@ -43,7 +50,7 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   products: ProductResponse[] = [];
-  selectedCategoryId: number = 0;
+  selectedCategoryId: number = 1;
   selectedSubCategoryId: number = 0;
   categorySlug: string = '';
   subcategorySlug: string = '';
@@ -61,9 +68,10 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
   currentImage?: string = this.product?.thumbnail;
   quantity: number = 1;
   sortBy: string = 'createdAt';
-  arrange: string = 'ascending';
+  arrange: string = 'descending';
   typeArrange: string = 'Mặc định';
   isFiltering: boolean = false;
+  categoriesWithSubcategories$: Observable<CategoryWithSubcategoriesResponse[]>;
   dataSource: MatTableDataSource<ProductResponse> =
     new MatTableDataSource<ProductResponse>();
   displayedColumns: string[] = [
@@ -77,9 +85,13 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
   ];
   constructor(
     private productService: ProductService,
+    private categoryService: CategoryService,
     private dialog: MatDialog,
     private toastr: ToastrService
-  ) {}
+  ) {
+    this.categoriesWithSubcategories$ =
+      this.categoryService.categoriesWithSubcategories$;
+  }
 
   ngOnInit(): void {
     this.getProductsByCondition(
@@ -96,6 +108,7 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
       this.itemsPerPage
     );
   }
+
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
   }
@@ -214,5 +227,28 @@ export class ProductManagerComponent implements OnInit, AfterViewInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  onTabChange(event: any) {
+    const selectedIndex = event.index;
+
+    this.categoriesWithSubcategories$.pipe(first()).subscribe((categories) => {
+      const selectedCategory = categories[selectedIndex];
+      this.selectedCategoryId = selectedCategory.id;
+      this.categorySlug = selectedCategory.slug;
+
+      this.getProductsByCondition(
+        this.minPrice,
+        this.maxPrice,
+        this.keyword,
+        this.selectedCategoryId,
+        this.selectedSubCategoryId,
+        this.categorySlug,
+        this.subcategorySlug,
+        this.sortBy,
+        this.arrange,
+        this.currentPage,
+        this.itemsPerPage
+      );
+    });
   }
 }

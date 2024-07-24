@@ -40,11 +40,14 @@ public class ProductService implements IProductService {
                 .orElseThrow(() ->
                         new DataNotFoundException(
                                 "Cannot find category with id: " + productDto.getCategoryId()));
-        SubCategory existingSubcategory = subCategoryRepository
-                .findById(productDto.getSubcategoryId())
-                .orElseThrow(() ->
-                        new DataNotFoundException(
-                                "Cannot find subcategory with id: " + productDto.getSubcategoryId()));
+        SubCategory existingSubcategory = null;
+        if (productDto.getSubcategoryId() > 0) {
+            existingSubcategory = subCategoryRepository
+                    .findById(productDto.getSubcategoryId())
+                    .orElseThrow(() ->
+                            new DataNotFoundException(
+                                    "Cannot find subcategory with id: " + productDto.getSubcategoryId()));
+        }
 
         Product product = Product.builder()
                 .title(productDto.getTitle())
@@ -55,10 +58,12 @@ public class ProductService implements IProductService {
                 .quantity(productDto.getQuantity())
                 .description(productDto.getDescription())
                 .category(existingCategory)
-                .subcategory(existingSubcategory)
                 .averageRating(BigDecimal.ZERO)
                 .active(true)
                 .build();
+        if (existingSubcategory != null) {
+            product.setSubcategory(existingSubcategory);
+        }
         Product newProduct = productRepository.save(product);
         createProductImage(newProduct, productDto.getImages());
         return newProduct;

@@ -1,7 +1,7 @@
 import { UpdatePictureDto } from './../../dtos/user/update-picture.dto';
 import { UpdateUserProfileDto } from './../../dtos/user/update.dto';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,14 +20,20 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ScriptService } from '../../services/script.service';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CLOUDINARY } from '../../environments/environment.development';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangePasswordComponent } from '../dialog/change-password/change-password.component';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   templateUrl: './profile.component.html',
-  styleUrl: './../order/order.component.scss',
+  styleUrls: ['./../order/order.component.scss'],
   imports: [
     RouterModule,
     FooterComponent,
@@ -39,7 +45,10 @@ import { CLOUDINARY } from '../../environments/environment.development';
     CommonModule,
     FormsModule,
     MatDialogModule,
+    MatInputModule,
+    MatDatepickerModule,
   ],
+  providers: [provideNativeDateAdapter()],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   userResponse?: UserResponse | null;
@@ -54,13 +63,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private toastr: ToastrService,
-    private scriptService: ScriptService
+    private scriptService: ScriptService,
+    private dialog: MatDialog,
+    private router: Router,
+    private tokenService: TokenService
   ) {
     this.profileForm = this.formBuilder.group({
       name: ['', [Validators.required]],
       address: ['', [Validators.minLength(10)]],
       phone: ['', [Validators.pattern(/^\d{10}$/)]],
-      dateOfBirth: [Date.now()],
+      dateOfBirth: [''],
     });
     this.scriptService.load('uw');
   }
@@ -70,12 +82,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       (userResponse) => {
         this.userResponse = userResponse;
         if (this.userResponse) {
-          this.profileForm.patchValue({
-            name: this.userResponse.name || '',
-            address: this.userResponse.address || '',
-            phone: this.userResponse.phone || '',
-            dateOfBirth: this.userResponse.dateOfBirth || Date.now(),
-          });
+          debugger;
+          this.profileForm.patchValue(this.userResponse);
         }
       }
     );
@@ -124,7 +132,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         tags: ['myphotoalbum-nature-harvest'],
         clientAllowedFormats: ['image'],
         resourceType: 'image',
-        maxFileSize: 5 * 1024 * 1024,
+        maxFileSize: 2 * 1024 * 1024,
         multiple: false,
       },
       this.processResults
@@ -136,25 +144,65 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.profileForm.markAllAsTouched();
       return;
     }
+    const formValue = this.profileForm.value;
+    let dateOfBirth = formValue.dateOfBirth;
+
+    // Kiểm tra và chuyển đổi nếu cần thiết
+    if (dateOfBirth && !(dateOfBirth instanceof Date)) {
+      dateOfBirth = new Date(dateOfBirth);
+    }
+
+    if (dateOfBirth) {
+      dateOfBirth = new Date(
+        Date.UTC(
+          dateOfBirth.getFullYear(),
+          dateOfBirth.getMonth(),
+          dateOfBirth.getDate()
+        )
+      );
+    }
     const updateUserProfileDto: UpdateUserProfileDto = {
       ...this.profileForm.value,
+      dateOfBirth: dateOfBirth,
     };
     debugger;
     this.userService
       .updateProfile(this.userResponse?.id!, updateUserProfileDto)
       .subscribe({
         next: (response: UserResponse) => {
-          this.userService.setUserResponse(response);
+          this.userResponse = {
+            ...response,
+            dateOfBirth: new Date(response.dateOfBirth),
+          };
+          this.userService.setUserResponse(this.userResponse);
           this.toastr.success(`Cập nhật thông tin thành công`, '', {
             closeButton: true,
             timeOut: 3000,
             progressBar: true,
           });
         },
-        error: (err: any) => {
-          console.log(err);
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
           this.toastr.error(`Cập nhật thông tin không thành công`);
         },
       });
+  }
+  openChangePasswordDialog() {
+    const dialogRef = this.dialog.open(ChangePasswordComponent, {
+      width: '500px',
+      position: { top: '180px' },
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.router.navigate(['/login']);
+        this.toastr.success('Đổi mật khẩu thành công');
+      }
+    });
+  }
+  logOut() {
+    this.userService.clearUserResponse();
+    this.tokenService.removeToken();
+    this.router.navigate(['/login']);
   }
 }

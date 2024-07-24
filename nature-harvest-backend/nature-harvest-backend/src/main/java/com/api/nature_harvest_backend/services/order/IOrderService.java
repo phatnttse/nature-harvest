@@ -24,4 +24,10 @@ public interface IOrderService {
     Page<Order> getOrdersByKeyword(String keyword, Pageable pageable);
 
     OrderAndOrderDetailsResponse handleOrder(HandleOrderDto handleOrderDto) throws Exception;
+
+    Page<OrderAndOrderDetailsResponse> getOrdersByStatus(String status, Pageable pageable) throws Exception;
+
+    long countByUserAndStatus(String status);
+
+    Page<OrderAndOrderDetailsResponse> cancelOrder(String id) throws Exception;
 }

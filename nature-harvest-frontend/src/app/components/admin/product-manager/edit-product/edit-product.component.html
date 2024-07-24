@@ -109,9 +109,11 @@
           "
         />
         @if (productForm.get('title')?.hasError('required')) {
-        <mat-error>Tên sản phẩm không được để trống</mat-error>
+        <mat-error class="fs-12">Tên sản phẩm không được để trống</mat-error>
         }@else if (productForm.get('title')?.hasError('minlength')) {
-        <mat-error>Tên sản phẩm quá ngắn. Ít nhất 5 ký tự</mat-error>
+        <mat-error class="fs-12"
+          >Tên sản phẩm quá ngắn. Ít nhất 5 ký tự</mat-error
+        >
         }
       </mat-form-field>
 
@@ -125,9 +127,12 @@
           extended
           class="ms-2"
         >
-          @if (selectedSubCategoryName) {
+          @if (selectedCategoryId && selectedSubCategoryId) {
           <span class="">{{ selectedCategoryName }}</span>
-          <span class=""> > {{ selectedSubCategoryName }}</span>
+          <span class="">
+            <i class="fas fa-chevron-right fs-13 me-1 ms-2"></i>
+            {{ selectedSubCategoryName }}</span
+          >
           }@else { Chọn danh mục }
           <mat-icon>chevron_right</mat-icon>
         </button>
@@ -151,17 +156,17 @@
               <input
                 matInput
                 type="number"
-                formControlName="originalPrice"
+                formControlName="price"
                 min="1000"
                 [class.is-invalid]="
-                  productForm.get('originalPrice')?.invalid &&
-                  productForm.get('originalPrice')?.touched
+                  productForm.get('price')?.invalid &&
+                  productForm.get('price')?.touched
                 "
               />
-              @if (productForm.get('originalPrice')?.hasError('required')) {
-              <mat-error>Giá không được để trống</mat-error>
-              }@else if (productForm.get('originalPrice')?.hasError('min')) {
-              <mat-error>Giá sản phẩm phải trên 1.000đ</mat-error>
+              @if (productForm.get('price')?.hasError('required')) {
+              <mat-error class="fs-12">Giá không được để trống</mat-error>
+              }@else if (productForm.get('price')?.hasError('min')) {
+              <mat-error class="fs-12">Giá sản phẩm phải trên 1.000đ</mat-error>
               }
             </mat-form-field>
           </td>
@@ -180,9 +185,11 @@
                 "
               />
               @if (productForm.get('quantity')?.hasError('required')) {
-              <mat-error>Số lượng không được để trống</mat-error>
+              <mat-error class="fs-12">Số lượng không được để trống</mat-error>
               }@else if (productForm.get('quantity')?.hasError('min')) {
-              <mat-error>Số lượng sản phẩm phải trên 1kg</mat-error>
+              <mat-error class="fs-12"
+                >Số lượng sản phẩm phải trên 1kg</mat-error
+              >
               }
             </mat-form-field>
           </td>
@@ -202,9 +209,9 @@
                 "
               />
               @if (productForm.get('discount')?.hasError('min') ) {
-              <mat-error>Giảm giá phải trên 0%</mat-error>
+              <mat-error class="fs-12">Giảm giá phải trên 0%</mat-error>
               }@else if (productForm.get('discount')?.hasError('max')) {
-              <mat-error>Giảm lớn nhất là 100%</mat-error>
+              <mat-error class="fs-12">Giảm lớn nhất là 100%</mat-error>
               }
             </mat-form-field>
           </td>
@@ -224,9 +231,11 @@
           "
         ></textarea>
         @if (productForm.get('description')?.hasError('required')) {
-        <mat-error>Mô tả không được để trống</mat-error>
+        <mat-error class="fs-12">Mô tả không được để trống</mat-error>
         }@else if (productForm.get('description')?.hasError('minlength')) {
-        <mat-error>Mô tả sản phẩm quá ngắn. Ít nhất 100 ký tự</mat-error>
+        <mat-error class="fs-12"
+          >Mô tả sản phẩm quá ngắn. Ít nhất 100 ký tự</mat-error
+        >
         }
       </mat-form-field>
 

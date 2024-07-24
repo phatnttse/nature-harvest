@@ -814,14 +814,16 @@ ul {
   margin-bottom: 0;
 }
 .product-image img {
-  height: 100%;
-  width: 100%;
+  height: auto;
+  width: auto;
   object-fit: cover;
   padding-bottom: 4px;
+  max-width: 100%;
 }
 .product-image {
-  width: 500px;
-  height: 500px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .thumbnail-container {
   display: flex;
@@ -836,9 +838,10 @@ ul {
 }
 
 .thumbnail-item img {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
   object-fit: cover;
+  max-width: 100%;
 }
 
 .thumbnail-item.active {

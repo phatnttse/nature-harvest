@@ -10,18 +10,23 @@
   >
     <div class="p-16">
       <div class="mb-16">
-        <a href="javascript:void(0)" class="d-flex align-items-center">
+        <a
+          href="javascript:void(0)"
+          class="d-flex align-items-center justify-content-center mb-4 me-5"
+        >
           <img
-            src="https://res.cloudinary.com/dlpust9lj/image/upload/v1719764034/df6o7qrwcfuep5maeabl.png"
+            width="120"
+            src="https://res.cloudinary.com/dlpust9lj/image/upload/v1720436456/ebhqmo659apqbsoigbmy.png"
             alt=""
+            style="object-fit: cover"
           />
-          <span class="fw-medium fs-20 ms-2">Nature's Harvest</span>
         </a>
       </div>
 
       <div class="pt-8">
         <ul>
-          <li class="list-group mb-2" *ngFor="let sidenav of sidebarMenu">
+          @for (sidenav of sidebarMenu; track $index) {
+          <li class="list-group mb-2">
             <a
               matRipple
               [matRippleColor]="'#f7f8f443'"
@@ -33,10 +38,12 @@
               <i-feather
                 name="{{ sidenav.icon }}"
                 class="feather-base me-12"
+                style="margin-bottom: 2px"
               ></i-feather>
               <span class="ps-3">{{ sidenav.menu }}</span>
             </a>
           </li>
+          }
         </ul>
       </div>
     </div>
@@ -66,10 +73,9 @@
       </button>
       <div class="ms-auto">
         <button
-          mat-flat-button
+          mat-button
           class="fs-16 text-light-muted d-flex align-items-center pb-4 pe-8 ps-8 pt-4"
           [matMenuTriggerFor]="menu"
-          color="accent"
         >
           <div class="d-flex align-items-center">
             <img
@@ -81,11 +87,7 @@
             />
             <span class="fw-light ms-2">Hi, </span>
             <span class="fw-bold ms-2">{{ userResponse?.name }}</span>
-            <i-feather
-              style="margin-bottom: 5px"
-              name="chevron-down"
-              class="feather-base"
-            ></i-feather>
+            <i-feather name="chevron-down" class="feather-base"></i-feather>
           </div>
         </button>
         <mat-menu #menu="matMenu" class="profile-dropdown">
@@ -121,10 +123,7 @@
 
     <p class="fs-16 pb-24 text-center">
       © 2024 Website of
-      <a
-        href="https://www.wrappixel.com/templates/category/free-angular-templates/"
-        target="_blank"
-        class="text-indigo"
+      <a href="https://github.com/phatnttse" target="_blank" class="text-indigo"
         >phatnttse</a
       >
     </p>

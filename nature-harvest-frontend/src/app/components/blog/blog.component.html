@@ -1,0 +1,225 @@
+@defer () {
+<app-header></app-header>
+<app-breadcrumb></app-breadcrumb>
+<div
+  class="blog_wrapper layout-blog"
+  itemscope=""
+  itemtype="https://schema.org/Blog"
+>
+  <meta itemprop="name" content="Tin tức" />
+  <meta itemprop="description" content="" />
+  <div class="container">
+    <h1 class="title-page d-none">
+      <span>Tin tức</span>
+    </h1>
+    <div class="row">
+      <div class="right-content col-lg-9 col-12">
+        <div class="list-blogs">
+          <div class="row row-fix">
+            @for (blog of blogs; track $index) {
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <div class="item_blog_index clearfix">
+                <div class="img-blog">
+                  <a
+                    class="image-blog"
+                    routerLink="/blogs/{{ blog.slug }}"
+                    [title]="blog.title"
+                  >
+                    <img
+                      width="600"
+                      height="380"
+                      [src]="blog.thumbnail"
+                      [alt]="blog.title"
+                      class="lazyload img-responsive loaded"
+                      data-was-processed="true"
+                    />
+                  </a>
+                </div>
+                <div class="blog_content">
+                  <h3>
+                    <a
+                      routerLink="/blogs/{{ blog.slug }}"
+                      [title]="blog.title"
+                      >{{ blog.title }}</a
+                    >
+                  </h3>
+                  <p class="update_date clearfix">
+                    <span class="user_date">
+                      <svg
+                        aria-hidden="true"
+                        focusable="false"
+                        data-prefix="fal"
+                        data-icon="clock"
+                        role="img"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                        class="svg-inline--fa fa-clock fa-w-16"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm216 248c0 118.7-96.1 216-216 216-118.7 0-216-96.1-216-216 0-118.7 96.1-216 216-216 118.7 0 216 96.1 216 216zm-148.9 88.3l-81.2-59c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h14c6.6 0 12 5.4 12 12v146.3l70.5 51.3c5.4 3.9 6.5 11.4 2.6 16.8l-8.2 11.3c-3.9 5.3-11.4 6.5-16.8 2.6z"
+                          class=""
+                        ></path>
+                      </svg>
+                      {{ blog.formattedCreatedAt }}
+                    </span>
+                  </p>
+                  <p class="blog_description">
+                    {{ blog.summary }}
+                  </p>
+                  <a
+                    class="read-more"
+                    routerLink="/blogs/{{ blog.slug }}"
+                    title="Đọc tiếp"
+                    >Đọc tiếp</a
+                  >
+                </div>
+              </div>
+            </div>
+            } @empty {
+            <div
+              class="alert alert-warning alert-dismissible section ms-2"
+              role="alert"
+            >
+              Tin tức đang được cập nhật.
+            </div>
+            }
+          </div>
+          @if (totalPages > 1) {
+          <div class="section pagenav clearfix a-center mt-5">
+            <nav class="collection-paginate clearfix nav_pagi w_100 relative">
+              <ul class="pagination clearfix">
+                @if (currentPage > 0) {
+                <li class="page-item">
+                  <a
+                    class="page-link"
+                    href="javascript:;"
+                    (click)="onPageChange(currentPage - 1)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="20"
+                      viewBox="0 0 12 20"
+                      fill="none"
+                    >
+                      <path
+                        d="M0.827131 10.5488L10.0777 19.7738C10.3808 20.0759 10.8715 20.0754 11.1741 19.7723C11.4764 19.4692 11.4756 18.9782 11.1725 18.6759L2.47255 9.99996L11.1728 1.32406C11.4759 1.02172 11.4767 0.531057 11.1744 0.227934C11.0227 0.0759811 10.824 3.76429e-06 10.6253 3.74691e-06C10.4271 3.72959e-06 10.2292 0.0754737 10.0778 0.226372L0.827131 9.45114C0.681155 9.59637 0.599241 9.79403 0.599241 9.99996C0.599241 10.2059 0.68139 10.4033 0.827131 10.5488Z"
+                        fill="#9D9D9D"
+                      ></path>
+                    </svg>
+                  </a>
+                </li>
+                } @for (page of visiblePages; track $index) {
+                <li
+                  class="page-item"
+                  [ngClass]="{ active: page === currentPage + 1 }"
+                >
+                  <a
+                    class="page-link"
+                    href="javascript:;"
+                    [style]="{
+                      'pointer-events: none': page === currentPage + 1
+                    }"
+                    (click)="onPageChange(page - 1)"
+                    >{{ page }}</a
+                  >
+                </li>
+                } @if (currentPage < totalPages - 1) {
+                <li class="page-item">
+                  <a
+                    class="page-link link-next-pre"
+                    onclick="doSearch(2)"
+                    href="javascript:;"
+                    (click)="onPageChange(currentPage + 1)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="20"
+                      viewBox="0 0 12 20"
+                      fill="none"
+                    >
+                      <path
+                        d="M11.1729 9.45117L1.92228 0.226167C1.6192 -0.0759023 1.12849 -0.0753945 0.825918 0.227729C0.523575 0.530814 0.524357 1.02179 0.827481 1.32409L9.52745 10L0.827168 18.6759C0.524083 18.9783 0.523302 19.4689 0.825605 19.7721C0.977285 19.924 1.17599 20 1.37471 20C1.57291 20 1.77084 19.9245 1.92224 19.7736L11.1729 10.5489C11.3188 10.4036 11.4008 10.206 11.4008 10C11.4008 9.7941 11.3186 9.59668 11.1729 9.45117Z"
+                        fill="#9D9D9D"
+                      ></path>
+                    </svg>
+                  </a>
+                </li>
+                }
+              </ul>
+            </nav>
+          </div>
+          }
+        </div>
+      </div>
+      @if (blogs.length > 0) {
+      <div class="blog_left_base col-lg-3 col-12">
+        <div class="aside-blog-right">
+          <div class="blog_noibat">
+            <h2 class="h2_sidebar_blog">
+              <a href="/tin-tuc" title="Bài viết mới">Bài viết mới</a>
+            </h2>
+            <div class="blog_content">
+              @for (blog of blogs; track $index) {
+              <div class="item clearfix">
+                <div class="post-thumb">
+                  <a
+                    class="image-blog scale_hover"
+                    routerLink="/blogs/{{ blog.slug }}"
+                    [title]="blog.title"
+                  >
+                    <img
+                      width="600"
+                      height="380"
+                      class="img_blog lazyload loaded"
+                      [src]="blog.thumbnail"
+                      [alt]="blog.title"
+                      data-was-processed="true"
+                    />
+                  </a>
+                </div>
+                <div class="contentright">
+                  <h3>
+                    <a
+                      [title]="blog.title"
+                      routerLink="/blogs/{{ blog.slug }}"
+                      >{{ blog.title }}</a
+                    >
+                  </h3>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          <div class="clearfix clear-fix"></div>
+          <div class="blog_tags">
+            <div class="title-head">Tags</div>
+            <ul class="list-tags">
+              @for (blog of blogs; track $index) {
+              <li class="item_tag">
+                <a
+                  (click)="getBlogsByTag(blog.tags)"
+                  href="javascript:;"
+                  [title]="blog.tags"
+                  >{{ blog.tags }}
+                </a>
+              </li>
+              }
+            </ul>
+          </div>
+
+          <div class="clearfix clear-fix"></div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>
+}@loading {
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <mat-spinner></mat-spinner>
+</div>
+}

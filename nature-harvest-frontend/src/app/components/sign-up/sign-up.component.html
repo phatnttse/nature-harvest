@@ -92,144 +92,147 @@
               Welcome to Nature's Harvest
             </p>
           </div>
-          <div class="dark:text-white">
-            <div>
-              <label for="Email">Name</label>
-              <div class="relative text-white-dark">
-                <input
-                  id="Email"
-                  type="email"
-                  class="form-input ps-10 placeholder:text-white-dark"
-                  [formControl]="nameFormControl"
-                  placeholder="Họ & tên"
-                  style="line-height: 2; padding-inline-start: 3rem"
-                />
+          <form [formGroup]="signupForm" (submit)="signUp()">
+            <div class="dark:text-white">
+              <div>
+                <label for="name">Name</label>
+                <div class="relative text-white-dark">
+                  <input
+                    id="name"
+                    type="email"
+                    class="form-input ps-10 placeholder:text-white-dark"
+                    formControlName="name"
+                    placeholder="Họ và tên"
+                    style="line-height: 2; padding-inline-start: 3rem"
+                    [class.is-invalid]="
+                      signupForm.get('name')?.invalid &&
+                      signupForm.get('name')?.touched
+                    "
+                  />
 
-                <span class="absolute start-4 top-1/2 -translate-y-1/2">
-                  <mat-icon style="margin-top: 5px">badge</mat-icon>
-                </span>
-              </div>
-              @if (nameFormControl.hasError('minlength') &&
-              !nameFormControl.hasError('required') ) {
-              <mat-error
-                style="font-size: 13px; color: red; visibility: visible"
-              >
-                Tên phải nhiều hơn 2 ký tự
-              </mat-error>
-              } @else if (nameFormControl.hasError('maxlength') &&
-              !nameFormControl.hasError('required')) {
-              <mat-error
-                style="font-size: 13px; color: red; visibility: visible"
-              >
-                Tên phải ít hơn 50 ký tự
-              </mat-error>
-              } @else if (nameFormControl.hasError('required') &&
-              nameFormControl.touched) {
-              <mat-error
-                style="font-size: 13px; color: red; visibility: visible"
-                >Vui lòng nhập họ và tên</mat-error
-              >
-              } @else {
-              <mat-error style="font-size: 13px; color: red; visibility: hidden"
-                >hidden</mat-error
-              >
-              }
-            </div>
-            <div>
-              <label for="Email">Email</label>
-              <div class="relative text-white-dark">
-                <input
-                  id="Email"
-                  type="email"
-                  class="form-input ps-10 placeholder:text-white-dark"
-                  [formControl]="emailFormControl"
-                  placeholder="Ex. pat@example.com"
-                  style="line-height: 2; padding-inline-start: 3rem"
-                />
-
-                <span class="absolute start-4 top-1/2 -translate-y-1/2">
-                  <mat-icon style="margin-top: 6px">mail</mat-icon>
-                </span>
-              </div>
-              @if (emailFormControl.hasError('email') &&
-              !emailFormControl.hasError('required')) {
-              <mat-error
-                style="font-size: 13px; color: red; visibility: visible"
-                >Vui lòng nhập đúng định dạng email</mat-error
-              >
-              }@else if (emailFormControl.hasError('required') &&
-              emailFormControl.touched) {
-              <mat-error
-                style="font-size: 13px; color: red; visibility: visible"
-                >Vui lòng nhập email</mat-error
-              >
-              } @else {
-              <mat-error style="font-size: 13px; color: red; visibility: hidden"
-                >hidden</mat-error
-              >
-              }
-            </div>
-            <div>
-              <label for="Password">Password</label>
-              <div class="relative text-white-dark">
-                <input
-                  id="Password"
-                  type="password"
-                  placeholder="Nhập mật khẩu"
-                  [formControl]="passwordFormControl"
-                  class="form-input ps-10 placeholder:text-white-dark"
-                  style="line-height: 2; padding-inline-start: 3rem"
-                />
-                <span class="absolute start-4 top-1/2 -translate-y-1/2">
-                  <mat-icon style="margin-top: 4px">lock</mat-icon>
-                </span>
-              </div>
-              @if (passwordFormControl.hasError('pattern') ||
-              passwordFormControl.hasError('minlength') &&
-              !passwordFormControl.hasError('required')) {
-              <mat-error
-                style="font-size: 14px; color: red; visibility: visible"
-                >Mật khẩu phải bao gồm ít nhất một chữ hoa, một chữ thường, một
-                số, một ký tự đặc biệt và dài ít nhất 8 ký tự.</mat-error
-              >
-              }@else if (passwordFormControl.hasError('required') &&
-              passwordFormControl.touched) {
-              <mat-error
-                style="font-size: 13px; color: red; visibility: visible"
-                >Vui lòng nhập mật khẩu</mat-error
-              >
-              }@else {
-              <mat-error style="font-size: 13px; color: red; visibility: hidden"
-                >hidden</mat-error
-              >
-              }
-            </div>
-            <div class="mt-2 flex justify-end">
-              <a href="">
-                <span class="text-white-dark" style="font-size: 12px"
-                  >Quên mật khẩu ?</span
+                  <span class="absolute start-4 top-1/2 -translate-y-1/2">
+                    <mat-icon style="margin-top: 3px">badge</mat-icon>
+                  </span>
+                </div>
+                @if (signupForm.get('name')!.hasError('minlength') ) {
+                <mat-error
+                  style="font-size: 12px; color: red; visibility: visible"
                 >
-              </a>
+                  Tên phải nhiều hơn 2 ký tự
+                </mat-error>
+                } @else if (signupForm.get('name')!.hasError('maxlength') ) {
+                <mat-error
+                  style="font-size: 12px; color: red; visibility: visible"
+                >
+                  Tên phải ít hơn 50 ký tự
+                </mat-error>
+                } @else if (signupForm.get('name')!.hasError('required') &&
+                signupForm.get('name')!.touched) {
+                <mat-error
+                  style="font-size: 12px; color: red; visibility: visible"
+                  >Vui lòng nhập họ và tên</mat-error
+                >
+                } @else {
+                <mat-error
+                  style="font-size: 12px; color: red; visibility: hidden"
+                  >hidden</mat-error
+                >
+                }
+              </div>
+              <div>
+                <label for="Email">Email</label>
+                <div class="relative text-white-dark">
+                  <input
+                    type="email"
+                    class="form-input ps-10 placeholder:text-white-dark"
+                    formControlName="email"
+                    placeholder="Ex. pat@example.com"
+                    style="line-height: 2; padding-inline-start: 3rem"
+                    [class.is-invalid]="
+                      signupForm.get('email')?.invalid &&
+                      signupForm.get('email')?.touched
+                    "
+                  />
+
+                  <span class="absolute start-4 top-1/2 -translate-y-1/2">
+                    <mat-icon style="margin-top: 6px">mail</mat-icon>
+                  </span>
+                </div>
+                <div style="margin-top: 4px; font-size: 12px; color: red">
+                  @if (signupForm.get('email')!.hasError('email')) {
+                  <mat-error style="visibility: visible">
+                    Email không đúng định dạng. Ex: vit&#64;gmail.com</mat-error
+                  >
+                  } @else if (signupForm.get('email')!.hasError('required')&&
+                  signupForm.get('email')!.touched) {
+                  <mat-error style="visibility: visible"
+                    >Vui lòng nhập email</mat-error
+                  >
+                  }@else {
+                  <mat-error style="visibility: hidden">hidden</mat-error>
+                  }
+                </div>
+              </div>
+              <div>
+                <label for="Password">Password</label>
+                <div class="relative text-white-dark">
+                  <input
+                    type="password"
+                    placeholder="Nhập mật khẩu"
+                    formControlName="password"
+                    class="form-input ps-10 placeholder:text-white-dark"
+                    style="line-height: 2; padding-inline-start: 3rem"
+                    [class.is-invalid]="
+                      signupForm.get('password')?.invalid &&
+                      signupForm.get('password')?.touched
+                    "
+                  />
+                  <span class="absolute start-4 top-1/2 -translate-y-1/2">
+                    <mat-icon style="margin-top: 3px">lock</mat-icon>
+                  </span>
+                </div>
+                <div style="font-size: 12px; color: red">
+                  @if (signupForm.get('password')!.hasError('required') &&
+                  signupForm.get('password')!.touched) {
+                  <mat-error style="visibility: visible"
+                    >Vui lòng nhập mật khẩu</mat-error
+                  >
+                  }@else if (signupForm.get('password')!.hasError('pattern')) {
+                  <mat-error style="visibility: visible">
+                    Mật khẩu phải gồm chữ hoa, chữ thường, ký tự đặc biệt, và
+                    trên 8 ký tự</mat-error
+                  >
+                  } @else {
+                  <mat-error style="visibility: hidden">hidden</mat-error>
+                  }
+                </div>
+              </div>
+              <div class="mt-2 flex justify-end">
+                <a routerLink="/forgot-password">
+                  <span class="text-white-dark" style="font-size: 12px"
+                    >Quên mật khẩu ?</span
+                  >
+                </a>
+              </div>
+              <button
+                type="submit"
+                class="btn !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_#326b00]"
+                style="
+                  background-image: linear-gradient(to right, #34c3c5, #45a049);
+                  color: rgb(255, 255, 255);
+                "
+              >
+                Sign up
+              </button>
             </div>
-            <button
-              type="submit"
-              class="btn !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_#326b00]"
-              style="
-                background-image: linear-gradient(to right, #34c3c5, #45a049);
-                color: rgb(255, 255, 255);
-              "
-              (click)="signUp()"
-            >
-              Sign up
-            </button>
-          </div>
+          </form>
 
           <div class="relative my-7 text-center md:mb-9">
             <span
               class="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"
             ></span>
             <span
-              class="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light"
+              class="relative px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light"
               >or</span
             >
           </div>

@@ -75,7 +75,7 @@ export class EditProductComponent implements OnInit {
 
     this.productForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
-      originalPrice: ['', [Validators.required, Validators.min(1000)]],
+      price: ['', [Validators.required, Validators.min(1000)]],
       description: ['', [Validators.required, Validators.minLength(100)]],
       quantity: ['', [Validators.required, Validators.min(1)]],
       discount: ['', [Validators.min(0)]],
@@ -97,7 +97,10 @@ export class EditProductComponent implements OnInit {
         this.selectedSubCategoryId = response.subCategory.id;
         this.selectedCategoryName = response.category.name;
         this.selectedSubCategoryName = response.subCategory.name;
-        this.productForm.patchValue(response);
+        this.productForm.patchValue({
+          ...response,
+          price: response.originalPrice,
+        });
       },
       complete: () => {
         debugger;

@@ -1,0 +1,147 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="mb-32" style="color: #03c9d7">Thông tin blog</h4>
+    <form [formGroup]="blogForm" (submit)="saveChanges()">
+      <h6 class="mb-3 mt-5">Ảnh blog</h6>
+      <div class="upload-section">
+        <div class="file-square" (click)="uploadWidget()">
+          <label for="cover-image">
+            <button mat-button type="button">
+              <i class="material-icons">add_photo_alternate</i>
+            </button>
+            <span class="fs-12 mt-2">Thêm hình ảnh</span>
+          </label>
+        </div>
+        <div class="uploaded-images">
+          @for (image of uploadedImages; track $index) {
+          <div class="uploaded-image">
+            <img
+              width="100px"
+              height="100px"
+              style="object-fit: cover"
+              [src]="image"
+              alt=""
+            />
+          </div>
+          }
+        </div>
+      </div>
+
+      @if (isPictureError) {
+      <mat-error class="fs-12 mb-2 ms-3" style="visibility: visible"
+        >Vui lòng tải ảnh bìa</mat-error
+      >
+      }@else {
+      <mat-error style="visibility: hidden">Vui lòng tải ảnh bìa</mat-error>
+      }
+
+      <h6 class="mb-3">Ảnh bìa</h6>
+      @if (uploadedImages.length > 0) {
+      <div class="file-square mb-5">
+        <img
+          width="100px"
+          height="100px"
+          style="object-fit: cover"
+          [src]="uploadedImages[0]"
+          alt=""
+        />
+      </div>
+      }@else if (blog?.thumbnail) {
+      <div class="file-square mb-5">
+        <img
+          width="100px"
+          height="100px"
+          style="object-fit: cover"
+          [src]="blog?.thumbnail"
+          alt=""
+        />
+      </div>
+      } @else {
+      <div class="file-square mb-5">
+        <label for="product-image">
+          <button mat-button type="button" disabled="">
+            <i class="material-icons">add_photo_alternate</i>
+          </button>
+        </label>
+      </div>
+      }
+
+      <h6 class="mb-3">Tiêu đề</h6>
+      <mat-form-field class="w-100 fs-16" appearance="outline">
+        <mat-label>Nhập tiêu đề</mat-label>
+        <input
+          matInput
+          type="text"
+          required
+          formControlName="title"
+          [class.is-invalid]="
+            blogForm.get('title')?.invalid && blogForm.get('title')?.touched
+          "
+        />
+        @if (blogForm.get('title')?.hasError('required')) {
+        <mat-error class="fs-12">Tiêu đề không được để trống</mat-error>
+        }@else if (blogForm.get('title')?.hasError('minlength')) {
+        <mat-error class="fs-12">Tiêu đề quá ngắn. Ít nhất 10 ký tự</mat-error>
+        } @else if (blogForm.get('title')?.hasError('maxlength')) {
+        <mat-error class="fs-12"
+          >Tiêu đề quá dài. Nhiều nhất 50 ký tự</mat-error
+        >
+        }
+      </mat-form-field>
+
+      <h6 class="mb-3">Tags</h6>
+      <mat-form-field class="w-100 fs-16" appearance="outline">
+        <mat-label>Nhập tags</mat-label>
+        <input
+          matInput
+          type="text"
+          required
+          formControlName="tags"
+          [class.is-invalid]="
+            blogForm.get('tags')?.invalid && blogForm.get('tags')?.touched
+          "
+        />
+        @if (blogForm.get('tags')?.hasError('required')) {
+        <mat-error class="fs-12">Tags không được để trống</mat-error>
+        }
+      </mat-form-field>
+
+      <h6 class="mb-3">Tóm tắt</h6>
+      <mat-form-field class="w-100 fs-16" appearance="outline">
+        <mat-label>Nhập tóm tắt</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          formControlName="summary"
+          [class.is-invalid]="
+            blogForm.get('summary')?.invalid && blogForm.get('summary')?.touched
+          "
+        >
+        </textarea>
+        @if (blogForm.get('summary')?.hasError('required')) {
+        <mat-error class="fs-12">Tóm tắt không được để trống</mat-error>
+        } @else if (blogForm.get('summary')?.hasError('minlength')) {
+        <mat-error class="fs-12">Tóm tắt quá ngắn. Ít nhất 20 ký tự</mat-error>
+        }
+      </mat-form-field>
+
+      <h6 class="mb-3 mt-3">Nội dung</h6>
+      <angular-editor
+        [config]="config"
+        formControlName="content"
+      ></angular-editor>
+      <div class="d-flex justify-content-end mt-5">
+        <button
+          mat-raised-button
+          class="fs-20 p-24"
+          color="accent"
+          type="submit"
+          extend
+        >
+          Hoàn tất
+          <mat-icon>task_alt</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

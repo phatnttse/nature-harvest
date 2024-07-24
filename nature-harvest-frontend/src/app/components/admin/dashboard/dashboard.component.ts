@@ -13,6 +13,4 @@ import { RouterModule } from '@angular/router';
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class DashboardComponent {
-  currYear: number = new Date().getFullYear();
-}
+export class DashboardComponent {}

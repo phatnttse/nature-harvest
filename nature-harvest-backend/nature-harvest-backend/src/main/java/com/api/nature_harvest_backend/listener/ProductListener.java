@@ -1,51 +1,52 @@
-package com.api.nature_harvest_backend.models;
+package com.api.nature_harvest_backend.listener;
 
-import com.api.nature_harvest_backend.services.category.ICategoryRedisService;
+import com.api.nature_harvest_backend.models.Product;
+import com.api.nature_harvest_backend.services.product.IProductRedisService;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AllArgsConstructor
-public class CategoryListener {
-    private final ICategoryRedisService categoryRedisService;
+public class ProductListener {
+    private final IProductRedisService productRedisService;
     private static final Logger logger = LoggerFactory.getLogger(ProductListener.class);
 
     @PrePersist
-    public void prePersist(Category category) {
+    public void prePersist(Product product) {
         logger.info("prePersist");
     }
 
     @PostPersist //save = persis
-    public void postPersist(Category category) {
+    public void postPersist(Product product) {
         // Update Redis cache
         logger.info("postPersist");
-        categoryRedisService.clear();
+        productRedisService.clear();
     }
 
     @PreUpdate
-    public void preUpdate(Category category) {
+    public void preUpdate(Product product) {
         //ApplicationEventPublisher.instance().publishEvent(event);
         logger.info("preUpdate");
     }
 
     @PostUpdate
-    public void postUpdate(Category category) {
+    public void postUpdate(Product product) {
         // Update Redis cache
         logger.info("postUpdate");
-        categoryRedisService.clear();
+        productRedisService.clear();
     }
 
     @PreRemove
-    public void preRemove(Category category) {
+    public void preRemove(Product product) {
         //ApplicationEventPublisher.instance().publishEvent(event);
         logger.info("preRemove");
     }
 
     @PostRemove
-    public void postRemove(Category category) {
+    public void postRemove(Product product) {
         // Update Redis cache
         logger.info("postRemove");
-        categoryRedisService.clear();
+        productRedisService.clear();
     }
 }

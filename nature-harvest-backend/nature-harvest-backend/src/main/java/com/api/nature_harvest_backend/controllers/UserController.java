@@ -2,11 +2,10 @@ package com.api.nature_harvest_backend.controllers;
 
 import com.api.nature_harvest_backend.dtos.auth.*;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
-import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
 import com.api.nature_harvest_backend.models.Token;
 import com.api.nature_harvest_backend.models.User;
+import com.api.nature_harvest_backend.responses.base.BaseResponse;
 import com.api.nature_harvest_backend.responses.user.LoginResponse;
-import com.api.nature_harvest_backend.responses.user.SignUpResponse;
 import com.api.nature_harvest_backend.responses.user.UserListResponse;
 import com.api.nature_harvest_backend.responses.user.UserResponse;
 import com.api.nature_harvest_backend.services.aws.IAwsS3Service;
@@ -28,7 +27,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
@@ -40,43 +38,70 @@ public class UserController {
     private final IAwsS3Service awsS3Service;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignUpResponse> signUp(
+    public ResponseEntity<BaseResponse> signUp(
             @Valid @RequestBody SignUpDto signUpDto,
             BindingResult result) throws Exception {
-
-        SignUpResponse signUpResponse = new SignUpResponse();
-
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
                     .map(FieldError::getDefaultMessage)
                     .toList();
-
-            signUpResponse.setMessage(errorMessages.toString());
-            return ResponseEntity.badRequest().body(signUpResponse);
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .message(errorMessages.toString())
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
         }
-
         try {
-            User user = userService.createUser(signUpDto);
-            signUpResponse.setMessage("Sign Up Successfully. Login to shopping now!");
-            return ResponseEntity.ok(signUpResponse);
+            User user = userService.signup(signUpDto);
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .message("Sign up successfully")
+                    .status(HttpStatus.OK.value())
+                    .build());
         } catch (Exception e) {
-            signUpResponse.setMessage(e.getMessage());
-            return ResponseEntity.badRequest().body(signUpResponse);
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .message(e.getMessage())
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
         }
     }
 
     @GetMapping("/confirm-email")
-    public ResponseEntity<SignUpResponse> confirmEmail(@RequestParam("token") String token) {
+    public ResponseEntity<BaseResponse> confirmEmail(@Valid @RequestParam("token") String token) {
         try {
-            if (userService.verifyUser(token))
-                return ResponseEntity.ok(SignUpResponse.builder()
-                        .message("Sign up successfully. Login to shopping now!")
+            if (!userService.verifyUser(token))
+                return ResponseEntity.ok(BaseResponse.builder()
+                        .message("Mã xác thực không hợp lệ")
+                        .status(HttpStatus.BAD_REQUEST.value())
                         .build());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .message("Xác thực email thành công")
+                    .status(HttpStatus.OK.value())
+                    .build());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(SignUpResponse.builder()
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .message("Mã xác thực đã hết hạn")
+                    .status(HttpStatus.UNAUTHORIZED.value())
+                    .build());
+        }
+    }
+
+
+    @GetMapping("/resend-verification-email")
+    public ResponseEntity<BaseResponse> resendVerificationEmail(@Valid @RequestParam("email") String email) {
+        try {
+            if (!userService.resendVerificationEmail(email))
+                return ResponseEntity.ok(BaseResponse.builder()
+                        .message("Gửi lại mã xác thực thất bại")
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .build());
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .message("Gửi lại mã xác thực thành công")
+                    .status(HttpStatus.OK.value())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(BaseResponse.builder()
                     .message(e.getMessage())
+                    .status(HttpStatus.BAD_REQUEST.value())
                     .build());
         }
     }
@@ -162,12 +187,12 @@ public class UserController {
 //    }
 
     @PatchMapping("/update-picture")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserResponse> updatePicture(@Valid @RequestBody UpdateUserPictureDto updateUserPictureDto) throws Exception {
         try {
 
-            User loginUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User user = userService.updatePicture(updateUserPictureDto.getPictureUrl(), loginUser);
+            User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.updatePicture(updateUserPictureDto.getPictureUrl(), loggedInUser);
             return ResponseEntity.ok(UserResponse.fromUser(user));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -219,6 +244,7 @@ public class UserController {
     }
 
     @PostMapping("/details")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserResponse> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
     ) {
@@ -231,37 +257,74 @@ public class UserController {
         }
     }
 
-    @PutMapping("/reset-password/{userId}")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<String> resetPassword(@Valid @PathVariable String userId) {
+    @PatchMapping("/forgot-password")
+    public ResponseEntity<BaseResponse> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) {
         try {
-            String newPassword = UUID.randomUUID().toString().substring(0, 5); // Tạo mật khẩu mới
-            userService.resetPassword(userId, newPassword);
-            return ResponseEntity.ok(newPassword);
-        } catch (InvalidPasswordException e) {
-            return ResponseEntity.badRequest().body("Invalid password");
-        } catch (DataNotFoundException e) {
-            return ResponseEntity.badRequest().body("User not found");
+            if (userService.forgotPassword(forgotPasswordDto)) {
+                return ResponseEntity.ok(BaseResponse.builder()
+                        .message("Reset password successfully")
+                        .status(HttpStatus.OK.value())
+                        .build());
+            }
+            return ResponseEntity.badRequest().body(BaseResponse.builder()
+                    .message("Change password failed")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(BaseResponse.builder()
+                    .message(e.getMessage())
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
         }
     }
 
-    @PutMapping("/block/{userId}/{active}")
+    @PatchMapping("/block/{userId}/{active}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> blockOrEnable(
+    public ResponseEntity<BaseResponse> blockOrEnable(
             @Valid @PathVariable String userId,
             @Valid @PathVariable int active
     ) {
         try {
             userService.blockOrEnable(userId, active > 0);
             String message = active > 0 ? "Successfully enabled the user." : "Successfully blocked the user.";
-            return ResponseEntity.ok().body(message);
+            return ResponseEntity.ok().body(BaseResponse.builder()
+                    .message(message)
+                    .status(HttpStatus.OK.value())
+                    .build());
         } catch (DataNotFoundException e) {
-            return ResponseEntity.badRequest().body("User not found.");
+            return ResponseEntity.ok().body(BaseResponse.builder()
+                    .message("User not found")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(BaseResponse.builder()
+                    .message(e.getMessage())
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
         }
     }
 
+    @PatchMapping("/change-password")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> changePassword(
+            @Valid @RequestBody ChangePasswordDto changePasswordDto
+    ) {
+        try {
+            if (userService.changePassword(changePasswordDto)) {
+                return ResponseEntity.ok().body(BaseResponse.builder()
+                        .message("Password changed successfully")
+                        .status(HttpStatus.OK.value())
+                        .build());
+            }
+            return ResponseEntity.ok().body(BaseResponse.builder()
+                    .message("Password change failed")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.ok().body(BaseResponse.builder()
+                    .message(e.getMessage())
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .build());
+        }
+    }
 }

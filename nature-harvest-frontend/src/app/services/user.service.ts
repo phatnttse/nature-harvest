@@ -1,16 +1,19 @@
 import { UpdatePictureDto } from './../dtos/user/update-picture.dto';
 import { UpdateUserProfileDto } from './../dtos/user/update.dto';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { SignUpDto } from '../dtos/user/signup.dto';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SignUpResponse } from '../responses/user/signup-response';
 import { LoginDto } from '../dtos/user/login.dto';
 import { LoginResponse } from '../responses/user/login.response';
 import { HttpUtilService } from './http.util.service';
 import { DOCUMENT } from '@angular/common';
 import { UserResponse } from '../responses/user/user.response';
 import { environment } from '../environments/environment.development';
+import { UserListResponse } from '../responses/user/user-list.response';
+import { BaseResponse } from '../responses/base/base.response';
+import { ChangePasswordDto } from '../dtos/user/change-password.dto';
+import { ForgotPasswordDto } from '../dtos/user/forgot-password.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -37,9 +40,9 @@ export class UserService {
     this.userResponseSubject.next(userResponse);
   }
 
-  signUp(signUpDto: SignUpDto): Observable<SignUpResponse> {
+  signUp(signUpDto: SignUpDto): Observable<BaseResponse> {
     debugger;
-    return this.http.post<SignUpResponse>(
+    return this.http.post<BaseResponse>(
       `${this.apiBaseUrl}/users/signup`,
       signUpDto,
       this.apiConfig
@@ -67,11 +70,21 @@ export class UserService {
     );
   }
 
-  verifyEmail(token: string): Observable<SignUpResponse> {
-    return this.http.get<SignUpResponse>(
+  verifyEmail(token: string): Observable<BaseResponse> {
+    const params = new HttpParams().set('token', token);
+    return this.http.get<BaseResponse>(
       `${this.apiBaseUrl}/users/confirm-email`,
       {
-        params: { token },
+        params,
+      }
+    );
+  }
+  resendVerificationEmail(email: string): Observable<BaseResponse> {
+    const params = new HttpParams().set('email', email);
+    return this.http.get<BaseResponse>(
+      `${this.apiBaseUrl}/users/resend-verification-email`,
+      {
+        params,
       }
     );
   }
@@ -86,6 +99,21 @@ export class UserService {
     });
   }
 
+  getAllUsers(
+    keyword: string,
+    page: number,
+    limit: number
+  ): Observable<UserListResponse> {
+    const params = new HttpParams()
+      .set('keyword', keyword)
+      .set('page', page)
+      .set('limit', limit);
+    return this.http.get<UserListResponse>(`${this.apiBaseUrl}/users`, {
+      params,
+      ...this.apiConfig,
+    });
+  }
+
   updatePicture(updatePictureDto: UpdatePictureDto): Observable<UserResponse> {
     return this.http.patch<UserResponse>(
       `${this.apiBaseUrl}/users/update-picture`,
@@ -97,6 +125,31 @@ export class UserService {
     return this.http.patch<UserResponse>(
       `${this.apiBaseUrl}/users/${userId}`,
       updateUserProfileDto,
+      this.apiConfig
+    );
+  }
+
+  deleteUser(userId: string, active: number): Observable<BaseResponse> {
+    return this.http.patch<BaseResponse>(
+      `${this.apiBaseUrl}/users/block/${userId}/${active}`,
+      this.apiConfig
+    );
+  }
+  changePassword(
+    changePasswordDto: ChangePasswordDto
+  ): Observable<BaseResponse> {
+    return this.http.patch<BaseResponse>(
+      `${this.apiBaseUrl}/users/change-password`,
+      changePasswordDto,
+      this.apiConfig
+    );
+  }
+  forgotPassword(
+    forgotPasswordDto: ForgotPasswordDto
+  ): Observable<BaseResponse> {
+    return this.http.patch<BaseResponse>(
+      `${this.apiBaseUrl}/users/forgot-password`,
+      forgotPasswordDto,
       this.apiConfig
     );
   }

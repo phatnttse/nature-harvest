@@ -34,6 +34,7 @@ public class CouponController {
             return ResponseEntity.ok(CouponCalculationResponse.builder()
                     .discountAmount(discountAmount)
                     .message("Coupon applied successfully")
+                    .status(HttpStatus.OK.value())
                     .build());
         } catch (Exception e) {
             if (e.getMessage().equals("Coupon not found"))

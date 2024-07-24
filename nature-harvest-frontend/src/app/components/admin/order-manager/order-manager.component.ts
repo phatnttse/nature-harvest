@@ -18,6 +18,7 @@ import { OrderService } from '../../../services/order.service';
 import { OrderListResponse } from '../../../responses/order/order-list.response';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DeleteOrderComponent } from './delete-order/delete-order.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-order-manager',
@@ -35,6 +36,7 @@ import { DeleteOrderComponent } from './delete-order/delete-order.component';
     FeatherModule,
     MatSortModule,
     MatInputModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './order-manager.component.html',
   styleUrl: './order-manager.component.scss',
@@ -43,7 +45,7 @@ export class OrderManagerComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   keyword: string = '';
   currentPage: number = 0;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 8;
   pages: number[] = [];
   totalPages: number = 0;
   visiblePages: number[] = [];
@@ -69,6 +71,8 @@ export class OrderManagerComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.getOrders(this.keyword, this.currentPage, this.itemsPerPage);
+    this.currentPage =
+      Number(this.localStorage?.getItem('currentOrderManagerPage')) || 0;
   }
 
   getOrders(keyword: string, page: number, limit: number) {
@@ -90,9 +94,12 @@ export class OrderManagerComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
   onPageChange(page: number) {
-    debugger;
     this.currentPage = page < 0 ? 0 : page;
-    this.localStorage?.setItem('currentProductPage', String(this.currentPage));
+    this.localStorage?.setItem(
+      'currentOrderManagerPage',
+      String(this.currentPage)
+    );
+    this.getOrders(this.keyword, this.currentPage, this.itemsPerPage);
   }
 
   generateVisiblePageArray(currentPage: number, totalPages: number): number[] {
@@ -115,14 +122,12 @@ export class OrderManagerComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   openDialog(orderId: string) {
-    debugger;
     const dialogRef = this.dialog.open(DeleteOrderComponent, {
       width: '400px',
       data: orderId,
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
-      debugger;
       if (result) {
         this.getOrders(this.keyword, this.currentPage, this.itemsPerPage);
         this.toastr.success('Xoá đơn hàng thành công');

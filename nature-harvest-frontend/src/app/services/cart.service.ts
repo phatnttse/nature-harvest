@@ -9,6 +9,7 @@ import { CartListResponse } from '../responses/cart/cart-list.response';
 import { CartSizeResponse } from '../responses/cart/cart-size.response';
 import { ClearCartDto } from '../dtos/cart/clear-cart.dto';
 import { environment } from '../environments/environment.development';
+import { BaseResponse } from '../responses/base/base.response';
 
 @Injectable({
   providedIn: 'root',
@@ -71,8 +72,8 @@ export class CartService {
     this.cartSubject.next(cartData);
   }
 
-  clearCart(clearCartDto: ClearCartDto): Observable<any> {
-    return this.http.post(
+  clearCart(clearCartDto: ClearCartDto): Observable<BaseResponse> {
+    return this.http.post<BaseResponse>(
       `${this.apiBaseUrl}/cart/clear-cart`,
       clearCartDto,
       this.apiConfig

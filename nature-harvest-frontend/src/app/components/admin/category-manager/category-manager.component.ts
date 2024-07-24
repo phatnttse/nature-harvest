@@ -14,6 +14,7 @@ import { CategoryService } from '../../../services/category.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteCategoryComponent } from './delete-category/delete-category.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-category-manager',
@@ -29,6 +30,7 @@ import { DeleteCategoryComponent } from './delete-category/delete-category.compo
     MatFormFieldModule,
     MatSortModule,
     MatInputModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './category-manager.component.html',
   styleUrl: './category-manager.component.scss',

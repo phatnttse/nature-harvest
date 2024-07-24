@@ -16,6 +16,7 @@ import { RemoveCartDto } from '../../dtos/cart/remove-cart-item.dto';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-view-cart',
@@ -32,6 +33,7 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
     FormsModule,
     BreadcrumbComponent,
     RouterModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class ViewCartComponent implements OnInit {

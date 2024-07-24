@@ -15,17 +15,13 @@ import { VnPayPaymentDto } from '../../dtos/payment/vnpay-payment.dto';
   styleUrl: './vn-pay-pay.component.scss',
 })
 export class VnPayPayComponent implements OnInit {
-  private router = inject(Router);
-  private paymentService = inject(PaymentService);
-
   bankCode: string = '';
   language: string = 'vn';
   amount: number = 0;
   user?: UserResponse;
   orderInfo: OrderDto | null = null;
-  // vnPayPaymentDto: VnPayPaymentDto | null = null;
 
-  constructor() {}
+  constructor(private router: Router, private paymentService: PaymentService) {}
 
   ngOnInit(): void {
     this.orderInfo = this.paymentService.getOrderInfo();

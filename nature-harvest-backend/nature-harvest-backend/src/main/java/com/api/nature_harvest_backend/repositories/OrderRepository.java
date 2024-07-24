@@ -24,4 +24,9 @@ public interface OrderRepository extends JpaRepository<Order, String> {
             "OR o.note LIKE %:keyword% " +
             "OR o.email LIKE %:keyword%)")
     Page<Order> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+    Page<Order> findByUserAndStatus(User user, String status, Pageable pageable);
+
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.user = :user AND o.status = :status")
+    long countByUserAndStatus(@Param("user") User user, @Param("status") String status);
 }

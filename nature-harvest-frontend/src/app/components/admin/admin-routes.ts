@@ -1,13 +1,5 @@
 import { Routes } from '@angular/router';
 import { AdminComponent } from './admin.component';
-import { ProductManagerComponent } from './product-manager/product-manager.component';
-import { EditProductComponent } from './product-manager/edit-product/edit-product.component';
-import { CreateProductComponent } from './product-manager/create-product/create-product.component';
-import { CategoryManagerComponent } from './category-manager/category-manager.component';
-import { CreateCategoryComponent } from './category-manager/create-category/create-category.component';
-import { EditCategoryComponent } from './category-manager/edit-category/edit-category.component';
-import { OrderManagerComponent } from './order-manager/order-manager.component';
-import { EditOrderComponent } from './order-manager/edit-order/edit-order.component';
 
 export const adminRoutes: Routes = [
   {
@@ -16,35 +8,123 @@ export const adminRoutes: Routes = [
     children: [
       {
         path: 'products',
-        component: ProductManagerComponent,
+        loadComponent() {
+          return import('./product-manager/product-manager.component').then(
+            (m) => m.ProductManagerComponent
+          );
+        },
       },
       {
         path: 'products/new',
-        component: CreateProductComponent,
+        loadComponent() {
+          return import(
+            './product-manager/create-product/create-product.component'
+          ).then((m) => m.CreateProductComponent);
+        },
       },
       {
         path: 'products/:slug',
-        component: EditProductComponent,
+        loadComponent() {
+          return import(
+            './product-manager/edit-product/edit-product.component'
+          ).then((m) => m.EditProductComponent);
+        },
       },
       {
         path: 'categories',
-        component: CategoryManagerComponent,
+        loadComponent() {
+          return import('./category-manager/category-manager.component').then(
+            (m) => m.CategoryManagerComponent
+          );
+        },
       },
       {
         path: 'categories/new',
-        component: CreateCategoryComponent,
+        loadComponent() {
+          return import(
+            './category-manager/create-category/create-category.component'
+          ).then((m) => m.CreateCategoryComponent);
+        },
       },
       {
         path: 'categories/:slug',
-        component: EditCategoryComponent,
+        loadComponent() {
+          return import(
+            './category-manager/edit-category/edit-category.component'
+          ).then((m) => m.EditCategoryComponent);
+        },
       },
       {
         path: 'orders',
-        component: OrderManagerComponent,
+        loadComponent() {
+          return import('./order-manager/order-manager.component').then(
+            (m) => m.OrderManagerComponent
+          );
+        },
       },
       {
         path: 'orders/:id',
-        component: EditOrderComponent,
+        loadComponent() {
+          return import('./order-manager/edit-order/edit-order.component').then(
+            (m) => m.EditOrderComponent
+          );
+        },
+      },
+      {
+        path: 'coupons',
+        loadComponent() {
+          return import('./coupon-manager/coupon-manager.component').then(
+            (m) => m.CouponManagerComponent
+          );
+        },
+      },
+      {
+        path: 'coupons/new',
+        loadComponent() {
+          return import(
+            './coupon-manager/create-coupon/create-coupon.component'
+          ).then((m) => m.CreateCouponComponent);
+        },
+      },
+      {
+        path: 'coupons/:id',
+        loadComponent() {
+          return import(
+            './coupon-manager/edit-coupon/edit-coupon.component'
+          ).then((m) => m.EditCouponComponent);
+        },
+      },
+      {
+        path: 'users',
+        loadComponent() {
+          return import('./user-manager/user-manager.component').then(
+            (m) => m.UserManagerComponent
+          );
+        },
+      },
+      {
+        path: 'blogs',
+        loadComponent() {
+          return import('./blog-manager/blog-manager.component').then(
+            (m) => m.BlogManagerComponent
+          );
+        },
+      },
+      {
+        path: 'blogs/new',
+        loadComponent() {
+          return import(
+            './blog-manager/create-blog/create-blog.component'
+          ).then((m) => m.CreateBlogComponent);
+        },
+      },
+      {
+        path: 'blogs/:slug',
+        loadComponent() {
+          return import('./blog-manager/edit-blog/edit-blog.component').then(
+            (m) => m.EditBlogComponent
+          );
+        },
       },
     ],
   },

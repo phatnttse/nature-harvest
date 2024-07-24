@@ -1,5 +1,6 @@
 package com.api.nature_harvest_backend.models;
 
+import com.api.nature_harvest_backend.listener.CategoryListener;
 import jakarta.persistence.*;
 import lombok.*;
 

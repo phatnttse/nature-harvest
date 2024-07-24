@@ -10,6 +10,7 @@ import { environment } from '../environments/environment.development';
 import { OrderListResponse } from '../responses/order/order-list.response';
 import { BaseResponse } from '../responses/base/base.response';
 import { UpdateOrderDto } from '../dtos/order/update.dto';
+import { OrderTrackingResponse } from '../responses/order/order-tracking.response';
 
 @Injectable({
   providedIn: 'root',
@@ -63,6 +64,24 @@ export class OrderService {
     });
   }
 
+  getOrdersByStatus(
+    status: string,
+    page: number,
+    limit: number
+  ): Observable<OrderTrackingResponse> {
+    const params = new HttpParams()
+      .set('status', status)
+      .set('page', page)
+      .set('limit', limit);
+    return this.http.get<OrderTrackingResponse>(
+      `${this.apiBaseUrl}/orders/status`,
+      {
+        params,
+        ...this.apiConfig,
+      }
+    );
+  }
+
   handleOrder(
     handleOrderDto: HandleOrderDto
   ): Observable<OrderAndOrderDetailsResponse> {
@@ -87,6 +106,12 @@ export class OrderService {
   deleteOrder(orderId: string): Observable<BaseResponse> {
     return this.http.delete<BaseResponse>(
       `${this.apiBaseUrl}/orders/${orderId}`,
+      this.apiConfig
+    );
+  }
+  cancelOrder(orderId: string): Observable<OrderTrackingResponse> {
+    return this.http.patch<OrderTrackingResponse>(
+      `${this.apiBaseUrl}/orders/cancel/${orderId}`,
       this.apiConfig
     );
   }

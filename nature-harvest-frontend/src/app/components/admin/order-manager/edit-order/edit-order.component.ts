@@ -139,13 +139,17 @@ export class EditOrderComponent implements OnInit {
   }
 
   handleOrder(orderId: string, status: string) {
+    debugger;
+    if (this.orderForm.get('status')?.value === 'successful_delivery') {
+      this.toastr.info('Đơn hàng đã hoàn thành');
+      return;
+    }
     const nextStatus =
       status || this.getNextStatus(this.orderForm.get('status')?.value);
     const handleOrderDto: HandleOrderDto = {
       orderId,
       status: nextStatus,
     };
-    debugger;
     this.orderService.handleOrder(handleOrderDto).subscribe({
       next: (response: OrderAndOrderDetailsResponse) => {
         this.toastr.success('Đã cập nhật trạng thái đơn hàng');

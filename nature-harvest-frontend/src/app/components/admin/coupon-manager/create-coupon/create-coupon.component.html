@@ -1,0 +1,211 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="mb-32 text-primary">Tạo mã giảm giá</h4>
+    <form [formGroup]="couponForm" (submit)="onSubmit()">
+      <table class="example-full-width mb-3" cellspacing="0">
+        <tr>
+          <td>
+            <h6 class="mb-3">Mã giảm giá</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <mat-label>Nhập mã</mat-label>
+              <input
+                matInput
+                type="text"
+                required
+                formControlName="code"
+                [class.is-invalid]="
+                  couponForm.get('code')?.invalid &&
+                  couponForm.get('code')?.touched
+                "
+              />
+              @if (couponForm.get('code')?.hasError('required')) {
+              <mat-error class="fs-12"
+                >Mã giảm giá không được để trống</mat-error
+              >
+              }@else if (couponForm.get('code')?.hasError('minlength')) {
+              <mat-error class="fs-12"
+                >Mã giảm giá quá ngắn. Ít nhất 3 ký tự</mat-error
+              >
+              }
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Loại giảm giá</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <mat-label>Chọn loại giảm giá</mat-label>
+              <mat-select formControlName="discountType">
+                <mat-option value="fixed">Giảm giá cố định</mat-option>
+                <mat-option value="percentage">Giảm giá phần trăm</mat-option>
+              </mat-select>
+              @if (couponForm.get('discountType')?.hasError('required')) {
+              <mat-error class="fs-12"
+                >Loại giảm giá không được để trống</mat-error
+              >
+              }
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Loại áp dụng</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <mat-label>Chọn loại áp dụng</mat-label>
+              <mat-select formControlName="attribute">
+                <mat-option value="minimum_amount"
+                  >Giá trị tối thiểu</mat-option
+                >
+                <mat-option value="applicable_date">Ngày áp dụng</mat-option>
+              </mat-select>
+              @if (couponForm.get('attribute')?.hasError('required')) {
+              <mat-error class="fs-12"
+                >Loại áp dụng không được để trống</mat-error
+              >
+              }
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+      <table class="example-full-width mb-3" cellspacing="0">
+        <tr>
+          <td>
+            <h6 class="mb-3">Điều kiện</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <mat-label>Chọn điều kiện</mat-label>
+              <mat-select formControlName="operator">
+                <mat-option value=">=">Lớn hơn hoặc bằng</mat-option>
+                <mat-option value="BETWEEN"
+                  >Nằm trong khoảng thời gian</mat-option
+                >
+              </mat-select>
+              @if (couponForm.get('operator')?.hasError('required')) {
+              <mat-error class="fs-12">Điều kiện không được để trống</mat-error>
+              }
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Giá trị cần đạt</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <mat-label>Nhập giá trị</mat-label>
+              <input
+                matInput
+                type="number"
+                required
+                formControlName="value"
+                [class.is-invalid]="
+                  couponForm.get('value')?.invalid &&
+                  couponForm.get('value')?.touched
+                "
+              />
+              @if (couponForm.get('value')?.hasError('required')) {
+              <mat-error class="fs-12"
+                >Giá trị cần đạt không được để trống</mat-error
+              >
+              }
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Giá trị giảm</h6>
+            <mat-form-field class="w-100 fs-16" appearance="outline">
+              <mat-label>Nhập giá trị</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                formControlName="discountAmount"
+                [class.is-invalid]="
+                  couponForm.get('discountAmount')?.invalid &&
+                  couponForm.get('discountAmount')?.touched
+                "
+              />
+              @if (couponForm.get('discountAmount')?.hasError('required')) {
+              <mat-error class="fs-12"
+                >Giá trị giảm không được để trống</mat-error
+              >
+              } @if
+              (couponForm.get('discountAmount')?.hasError('maxPercentageDiscount'))
+              {
+              <mat-error class="fs-12">
+                Giá trị giảm phải nhỏ hơn 100% cho giảm giá phần trăm
+              </mat-error>
+              } @if
+              (couponForm.get('discountAmount')?.hasError('minFixedDiscount')) {
+              <mat-error class="fs-12">
+                Giá trị giảm phải lớn hơn 5.000₫ cho giảm giá cố định</mat-error
+              >
+              } @if (couponForm.get('discountAmount')?.hasError('min')) {
+              <mat-error>Giá trị giảm phải lớn hơn 0</mat-error>
+              }
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+
+      <table class="example-full-width mb-3" cellspacing="0">
+        <tr>
+          <td>
+            <h6 class="mb-3">Ngày bắt đầu</h6>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [matDatepicker]="startDatePicker"
+                formControlName="startDate"
+              />
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="startDatePicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #startDatePicker></mat-datepicker>
+            </mat-form-field>
+          </td>
+          <td>
+            <h6 class="mb-3">Ngày kết thúc</h6>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [matDatepicker]="endDatePicker"
+                formControlName="endDate"
+              />
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="endDatePicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #endDatePicker></mat-datepicker>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+
+      <h6 class="mb-3 mt-3">Mô tả</h6>
+      <mat-form-field class="w-100 fs-16" appearance="outline">
+        <mat-label>Nhập mô tả</mat-label>
+        <textarea
+          matInput
+          rows="6"
+          formControlName="description"
+          [class.is-invalid]="
+            couponForm.get('description')?.invalid &&
+            couponForm.get('description')?.touched
+          "
+        ></textarea>
+        @if (couponForm.get('description')?.hasError('required')) {
+        <mat-error class="fs-12">Mô tả không được để trống</mat-error>
+        }@else if (couponForm.get('description')?.hasError('minlength')) {
+        <mat-error class="fs-12"
+          >Mô tả sản phẩm quá ngắn. Ít nhất 50 ký tự</mat-error
+        >
+        }
+      </mat-form-field>
+
+      <div class="d-flex justify-content-end mt-5">
+        <button
+          mat-raised-button
+          class="fs-15 me-3 p-20"
+          color="primary"
+          type="submit"
+          extend
+        >
+          Hoàn tất
+          <mat-icon>task_alt</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,7 +1,6 @@
+@defer () {
 <app-header></app-header>
-
 <app-breadcrumb></app-breadcrumb>
-
 <section class="section-content padding-y mt-2">
   <div class="container">
     <div class="row">
@@ -34,15 +33,15 @@
                           getProductsByCondition(
                             minPrice,
                             maxPrice,
-                            '',
+                            keyword,
                             category.id,
                             0,
                             category.slug,
                             '',
-                            '',
-                            '',
-                            0,
-                            8
+                            sortBy,
+                            arrange,
+                            currentPage,
+                            itemsPerPage
                           )
                         "
                         class="nav-link"
@@ -61,7 +60,7 @@
 
                       @for (subcategory of category.subcategories; track $index)
                       {
-                      <ul class="dropdown-menu-ct">
+                      <ul class="dropdown-menu-ct ms-3">
                         <li class="nav-item">
                           <a
                             class="nav-link"
@@ -71,15 +70,15 @@
                               getProductsByCondition(
                                 minPrice,
                                 maxPrice,
-                                '',
+                                keyword,
                                 category.id,
                                 subcategory.id,
-                                '',
+                                category.slug,
                                 subcategory.slug,
-                                '',
-                                '',
-                                0,
-                                8
+                                sortBy,
+                                arrange,
+                                currentPage,
+                                itemsPerPage
                               )
                             "
                             >{{ subcategory.name }}
@@ -94,48 +93,43 @@
               </div>
             </div>
           </article>
-          <!-- <article class="filter-group">
-            <header class="card-header">
-              <a href="#" class="">
-                <h6 class="title text-white mt-2">Loại sản phẩm</h6>
-              </a>
-            </header>
-            <div class="filter-content collapse show">
-              <div class="card-body"></div>
-            </div>
-          </article> -->
           <article class="filter-group">
             <header class="card-header">
               <a href="#" class="">
-                <h6 class="title mt-2 text-white">Chọn theo mức giá</h6>
+                <h6 class="title mt-2 text-white">Chọn mức giá</h6>
               </a>
             </header>
-            <div class="filter-content show collapse" id="collapse_3">
+            <div class="filter-content show collapse">
               <div class="card-body">
-                <div class="form-row">
-                  <div class="form-group col-md-10 d-flex align-items-center">
-                    <mat-slider
-                      min="0"
-                      max="1000000"
-                      step="1000"
-                      showTickMarks
-                      discrete
-                      [displayWith]="formatLabel"
-                      class="flex-grow-1 mr-3"
-                    >
-                      <input [(ngModel)]="minPrice" matSliderStartThumb />
-                      <input [(ngModel)]="maxPrice" matSliderEndThumb />
-                    </mat-slider>
-                    <button
-                      mat-primary-button
-                      style="color: white"
-                      class="btn btn-primary me-3"
-                      (click)="filterProductsByPrice()"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </div>
+                <ul class="navbar-pills nav-category">
+                  <li class="nav-item">
+                    <a href="javascript:void(0);" class="nav-link">
+                      <mat-radio-group>
+                        <mat-radio-button (click)="selectPrice('100k')"
+                          >Dưới 100.000đ</mat-radio-button
+                        >
+                        <mat-radio-button (click)="selectPrice('100k-200k')"
+                          >Từ 100.000đ - 200.000đ</mat-radio-button
+                        >
+                        <mat-radio-button (click)="selectPrice('200k-300k')"
+                          >Từ 200.000đ - 300.000đ</mat-radio-button
+                        >
+                        <mat-radio-button (click)="selectPrice('300k-500k')"
+                          >Từ 300.000đ - 500.000đ</mat-radio-button
+                        >
+                        <mat-radio-button (click)="selectPrice('500k-1000k')"
+                          >Từ 500.000đ - 1 triệu</mat-radio-button
+                        >
+                        <mat-radio-button (click)="selectPrice('1000k-2000k')"
+                          >Từ 1 triệu - 2 triệu</mat-radio-button
+                        >
+                        <mat-radio-button (click)="selectPrice('1000k-2000k')"
+                          >Từ 2 triệu - 5 triệu</mat-radio-button
+                        >
+                      </mat-radio-group>
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
           </article>
@@ -156,7 +150,7 @@
                 width="16"
                 height="16"
                 alt="Sắp xếp"
-                src="//bizweb.dktcdn.net/100/514/629/themes/951567/assets/sort.png?1716945232631"
+                src="https://res.cloudinary.com/dlpust9lj/image/upload/v1721068180/ascwklmvjzdnmhdex8g2.png"
                 class="mr-2"
               />
               <p class="mb-2 mt-2" style="font-size: 14px; margin-left: 6px">
@@ -194,6 +188,7 @@
                   @for (product of products; track $index) {
                   <div class="col-6 col-md-4 col-lg-3">
                     <div class="card mb-4">
+                      @if (product.discount > 0) {
                       <div
                         class="badge card-badge card-badge-start text-uppercase bg-primary"
                         style="
@@ -204,10 +199,11 @@
                       >
                         -{{ product.discount }}%
                       </div>
+                      }
                       <div class="card-img">
                         <a
                           class="card-img-hover"
-                          routerLink="/product-detail/{{ product.id }}"
+                          routerLink="/product-detail/{{ product.slug }}"
                         >
                           <img
                             class="card-img-top card-img-back"
@@ -285,10 +281,10 @@
                           <span
                             class="fs-xs text-gray-350 text-decoration-line-through"
                             style="padding: 8px; font-size: 14px"
-                            >{{ product.officialPrice | number : "1.0" }}₫</span
+                            >{{ product.originalPrice | number : "1.0" }}₫</span
                           >
                           <span class="text-primary" style="font-size: 14px"
-                            >{{ product.originalPrice | number : "1.0" }}₫</span
+                            >{{ product.officialPrice | number : "1.0" }}₫</span
                           >
                         </div>
                         <div
@@ -393,6 +389,11 @@
   </div>
 </section>
 <app-footer></app-footer>
+}@loading {
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <mat-spinner></mat-spinner>
+</div>
+}
 
 <div
   id="quick-view-product"

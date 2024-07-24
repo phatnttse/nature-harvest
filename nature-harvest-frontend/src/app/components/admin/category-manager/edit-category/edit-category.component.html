@@ -82,9 +82,11 @@
           "
         />
         @if (categoryForm.get('name')?.hasError('required')) {
-        <mat-error>Tên danh mục không được để trống</mat-error>
+        <mat-error class="fs-12">Tên danh mục không được để trống</mat-error>
         }@else if (categoryForm.get('name')?.hasError('minlength')) {
-        <mat-error>Tên danh mục quá ngắn. Ít nhất 5 ký tự</mat-error>
+        <mat-error class="fs-12"
+          >Tên danh mục quá ngắn. Ít nhất 2 ký tự</mat-error
+        >
         }
       </mat-form-field>
 

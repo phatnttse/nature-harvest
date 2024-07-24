@@ -1,51 +1,52 @@
-package com.api.nature_harvest_backend.models;
+package com.api.nature_harvest_backend.listener;
 
-import com.api.nature_harvest_backend.services.subcategory.ISubCategoryRedisService;
+import com.api.nature_harvest_backend.models.Category;
+import com.api.nature_harvest_backend.services.category.ICategoryRedisService;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AllArgsConstructor
-public class SubCategoryListener {
-    private final ISubCategoryRedisService subCategoryRedisService;
+public class CategoryListener {
+    private final ICategoryRedisService categoryRedisService;
     private static final Logger logger = LoggerFactory.getLogger(ProductListener.class);
 
     @PrePersist
-    public void prePersist(SubCategory category) {
+    public void prePersist(Category category) {
         logger.info("prePersist");
     }
 
     @PostPersist //save = persis
-    public void postPersist(SubCategory category) {
+    public void postPersist(Category category) {
         // Update Redis cache
         logger.info("postPersist");
-        subCategoryRedisService.clear();
+        categoryRedisService.clear();
     }
 
     @PreUpdate
-    public void preUpdate(SubCategory category) {
+    public void preUpdate(Category category) {
         //ApplicationEventPublisher.instance().publishEvent(event);
         logger.info("preUpdate");
     }
 
     @PostUpdate
-    public void postUpdate(SubCategory category) {
+    public void postUpdate(Category category) {
         // Update Redis cache
         logger.info("postUpdate");
-        subCategoryRedisService.clear();
+        categoryRedisService.clear();
     }
 
     @PreRemove
-    public void preRemove(SubCategory category) {
+    public void preRemove(Category category) {
         //ApplicationEventPublisher.instance().publishEvent(event);
         logger.info("preRemove");
     }
 
     @PostRemove
-    public void postRemove(SubCategory category) {
+    public void postRemove(Category category) {
         // Update Redis cache
         logger.info("postRemove");
-        subCategoryRedisService.clear();
+        categoryRedisService.clear();
     }
 }

@@ -2,11 +2,13 @@ package com.api.nature_harvest_backend.controllers;
 
 import com.api.nature_harvest_backend.dtos.cart.CartDto;
 import com.api.nature_harvest_backend.models.Cart;
+import com.api.nature_harvest_backend.responses.base.BaseResponse;
 import com.api.nature_harvest_backend.responses.cart.CartListResponse;
 import com.api.nature_harvest_backend.responses.cart.CartResponse;
 import com.api.nature_harvest_backend.responses.cart.CartSizeResponse;
 import com.api.nature_harvest_backend.services.cart.ICartService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -89,13 +91,20 @@ public class CartController {
     }
 
     @PostMapping("/clear-cart")
-//    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> clearCart(@RequestBody CartDto cartDto) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<BaseResponse> clearCart(@RequestBody CartDto cartDto) {
         try {
             cartService.clearCart(cartDto);
-            return ResponseEntity.ok("Clear cart successfully");
+            return ResponseEntity.ok(BaseResponse.builder()
+                    .message("Cart cleared successfully")
+                    .status(HttpStatus.OK.value())
+                    .build());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(
+                    BaseResponse.builder()
+                            .message(e.getMessage())
+                            .status(HttpStatus.BAD_REQUEST.value())
+                            .build());
         }
     }
 }

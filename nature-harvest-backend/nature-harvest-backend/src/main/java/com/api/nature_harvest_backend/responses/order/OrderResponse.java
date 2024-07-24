@@ -1,10 +1,6 @@
 package com.api.nature_harvest_backend.responses.order;
 
-import com.api.nature_harvest_backend.models.Cart;
 import com.api.nature_harvest_backend.models.Order;
-import com.api.nature_harvest_backend.models.User;
-import com.api.nature_harvest_backend.responses.cart.CartResponse;
-import com.api.nature_harvest_backend.responses.product.ProductResponse;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -30,9 +26,10 @@ public class OrderResponse {
     private LocalDate orderDate;
     private LocalDate deliveryDate;
     private int amount;
+    private boolean reviewed;
 
     public static OrderResponse fromOrder(Order order) {
-        OrderResponse orderResponse = OrderResponse
+        return OrderResponse
                 .builder()
                 .id(order.getId())
                 .userId(order.getUser().getId())
@@ -48,8 +45,8 @@ public class OrderResponse {
                 .orderDate(order.getOrderDate())
                 .paymentMethod(order.getPaymentMethod())
                 .deliveryDate(order.getDeliveryDate())
+                .reviewed(order.isReviewed())
                 .build();
-        return orderResponse;
     }
 
     public static List<OrderResponse> fromOrderList(List<Order> orderList) {

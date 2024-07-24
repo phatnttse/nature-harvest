@@ -36,7 +36,7 @@ public class CommentController {
         int totalPages = 0;
         PageRequest pageRequest = PageRequest.of(
                 page, limit,
-                Sort.by("id").ascending()
+                Sort.by("createdAt").ascending()
         );
         CommentListResponse commentListResponse = commentService.getComments(productId, pageRequest);
         return ResponseEntity.ok(commentListResponse);
@@ -46,13 +46,13 @@ public class CommentController {
     public ResponseEntity<CommentListResponse> getFilteredComments(
             @RequestParam("productId") Long productId,
             @RequestParam(required = false) Integer starRating,
-            @RequestParam(defaultValue = "false") boolean hasImage,
+            @RequestParam(required = false) Boolean hasImage,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "8") int limit
     ) {
         PageRequest pageRequest = PageRequest.of(
                 page, limit,
-                Sort.by("id").ascending()
+                Sort.by("createdAt").ascending()
         );
         CommentListResponse commentListResponse = commentService.getFilteredComments(productId, starRating, hasImage, pageRequest);
         return ResponseEntity.ok(commentListResponse);

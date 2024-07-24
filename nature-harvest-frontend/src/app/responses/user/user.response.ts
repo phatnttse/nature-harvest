@@ -8,5 +8,6 @@ export interface UserResponse {
   name: string;
   phone: string;
   dateOfBirth: Date;
+  googleId: string;
   role: Role;
 }

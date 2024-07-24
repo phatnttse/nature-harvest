@@ -30,23 +30,21 @@
               }
             ],
             "styles": [
-              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/assets/styles/user.style.scss",
               "src/styles.scss",
               "src/assets/css/lightbox.min.css",
               "src/assets/css/owl.carousel.min.css",
               "src/assets/css/bootstrap.min.css",
               "src/assets/css/style.css",
               "node_modules/ngx-toastr/toastr.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
-              "node_modules/flickity/dist/flickity.min.css"
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": [
               "src/assets/js/easing.min.js",
               "src/assets/js/waypoints.min.js",
               "src/assets/js/lightbox.min.js",
               "src/assets/js/owl.carousel.min.js",
-              "src/assets/js/main.js",
-              "node_modules/flickity/dist/flickity.pkgd.min.js"
+              "src/assets/js/main.js"
             ]
           },
           "configurations": {

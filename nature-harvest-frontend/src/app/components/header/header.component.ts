@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { UserResponse } from '../../responses/user/user.response';
 import { UserService } from '../../services/user.service';
 import { TokenService } from '../../services/token.service';
@@ -36,6 +36,7 @@ export class HeaderComponent implements OnInit {
   categoriesWithSubcategories$: Observable<CategoryWithSubcategoriesResponse[]>;
   products: ProductResponse[] = [];
   subscriptions: Subscription[] = [];
+  dropdownVisible = false;
 
   constructor(
     private userService: UserService,
@@ -78,45 +79,13 @@ export class HeaderComponent implements OnInit {
       },
     });
   }
-  getProductsByCondition(
-    selectedCategoryId: number,
-    selectedSubCategoryId: number,
-    categorySlug: string,
-    subcategorySlug: string
-  ) {
-    debugger;
-    this.productService
-      .getProductsByCondition(
-        0,
-        10000000,
-        '',
-        selectedCategoryId,
-        selectedSubCategoryId,
-        categorySlug,
-        subcategorySlug,
-        'id',
-        'ascending',
-        0,
-        2
-      )
-      .subscribe({
-        next: (response: ProductListResponse) => {
-          debugger;
-          this.products = response.products;
-          this.router.navigate(['/products/all'], {
-            queryParams: {
-              c: selectedCategoryId,
-              sc: selectedSubCategoryId,
-            },
-          });
-        },
-        complete: () => {
-          debugger;
-        },
-        error: (error: any) => {
-          debugger;
-          console.error('Error fetching products:', error);
-        },
-      });
+  selectCategory(categorySlug: string) {
+    this.router.navigate(['/products/listc/' + categorySlug]);
+  }
+  selectSubcategory(subcategorySlug: string) {
+    this.router.navigate(['/products/listsc/' + subcategorySlug]);
+  }
+  editProfile() {
+    this.router.navigate(['/profile']);
   }
 }

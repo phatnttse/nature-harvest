@@ -3,7 +3,7 @@
 
 $flexy-primary: (
   100: #fcf1ed,
-  500: #03c9d7,
+  500: #15af81,
   700: #425a61,
   contrast: (
     100: #393939,
@@ -56,7 +56,7 @@ body {
 
 body {
   margin: 0;
-  font-family: "DM Sans", sans-serif !important;
+  font-family: "Arial", "Helvetica", sans-serif !important;
 }
 
 @include mat.all-component-themes($flexy-angular-theme);
@@ -78,9 +78,8 @@ $my-custom-level: mat.m2-define-typography-level(
 // @=@=@=@=@=@=@=@=@=@=@=@=@=@=@=@=@
 // Font Family
 // @=@=@=@=@=@=@=@=@=@=@=@=@=@=@=@=@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
 
-$bodyfont: "DM Sans", sans-serif;
+$bodyfont: "Arial", "Helvetica", sans-serif;
 
 // @=@=@=@=@=@=@=@=@=@=@=@=@=@=@=@=@
 // Colors
@@ -93,7 +92,7 @@ $body-color: #fafbfb;
 $primary: #fb9678;
 $secondary: #777e89;
 $success: #00c292;
-$info: #03c9d7;
+$info: #15af81;
 $warning: #fec90f;
 $danger: #e46a76;
 $indigo: #551a8b;

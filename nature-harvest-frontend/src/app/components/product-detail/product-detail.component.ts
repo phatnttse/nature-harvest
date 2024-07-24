@@ -19,6 +19,7 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { CommentService } from '../../services/comment.service';
 import { CommentResponse } from '../../responses/comment/comment.response';
 import { CommentListResponse } from '../../responses/comment/comment-list.response';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-product-detail',
@@ -34,6 +35,7 @@ import { CommentListResponse } from '../../responses/comment/comment-list.respon
     MatInputModule,
     MatButtonModule,
     BreadcrumbComponent,
+    MatProgressSpinnerModule,
   ],
 })
 export class ProductDetailComponent implements OnInit {
@@ -65,20 +67,21 @@ export class ProductDetailComponent implements OnInit {
       const slug = params.get('slug');
       if (slug) {
         this.getProductDetail(slug);
+        this.currentPage =
+          Number(this.localStorage?.getItem('currentCommentPage')) || 0;
       } else {
         console.error('Invalid slug:', slug);
       }
     });
-
-    this.currentPage =
-      Number(this.localStorage?.getItem('currentCommentPage')) || 0;
-    this.getComments();
   }
 
   getProductDetail(slug: string): void {
     this.productService.getDetailProductBySlug(slug).subscribe({
       next: (response: ProductDetailResponse) => {
         this.product = response;
+      },
+      complete: () => {
+        this.getComments();
       },
       error: (error: HttpErrorResponse) => {
         console.error(error?.error?.message ?? '');
@@ -106,13 +109,11 @@ export class ProductDetailComponent implements OnInit {
       this.product.productImages &&
       this.product.productImages.length > 0
     ) {
-      // Đảm bảo index nằm trong khoảng hợp lệ
       if (index < 0) {
         index = 0;
       } else if (index >= this.product.productImages.length) {
         index = this.product.productImages.length - 1;
       }
-      // Gán index hiện tại và cập nhật ảnh hiển thị
       this.currentImageIndex = index;
     }
   }

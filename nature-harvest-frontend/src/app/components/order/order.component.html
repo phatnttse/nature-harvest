@@ -1,3 +1,4 @@
+@defer () {
 <header class="banner">
   <div class="wrap">
     <div class="logo logo--center">
@@ -46,7 +47,7 @@
             <div class="col col--two">
               <section class="section">
                 <div class="section__header">
-                  <div class="layout-flex">
+                  <div class="layout-flex mb-4">
                     <h2
                       class="section__title layout-flex__item layout-flex__item--stretch"
                     >
@@ -56,141 +57,140 @@
                 </div>
                 <div class="section__content">
                   <div class="fieldset">
-                    <div class="field">
-                      <div class="field__input-wrapper">
-                        <label for="email" class="field__label">
-                          Email <span style="color: red"> *</span></label
-                        >
-                        <input
-                          id="email"
-                          type="email"
-                          class="field__input"
-                          formControlName="email"
-                          required
-                          [class.is-invalid]="
-                            orderForm.get('email')!.invalid &&
-                            orderForm.get('email')!.touched
-                          "
-                        />
-                        @if(orderForm.get('email')!.invalid &&
-                        orderForm.get('email')!.touched) {
-                        <mat-error style="color: red">
-                          Email là trường <strong>bắt buộc</strong> và
-                          <strong>đúng định dạng</strong>
-                        </mat-error>
-                        }
-                      </div>
-                    </div>
-
-                    <div class="field">
-                      <div class="field__input-wrapper">
-                        <label for="billingName" class="field__label"
-                          >Họ và tên <span style="color: red"> *</span></label
-                        >
-                        <input
-                          id="billingName"
-                          type="text"
-                          class="field__input"
-                          formControlName="name"
-                          required
-                          [class.is-invalid]="
-                            orderForm.get('name')!.invalid &&
-                            orderForm.get('name')!.touched
-                          "
-                        />
-                        @if(orderForm.get('name')!.invalid &&
-                        orderForm.get('name')!.touched) {
-                        <mat-error style="color: red">
-                          Họ và tên là trường <strong>bắt buộc</strong>
-                        </mat-error>
-                        }
-                      </div>
-                    </div>
-
-                    <div class="field">
-                      <div class="field__input-wrapper">
-                        <label for="billingPhone" class="field__label">
-                          Số điện thoại <span style="color: red"> *</span>
-                        </label>
-                        <input
-                          id="billingPhone"
-                          type="tel"
-                          class="field__input"
-                          required
-                          formControlName="phone"
-                          [class.is-invalid]="
-                            orderForm.get('phone')!.invalid &&
-                            orderForm.get('phone')!.touched
-                          "
-                        />
-                        @if(orderForm.get('phone')!.invalid &&
-                        orderForm.get('phone')!.touched) {
-                        <mat-error style="color: red">
-                          Số điện thoại là trường <strong>bắt buộc</strong>
-                        </mat-error>
-                        }
-                      </div>
-                    </div>
-
-                    <div class="field">
-                      <div class="field__input-wrapper">
-                        <label for="billingAddress" class="field__label">
-                          Địa chỉ nhận hàng <span style="color: red"> *</span>
-                        </label>
-                        <input
-                          id="billingAddress"
-                          type="text"
-                          class="field__input"
-                          required
-                          formControlName="deliveryAddress"
-                          [class.is-invalid]="
-                            orderForm.get('deliveryAddress')!.invalid &&
-                            orderForm.get('deliveryAddress')!.touched
-                          "
-                        />
-                        @if(orderForm.get('deliveryAddress')!.invalid &&
-                        orderForm.get('deliveryAddress')!.touched) {
-                        <mat-error style="color: red">
-                          Địa chỉ là trường
-                          <strong>bắt buộc và ít nhất 5 ký tự.</strong>
-                        </mat-error>
-                        }
-                      </div>
-                    </div>
+                    <mat-form-field
+                      class="w-100 fs-16 mt-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Email</mat-label>
+                      <input
+                        matInput
+                        type="email"
+                        required
+                        formControlName="email"
+                        [class.is-invalid]="
+                          orderForm.get('email')?.invalid &&
+                          orderForm.get('email')?.touched
+                        "
+                      />
+                      @if(orderForm.get('email')!.hasError('required') ) {
+                      <mat-error class="fs-12">
+                        Email không được để trống
+                      </mat-error>
+                      } @if (orderForm.get('email')!.hasError('email') ) {
+                      <mat-error class="fs-12">
+                        Email không đúng định dạng. Ex: vit&#64;gmail.com
+                      </mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field
+                      class="w-100 fs-16 mt-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Họ và tên</mat-label>
+                      <input
+                        matInput
+                        type="text"
+                        required
+                        formControlName="name"
+                        [class.is-invalid]="
+                          orderForm.get('name')?.invalid &&
+                          orderForm.get('name')?.touched
+                        "
+                      />
+                      @if(orderForm.get('name')!.hasError('required')) {
+                      <mat-error class="fs-12">
+                        Họ và tên không được để trống
+                      </mat-error>
+                      } @if (orderForm.get('name')!.hasError('minlength')) {
+                      <mat-error class="fs-12">
+                        Họ và tên quá ngắn. Tối thiểu 5 ký tự
+                      </mat-error>
+                      }
+                      <!-- @if (orderForm.get('name')!.hasError('maxlength')) {
+                      <mat-error class="fs-12">
+                        Họ và tên quá dài. Tối đa 25 ký tự
+                      </mat-error>
+                      } -->
+                    </mat-form-field>
+                    <mat-form-field
+                      class="w-100 fs-16 mt-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Số điện thoại</mat-label>
+                      <input
+                        matInput
+                        type="phone"
+                        required
+                        formControlName="phone"
+                        [class.is-invalid]="
+                          orderForm.get('phone')?.invalid &&
+                          orderForm.get('phone')?.touched
+                        "
+                      />
+                      @if(orderForm.get('phone')!.hasError('required')) {
+                      <mat-error class="fs-12">
+                        Số điện thoại không được để trống
+                      </mat-error>
+                      } @if(orderForm.get('phone')!.hasError('minlength') ||
+                      orderForm.get('phone')!.hasError('maxlength')) {
+                      <mat-error class="fs-12">
+                        Số điện thoại phải chứa đúng 10 chữ số.
+                      </mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field
+                      class="w-100 fs-16 mt-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Địa chỉ</mat-label>
+                      <input
+                        matInput
+                        type="text"
+                        required
+                        formControlName="deliveryAddress"
+                        [class.is-invalid]="
+                          orderForm.get('deliveryAddress')?.invalid &&
+                          orderForm.get('deliveryAddress')?.touched
+                        "
+                      />
+                      @if(orderForm.get('deliveryAddress')!.hasError('required'))
+                      {
+                      <mat-error class="fs-12">
+                        Địa chỉ không được để trống
+                      </mat-error>
+                      }
+                      @if(orderForm.get('deliveryAddress')!.hasError('minlength'))
+                      {
+                      <mat-error class="fs-12">
+                        Địa chỉ quá ngắn. Tối thiểu 10 ký tự
+                      </mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field
+                      class="w-100 fs-16 mt-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Ghi chú</mat-label>
+                      <textarea
+                        matInput
+                        rows="4"
+                        formControlName="note"
+                        [class.is-invalid]="
+                          orderForm.get('note')?.invalid &&
+                          orderForm.get('note')?.touched
+                        "
+                      ></textarea>
+                      @if(orderForm.get('note')!.hasError('maxlength')) {
+                      <mat-error class="fs-12">
+                        Ghi chú quá dài. Tối đa 200 ký tự
+                      </mat-error>
+                      }
+                    </mat-form-field>
                   </div>
                 </div>
               </section>
-
-              <div class="fieldset">
-                <h3 class="visually-hidden">Ghi chú</h3>
-                <div class="field">
-                  <div class="field__input-wrapper">
-                    <label for="note" class="field__label">
-                      Ghi chú (tùy chọn)
-                    </label>
-                    <textarea
-                      name="note"
-                      id="note"
-                      class="field__input"
-                    ></textarea>
-                  </div>
-                </div>
-              </div>
             </div>
             <div class="col col--two">
-              <section class="section">
-                <div class="section__header">
-                  <div class="layout-flex">
-                    <h2
-                      class="section__title layout-flex__item layout-flex__item--stretch"
-                    >
-                      Vận chuyển
-                    </h2>
-                  </div>
-                </div>
-                <div class="section__content"></div>
-              </section>
-
               <section class="section">
                 <div class="section__header">
                   <div class="layout-flex">
@@ -201,14 +201,21 @@
                     </h2>
                     @if(orderForm.get('paymentMethod')!.invalid &&
                     orderForm.get('paymentMethod')!.touched) {
-                    <mat-error style="color: red">
+                    <mat-error style="color: #e46a76" class="fs-12">
                       Vui lòng chọn phương thức thanh toán
                     </mat-error>
                     }
                   </div>
                 </div>
                 <div class="section__content">
-                  <div class="content-box">
+                  <div
+                    class="content-box"
+                    [ngClass]="{
+                      error:
+                        orderForm.get('paymentMethod')!.invalid &&
+                        orderForm.get('paymentMethod')!.touched
+                    }"
+                  >
                     <div class="content-box__row">
                       <div class="radio-wrapper">
                         <div class="radio__input">
@@ -232,10 +239,11 @@
                           >
                           <span class="radio__label__accessory">
                             <img
-                              height="80px"
-                              width="80px"
+                              height="70px"
+                              width="70px"
                               src="https://www.coolmate.me/images/COD.svg"
                               alt="COD"
+                              style="object-fit: inherit"
                             />
                           </span>
                         </label>
@@ -263,10 +271,11 @@
                           <span class="radio__label__primary">VnPay</span>
                           <span class="radio__label__accessory">
                             <img
-                              height="80px"
-                              width="80px"
+                              height="70px"
+                              width="70px"
                               src="https://s-vnba-cdn.aicms.vn/vnba-media/23/8/16/vnpay-logo_64dc3da9d7a11.jpg"
                               alt="VNPAY"
+                              style="object-fit: initial"
                             />
                           </span>
                         </label>
@@ -293,8 +302,6 @@
                           <span class="radio__label__primary">MoMo</span>
                           <span class="radio__label__accessory">
                             <img
-                              height="80px"
-                              width="80px"
                               src="https://test-payment.momo.vn/v2/gateway/images/logo-momo.png"
                               alt="Momo"
                             />
@@ -397,66 +404,34 @@
                 <div class="edit_checkout animate-floating-labels">
                   <div class="fieldset">
                     <div class="field">
-                      <div class="field__input-btn-wrapper">
-                        <div class="field__input-wrapper">
-                          <label for="reductionCode" class="field__label"
-                            >Nhập mã giảm giá</label
-                          >
-                          <input
-                            name="reductionCode"
-                            id="reductionCode"
-                            type="text"
-                            class="field__input"
-                            autocomplete="off"
-                          />
-                        </div>
-                        <button
-                          class="field__input-btn btn btn-primary spinner btn--disabled"
-                          type="button"
-                          disabled=""
-                        >
-                          <span class="spinner-label">Áp dụng</span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="spinner-loader"
-                          >
-                            <use href="#spinner"></use>
-                          </svg>
-                        </button>
-                      </div>
                       <div class="voucher mt-3">
-                        <svg
-                          width="28"
-                          height="28"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect
-                            x="2"
-                            y="4"
-                            width="20"
-                            height="16"
-                            rx="2"
-                            fill="#A8E6A1"
-                            stroke="#4CAF50"
-                            stroke-width="2"
-                          />
-                          <path d="M8 8H16V10H8V8Z" fill="#4CAF50" />
-                          <path d="M8 12H16V14H8V12Z" fill="#4CAF50" />
-                        </svg>
+                        <i
+                          class="fa-solid fa-ticket fa-bounce"
+                          style="color: #008b4b"
+                        ></i>
 
-                        <div class="ms-1" style="color: #3e4a5e">
+                        <div class="ms-1 text-primary">
                           Nature's Harvest Voucher
                         </div>
                         <div style="flex: 1"></div>
+                        @if (isAppliedVoucher) {
+                        <button
+                          type="button"
+                          class="voucher-btn"
+                          disabled="true"
+                          style="color: #a79e9e"
+                        >
+                          Đã áp dụng mã giảm giá
+                        </button>
+                        }@else {
                         <button
                           type="button"
                           class="voucher-btn"
                           (click)="selectVoucher()"
                         >
-                          Chọn hoặc nhập mã
+                          Chọn mã giảm giá
                         </button>
+                        }
                       </div>
                     </div>
                   </div>
@@ -480,14 +455,14 @@
                     <tr class="total-line total-line--subtotal">
                       <th class="total-line__name">Tạm tính</th>
                       <td class="total-line__price">
-                        {{ getTotalPrice() | number : "1.0" }}₫
+                        {{ totalAmount | number : "1.0" }}₫
                       </td>
                     </tr>
 
                     <tr class="total-line total-line--shipping-fee">
                       <th class="total-line__name">Phí vận chuyển</th>
                       <td class="total-line__price">
-                        <span class="origin-price"></span>
+                        <span class="origin-price">-</span>
                       </td>
                     </tr>
                   </tbody>
@@ -500,7 +475,7 @@
                       </th>
                       <td class="total-line__price">
                         <span class="payment-due__price"
-                          >{{ getTotalPrice() | number : "1.0" }}₫</span
+                          >{{ totalAmount | number : "1.0" }}₫</span
                         >
                       </td>
                     </tr>
@@ -514,7 +489,7 @@
                   <span class="spinner-label">ĐẶT HÀNG</span>
                 </button>
 
-                <a routerLink="/view-cart" class="previous-link">
+                <a routerLink="/view-cart" class="previous-link mt-5">
                   <i class="previous-link__arrow">❮</i>
                   <span class="previous-link__content">Quay về giỏ hàng</span>
                 </a>
@@ -526,3 +501,8 @@
     </div>
   </form>
 </div>
+}@loading {
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <mat-spinner></mat-spinner>
+</div>
+}

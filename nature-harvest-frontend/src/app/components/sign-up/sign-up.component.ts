@@ -1,6 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { HeaderComponent } from '../header/header.component';
-import { FooterComponent } from '../footer/footer.component';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import {
   BrowserPlatformLocation,
@@ -8,7 +6,9 @@ import {
   PlatformLocation,
 } from '@angular/common';
 import {
+  FormBuilder,
   FormControl,
+  FormGroup,
   FormGroupDirective,
   FormsModule,
   NgForm,
@@ -17,32 +17,19 @@ import {
 } from '@angular/forms';
 import { SignUpDto } from '../../dtos/user/signup.dto';
 import { ToastrService } from 'ngx-toastr';
-import { SignUpResponse } from '../../responses/user/signup-response';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UserResponse } from '../../responses/user/user.response';
 import { LoginResponse } from '../../responses/user/login.response';
 import { TokenService } from '../../services/token.service';
-import { filter } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
+import { HttpErrorResponse } from '@angular/common/http';
+import { BaseResponse } from '../../responses/base/base.response';
+import { GOOGLE } from '../../environments/environment.development';
 declare var google: any;
-
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    form: FormGroupDirective | NgForm | null
-  ): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
-  }
-}
 
 @Component({
   selector: 'app-sign-up',
@@ -54,8 +41,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   ],
   encapsulation: ViewEncapsulation.None,
   imports: [
-    HeaderComponent,
-    FooterComponent,
     CommonModule,
     FormsModule,
     MatFormFieldModule,
@@ -66,25 +51,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatIconModule,
   ],
 })
-// implements OnInit, AfterViewInit, OnDestroy
-export class SignUpComponent {
-  emailFormControl = new FormControl('', [
-    Validators.required,
-    Validators.email,
-  ]);
-  nameFormControl = new FormControl('', [
-    Validators.required,
-    Validators.minLength(2),
-    Validators.maxLength(50),
-  ]);
-  passwordFormControl = new FormControl('', [
-    Validators.required,
-    Validators.minLength(8),
-    Validators.pattern(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-    ),
-  ]);
-  matcher = new MyErrorStateMatcher();
+export class SignUpComponent implements OnInit {
+  signupForm: FormGroup;
   userResponse?: UserResponse;
 
   constructor(
@@ -92,15 +60,36 @@ export class SignUpComponent {
     private toastr: ToastrService,
     private router: Router,
     private platformLocation: PlatformLocation,
-    private tokenService: TokenService
-  ) {}
+    private tokenService: TokenService,
+    private formBuilder: FormBuilder
+  ) {
+    this.signupForm = this.formBuilder.group({
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(50),
+        ],
+      ],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+          ),
+        ],
+      ],
+    });
+  }
 
   ngOnInit(): void {
     if (this.platformLocation instanceof BrowserPlatformLocation) {
-      // Chỉ chạy mã khi ở trong trình duyệt web
       google.accounts.id.initialize({
-        client_id:
-          '719610777931-akg597p377ho29jabqje6749hegpvhfd.apps.googleusercontent.com',
+        client_id: GOOGLE.clientId,
         callback: (response: any) => {
           this.loginGoogle(response.credential);
         },
@@ -117,43 +106,36 @@ export class SignUpComponent {
   }
 
   signUp() {
-    if (
-      this.emailFormControl.invalid ||
-      this.nameFormControl.invalid ||
-      this.passwordFormControl.invalid
-    ) {
-      this.emailFormControl.markAllAsTouched();
-      this.nameFormControl.markAllAsTouched();
-      this.passwordFormControl.markAllAsTouched();
+    if (this.signupForm.invalid) {
+      this.signupForm.markAllAsTouched();
       return;
     }
-
-    debugger;
     const signUpDto: SignUpDto = {
-      name: this.nameFormControl.value!,
-      email: this.emailFormControl.value!,
-      password: this.passwordFormControl.value!,
+      name: this.signupForm.value.name,
+      email: this.signupForm.value.email,
+      password: this.signupForm.value.password,
     };
     this.userService.signUp(signUpDto).subscribe({
-      next: (response: SignUpResponse) => {
-        debugger;
-        this.router.navigate(['/verify-email']);
+      next: (response: BaseResponse) => {
+        if (response.status === 200) {
+          this.router.navigate(['/verify-email']);
+        } else {
+          this.toastr.error(response.message, 'Đăng ký thất bại');
+        }
       },
-      error: (error: any) => {
+      error: (error: HttpErrorResponse) => {
+        this.toastr.error(error.error.message, 'Đăng ký thất bại');
         console.log(error);
       },
     });
   }
   loginGoogle(googleToken: string) {
-    debugger;
     this.userService.loginGoogle(googleToken).subscribe({
       next: (response: LoginResponse) => {
-        debugger;
         const { token } = response;
         this.tokenService.setToken(token);
         this.userService.getUserDetails(token).subscribe({
           next: (resp: UserResponse) => {
-            debugger;
             this.userResponse = {
               ...resp,
               dateOfBirth: new Date(resp.dateOfBirth) || null,
@@ -161,12 +143,12 @@ export class SignUpComponent {
             this.userService.setUserResponse(this.userResponse!);
             this.router.navigate(['']);
           },
-          error: (error: any) => {
+          error: (error: HttpErrorResponse) => {
             console.error(error);
           },
         });
       },
-      error: (error: any) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
       },
     });

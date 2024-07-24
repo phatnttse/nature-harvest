@@ -62,7 +62,7 @@ export class CreateSubcategoryComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.subcategoryForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(5)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
     });
     this.categoryId = this.data;
   }

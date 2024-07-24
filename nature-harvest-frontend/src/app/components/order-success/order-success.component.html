@@ -1,3 +1,4 @@
+@defer () {
 <div class="container">
   <div class="card">
     <div class="card-content">
@@ -47,7 +48,7 @@
         <span class="value"> {{ order?.orderDate | date : "dd-MM-yyyy" }}</span>
       </div>
       <div class="detail">
-        <span class="label">Ngày dự kiến giao: </span>
+        <span class="label">Ngày giao dự kiến: </span>
         <span class="value">
           {{ order?.deliveryDate | date : "dd-MM-yyyy" }}</span
         >
@@ -69,7 +70,7 @@
       </div>
     </div>
     <div class="card-footer">
-      <a routerLink="/" class="button">Quay lại trang chủ</a>
+      <a routerLink="/order-tracking" class="button">Theo dõi đơn hàng</a>
       <span
         class="text-icon-group text-icon-group--large icon-print"
         onclick="window.print()"
@@ -80,3 +81,4 @@
     </div>
   </div>
 </div>
+}@loading { cc }

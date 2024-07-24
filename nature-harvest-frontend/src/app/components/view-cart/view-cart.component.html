@@ -1,3 +1,4 @@
+@defer () {
 <app-header></app-header>
 <app-breadcrumb></app-breadcrumb>
 @if (cart.length > 0) {
@@ -194,7 +195,6 @@
                 >
                   <img
                     width="80"
-                    height="150"
                     [src]="item.product.thumbnail"
                     [alt]="item.product.title"
                   />
@@ -301,5 +301,9 @@
   </div>
 </section>
 }
-
 <app-footer></app-footer>
+}@loading {
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <mat-spinner></mat-spinner>
+</div>
+}

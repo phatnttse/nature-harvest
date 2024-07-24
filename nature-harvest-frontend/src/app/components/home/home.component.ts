@@ -15,21 +15,30 @@ import { CommonModule } from '@angular/common';
 import { ProductDetailResponse } from '../../responses/product/product-detail.response';
 import { Observable } from 'rxjs';
 import { CategoryWithSubcategoriesResponse } from '../../responses/category/category-subcategory-response';
-import 'swiper/swiper-bundle.css';
+import { CategoryProductCountResponse } from '../../responses/category/category-product-counts.response';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+// import 'swiper/swiper-bundle.css';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  imports: [HeaderComponent, FooterComponent, RouterModule, CommonModule],
+  imports: [
+    HeaderComponent,
+    FooterComponent,
+    RouterModule,
+    CommonModule,
+    MatProgressSpinnerModule,
+  ],
 })
 export class HomeComponent implements OnInit, OnDestroy {
   products: ProductResponse[] = [];
   selectedCategoryId: number = 0;
   selectedSubCategoryId: number = 0;
   currentPage: number = 0;
-  itemsPerPage: number = 8;
+  itemsPerPage: number = 12;
   pages: number[] = [];
   totalPages: number = 0;
   visiblePages: number[] = [];
@@ -40,18 +49,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentImage?: string = this.product?.thumbnail;
   quantity: number = 1;
   categoriesWithSubcategories$: Observable<CategoryWithSubcategoriesResponse[]>;
-  bestSellerProducts: ProductResponse[] = [];
   promotionalProducts: ProductResponse[] = [];
   fruits: ProductResponse[] = [];
   vegetables: ProductResponse[] = [];
+  meats: ProductResponse[] = [];
+  seafoods: ProductResponse[] = [];
   sortBy: string = '';
   arrange: string = '';
-  countdownDate = new Date('July 31, 2024 23:59:59').getTime();
+  countdownDate = new Date('October 19, 2024 23:59:59').getTime();
   days: number = 0;
   hours: number = 0;
   minutes: number = 0;
   seconds: number = 0;
   intervalId: any;
+  categories: CategoryProductCountResponse[] = [];
 
   constructor(
     private categoryService: CategoryService,
@@ -76,10 +87,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
     this.currentPage =
       Number(this.localStorage?.getItem('currentProductPage')) || 0;
-    this.getBestSellerProducts();
+    this.getCategories();
     this.getPromotionalProducts();
     this.getFruits(0);
     this.getVegetables(0);
+    this.getMeats(0);
+    this.getSeaFoods(0);
     this.intervalId = setInterval(() => {
       this.updateCountdown();
     }, 1000);
@@ -119,16 +132,25 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.totalPages
           );
         },
-        complete: () => {},
-        error: (error: any) => {
-          debugger;
+        error: (error: HttpErrorResponse) => {
           console.error(error);
         },
       });
   }
 
+  getCategories() {
+    this.categoryService.getCategoryProductCounts().subscribe({
+      next: (response: CategoryProductCountResponse[]) => {
+        debugger;
+        this.categories = response;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      },
+    });
+  }
+
   getFruits(selectedSubCategoryId: number) {
-    debugger;
     this.productService
       .getProducts(
         this.keyword,
@@ -141,7 +163,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (response: ProductListResponse) => {
-          debugger;
           this.fruits = response.products;
           this.totalPages = response.totalPages;
           this.visiblePages = this.generateVisiblePageArray(
@@ -149,18 +170,13 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.totalPages
           );
         },
-        complete: () => {
-          debugger;
-        },
-        error: (error: any) => {
-          debugger;
+        error: (error: HttpErrorResponse) => {
           console.error(error);
         },
       });
   }
 
   getVegetables(selectedSubCategoryId: number) {
-    debugger;
     this.productService
       .getProducts(
         this.keyword,
@@ -173,7 +189,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (response: ProductListResponse) => {
-          debugger;
           this.vegetables = response.products;
           this.totalPages = response.totalPages;
           this.visiblePages = this.generateVisiblePageArray(
@@ -181,53 +196,67 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.totalPages
           );
         },
-        complete: () => {
-          debugger;
-        },
-        error: (error: any) => {
-          debugger;
+        error: (error: HttpErrorResponse) => {
           console.error(error);
         },
       });
   }
-
-  getBestSellerProducts() {
-    debugger;
+  getMeats(selectedSubCategoryId: number) {
     this.productService
       .getProducts(
         this.keyword,
-        0,
-        this.selectedSubCategoryId,
-        'purchases',
+        3,
+        selectedSubCategoryId,
+        'id',
         'descending',
         this.currentPage,
-        6
+        4
       )
       .subscribe({
         next: (response: ProductListResponse) => {
-          debugger;
-          this.bestSellerProducts = response.products;
+          this.meats = response.products;
           this.totalPages = response.totalPages;
           this.visiblePages = this.generateVisiblePageArray(
             this.currentPage,
             this.totalPages
           );
         },
-        complete: () => {
-          debugger;
-        },
-        error: (error: any) => {
-          debugger;
+        error: (error: HttpErrorResponse) => {
           console.error(error);
         },
       });
   }
-  getPromotionalProducts() {
-    debugger;
+  getSeaFoods(selectedSubCategoryId: number) {
     this.productService
       .getProducts(
         this.keyword,
-        0,
+        6,
+        selectedSubCategoryId,
+        'id',
+        'descending',
+        this.currentPage,
+        4
+      )
+      .subscribe({
+        next: (response: ProductListResponse) => {
+          this.seafoods = response.products;
+          this.totalPages = response.totalPages;
+          this.visiblePages = this.generateVisiblePageArray(
+            this.currentPage,
+            this.totalPages
+          );
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        },
+      });
+  }
+
+  getPromotionalProducts() {
+    this.productService
+      .getProducts(
+        this.keyword,
+        this.selectedCategoryId,
         this.selectedSubCategoryId,
         'discount',
         'descending',
@@ -236,7 +265,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (response: ProductListResponse) => {
-          debugger;
           this.promotionalProducts = response.products;
           this.totalPages = response.totalPages;
           this.visiblePages = this.generateVisiblePageArray(
@@ -244,17 +272,24 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.totalPages
           );
         },
-        complete: () => {
-          debugger;
-        },
-        error: (error: any) => {
-          debugger;
+        error: (error: HttpErrorResponse) => {
           console.error(error);
         },
       });
   }
+
+  getCategoryProductCount() {
+    this.categoryService.getCategoryProductCounts().subscribe({
+      next: (response: CategoryProductCountResponse[]) => {
+        this.categories = response;
+      },
+      complete: () => {},
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      },
+    });
+  }
   onPageChange(page: number) {
-    debugger;
     this.currentPage = page < 0 ? 0 : page;
     this.localStorage?.setItem('currentProductPage', String(this.currentPage));
     this.getProducts(
@@ -284,38 +319,27 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   addProductToCart(productId: number, title: string) {
-    debugger;
     const user = this.userService.getUserResponseFromLocalStorage();
-    if (user == null) {
-      this.router.navigate(['/login']);
-      this.toastr.info('Bạn cần đăng nhập để mua sắm', '', {
-        closeButton: true,
-        timeOut: 4000,
-        easeTime: 400,
-        progressBar: true,
-      });
-    } else {
-      const cartDto: CartDto = {
-        userId: user?.id ?? '',
-        productId: productId,
-        quantity: this.quantity,
-      };
-      this.cartService.addProductToCart(cartDto).subscribe({
-        next: (response: CartListResponse) => {
-          debugger;
-          this.cartService.updateCartState(response);
-          this.closeModal();
-          this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
-            closeButton: true,
-            timeOut: 4000,
-            progressBar: true,
-          });
-        },
-        error(err) {
-          console.log(err);
-        },
-      });
-    }
+    const cartDto: CartDto = {
+      userId: user?.id ?? '',
+      productId: productId,
+      quantity: this.quantity,
+    };
+    this.cartService.addProductToCart(cartDto).subscribe({
+      next: (response: CartListResponse) => {
+        debugger;
+        this.cartService.updateCartState(response);
+        this.closeModal();
+        this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
+          closeButton: true,
+          timeOut: 4000,
+          progressBar: true,
+        });
+      },
+      error(error: HttpErrorResponse) {
+        console.log(error);
+      },
+    });
   }
   quickViewProduct(productId: number) {
     this.productService.getDetailProduct(productId).subscribe({
@@ -343,7 +367,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.modalStyle = false;
   }
   thumbnailClick(imageUrl: string) {
-    debugger;
     this.currentImage = imageUrl;
   }
   selectCategory(categoryId: number) {

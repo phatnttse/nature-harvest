@@ -2,8 +2,8 @@ package com.api.nature_harvest_backend.configurations;
 
 import com.api.nature_harvest_backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserRepository userRepository;
+
     //user's detail object
     @Bean
     public UserDetailsService userDetailsService() {
@@ -26,16 +27,18 @@ public class SecurityConfig {
                         .findByEmail(email)
                         .orElseThrow(() ->
                                 new UsernameNotFoundException(
-                                        "Cannot find user with phone number = "+ email));
+                                        "Cannot find user with email = " + email));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         };
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -43,6 +46,7 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config

@@ -1,3 +1,4 @@
+@defer () {
 <mat-card
   ><mat-card-content
     ><div class="row justify-content-between">
@@ -25,12 +26,22 @@
           <mat-icon>add</mat-icon>
         </button>
       </div>
-    </div></mat-card-content
-  ></mat-card
+    </div>
+  </mat-card-content></mat-card
 >
 <mat-card class="w-100">
   <mat-card-content>
     <h4>Quản lý sản phẩm</h4>
+
+    <div
+      class="col-12 d-flex align-items-center justify-content-center mb-5 mt-5"
+    >
+      <mat-tab-group (selectedTabChange)="onTabChange($event)">
+        @for (category of categoriesWithSubcategories$ | async ; track $index) {
+        <mat-tab [label]="category.name"></mat-tab>
+        }
+      </mat-tab-group>
+    </div>
     <div class="table-responsive mt-20">
       <table
         mat-table
@@ -98,12 +109,14 @@
             <p class="fw-medium badge badge-primary mb-0">
               {{ product.discount }}%
             </p>
+            }@else {
+            <p class="fw-medium mb-0">-</p>
             }
           </td>
         </ng-container>
 
         <ng-container matColumnDef="action">
-          <th mat-header-cell *matHeaderCellDef>Các tác vụ</th>
+          <th mat-header-cell *matHeaderCellDef>Các thao tác</th>
           <td mat-cell *matCellDef="let product">
             <button
               mat-icon-button
@@ -193,3 +206,8 @@
     </div>
   </mat-card-content>
 </mat-card>
+}@loading {
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <mat-spinner></mat-spinner>
+</div>
+}

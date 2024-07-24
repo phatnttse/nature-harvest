@@ -20,12 +20,13 @@ export class TokenService {
   setToken(token: string): void {
     this.localStorage?.setItem(this.TOKEN_KEY, token);
   }
-  getUserId(): number {
+  getUserId(): string {
+    debugger;
     let token = this.getToken();
     if (!token) {
-      return 0;
+      return '';
     }
-    let userObject = this.jwtHelperService.decodeToken(token);
+    const userObject = this.jwtHelperService.decodeToken(token);
     return 'userId' in userObject ? userObject['userId'] : '';
   }
 

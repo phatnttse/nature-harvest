@@ -101,8 +101,9 @@ export class CreateProductComponent {
     }
     if (result && result.event === 'success') {
       const secureUrl = result.info.secure_url;
-      const previewUrl = secureUrl.replace('/upload/', '/upload/w_600/');
+      const previewUrl = secureUrl.replace('/upload/', '/upload/w_451/');
       this.uploadedImages.push(previewUrl);
+      this.isPictureError = false;
     }
     if (error) {
       this.isDisabled = false;
@@ -113,8 +114,7 @@ export class CreateProductComponent {
     debugger;
     if (
       this.productForm.invalid ||
-      this.selectedCategoryId <= 0 ||
-      this.selectedSubCategoryId <= 0 ||
+      (this.selectedCategoryId <= 0 && this.selectedSubCategoryId <= 0) ||
       this.uploadedImages.length <= 0
     ) {
       this.productForm.markAllAsTouched();

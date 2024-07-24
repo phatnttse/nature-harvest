@@ -1,11 +1,12 @@
 package com.api.nature_harvest_backend.services.user;
 
 import com.api.nature_harvest_backend.components.JwtTokenUtils;
+import com.api.nature_harvest_backend.dtos.auth.ChangePasswordDto;
+import com.api.nature_harvest_backend.dtos.auth.ForgotPasswordDto;
 import com.api.nature_harvest_backend.dtos.auth.SignUpDto;
 import com.api.nature_harvest_backend.dtos.auth.UpdateUserDto;
 import com.api.nature_harvest_backend.exceptions.DataNotFoundException;
 import com.api.nature_harvest_backend.exceptions.ExpiredTokenException;
-import com.api.nature_harvest_backend.exceptions.InvalidPasswordException;
 import com.api.nature_harvest_backend.models.Role;
 import com.api.nature_harvest_backend.models.Token;
 import com.api.nature_harvest_backend.models.User;
@@ -29,6 +30,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,11 +57,11 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public User createUser(SignUpDto signUpDTO) throws Exception {
-
-        if (userRepository.existsByEmailAndGoogleIdIsNull(signUpDTO.getEmail())) {
-            throw new DataIntegrityViolationException("Email already exists");
+    public User signup(SignUpDto signUpDTO) throws Exception {
+        if (userRepository.existsByEmail(signUpDTO.getEmail())) {
+            throw new DataIntegrityViolationException("Email đã được sử dụng");
         }
+
         Role role = roleRepository.findByName("User");
         if (role == null) throw new DataNotFoundException("Role User does not exists");
 
@@ -88,18 +91,18 @@ public class UserService implements IUserService {
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty()) {
-            throw new DataNotFoundException("Email incorrect");
+            throw new DataNotFoundException("Email không chính xác");
         }
         if (!optionalUser.get().isActive()) {
-            throw new DataNotFoundException("User is locked");
+            throw new DataNotFoundException("Tài khoản đã bị khóa");
         }
         if (!optionalUser.get().isEmailVerified()) {
-            throw new DataNotFoundException("Unverified email");
+            throw new DataNotFoundException("Email chưa được xác thực");
         }
         User existingUser = optionalUser.get();
 
         if (!passwordEncoder.matches(password, existingUser.getPassword()))
-            throw new BadCredentialsException("Password incorrect");
+            throw new BadCredentialsException("Mật khẩu không chính xác");
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 email, password,
@@ -111,12 +114,12 @@ public class UserService implements IUserService {
         String token = jwtTokenUtil.generateToken(existingUser);
         Token jwtToken = tokenService.addToken(existingUser, token, isMobileDevice(userAgent));
         return LoginResponse.builder()
-                .message("Login Successfully")
+                .message("Đăng nhập thành công")
                 .token(jwtToken.getToken())
                 .tokenType(jwtToken.getTokenType())
                 .refreshToken(jwtToken.getRefreshToken())
                 .username(existingUser.getUsername())
-                .role(existingUser.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+                .role(existingUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .id(existingUser.getId())
                 .build();
     }
@@ -132,7 +135,7 @@ public class UserService implements IUserService {
         String extractedToken = googleToken.substring(7);
         GoogleIdToken idToken = verifier.verify(extractedToken);
         if (idToken == null) {
-            throw new IllegalArgumentException("Invalid ID token");
+            throw new IllegalArgumentException("Token không hợp lệ");
         }
 
         Payload payload = idToken.getPayload();
@@ -145,7 +148,7 @@ public class UserService implements IUserService {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty()) {
             Role role = roleRepository.findByName("User");
-            if (role == null) throw new DataNotFoundException("Role User does not exist");
+            if (role == null) throw new DataNotFoundException("Vai trò người dùng không tồn tại");
 
             User newUser = User.builder()
                     .id(UUID.randomUUID().toString())
@@ -161,24 +164,27 @@ public class UserService implements IUserService {
             String token = jwtTokenUtil.generateToken(newUser);
             Token jwtToken = tokenService.addToken(newUser, token, isMobileDevice(userAgent));
             return LoginResponse.builder()
-                    .message("Login Successfully")
+                    .message("Đăng nhập thành công")
                     .token(jwtToken.getToken())
                     .tokenType(jwtToken.getTokenType())
                     .refreshToken(jwtToken.getRefreshToken())
                     .username(newUser.getUsername())
-                    .role(newUser.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+                    .role(newUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                     .id(newUser.getId())
                     .build();
         } else {
+            if (!optionalUser.get().isActive()) {
+                throw new DataNotFoundException("Tài khoản đã bị khóa");
+            }
             String token = jwtTokenUtil.generateToken(optionalUser.get());
             Token jwtToken = tokenService.addToken(optionalUser.get(), token, isMobileDevice(userAgent));
             return LoginResponse.builder()
-                    .message("Login Successfully")
+                    .message("Đăng nhập thành công")
                     .token(jwtToken.getToken())
                     .tokenType(jwtToken.getTokenType())
                     .refreshToken(jwtToken.getRefreshToken())
                     .username(optionalUser.get().getUsername())
-                    .role(optionalUser.get().getAuthorities().stream().map(item -> item.getAuthority()).toList())
+                    .role(optionalUser.get().getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                     .id(optionalUser.get().getId())
                     .build();
         }
@@ -187,11 +193,14 @@ public class UserService implements IUserService {
     @Override
     public boolean verifyUser(String token) throws Exception {
         if (jwtTokenUtil.isTokenExpired(token)) {
-            throw new ExpiredTokenException("Token is expired");
+            throw new ExpiredTokenException("Token đã hết hạn");
         }
         String email = jwtTokenUtil.extractEmail(token);
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
+            if (user.get().isEmailVerified()) {
+                return true;
+            }
             user.get().setEmailVerified(true);
             userRepository.save(user.get());
             return true;
@@ -199,10 +208,81 @@ public class UserService implements IUserService {
         return false;
     }
 
+
+    @Override
+    public boolean resendVerificationEmail(String email) throws Exception {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new DataNotFoundException("Không tìm thấy người dùng");
+        }
+        if (user.get().isEmailVerified()) {
+            throw new DataNotFoundException("Email đã được xác thực");
+        }
+        String token = jwtTokenUtil.generateTokenEmail(user.get());
+        emailService.sendConfirmationEmail(user.get(), token);
+        return true;
+    }
+
+    @Override
+    public boolean changePassword(ChangePasswordDto changePasswordDto) throws DataNotFoundException {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null) {
+            throw new DataNotFoundException("Không tìm thấy người dùng");
+        }
+        if (!user.isActive()) {
+            throw new DataNotFoundException("Tài khoản đã bị khóa");
+        }
+        if (user.getGoogleId() != null || user.getPassword() == null) {
+            throw new DataNotFoundException("Tài khoản Google không thể thay đổi mật khẩu");
+        }
+
+        if (!passwordEncoder.matches(changePasswordDto.getCurrentPassword(), user.getPassword())) {
+            throw new DataNotFoundException("Mật khẩu hiện tại không chính xác");
+        }
+
+        if (passwordEncoder.matches(changePasswordDto.getNewPassword(), user.getPassword())) {
+            throw new DataNotFoundException("Mật khẩu mới nên khác với mật khẩu cũ");
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+        userRepository.save(user);
+        List<Token> userTokens = tokenRepository.findByUser(user);
+        tokenRepository.deleteAll(userTokens);
+        return true;
+    }
+
+    @Override
+    public boolean forgotPassword(ForgotPasswordDto forgotPasswordDto) throws Exception {
+        Optional<User> userOptional = userRepository.findByEmail(forgotPasswordDto.getEmail());
+        if (userOptional.isEmpty()) {
+            throw new DataNotFoundException("Không tìm thấy người dùng");
+        }
+        User user = userOptional.get();
+        if (!user.isActive()) {
+            throw new DataNotFoundException("Tài khoản đã bị khóa");
+        }
+        if (user.getGoogleId() != null || user.getPassword() == null) {
+            throw new DataNotFoundException("Tài khoản Google không thể thay đổi mật khẩu");
+        }
+        String newPassword = generateNewPassword();
+        String newPasswordHashed = passwordEncoder.encode(newPassword);
+        user.setPassword(newPasswordHashed);
+        userRepository.save(user);
+        List<Token> userTokens = tokenRepository.findByUser(user);
+        tokenRepository.deleteAll(userTokens);
+
+        emailService.sendResetPasswordEmail(user, newPassword);
+
+        return true;
+    }
+
+    private String generateNewPassword() {
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+    }
+
     @Override
     public User getUserDetailsFromToken(String token) throws Exception {
         if (jwtTokenUtil.isTokenExpired(token)) {
-            throw new ExpiredTokenException("Token is expired");
+            throw new ExpiredTokenException("Token đã hết hạn");
         }
         String email = jwtTokenUtil.extractEmail(token);
         Optional<User> user = userRepository.findByEmail(email);
@@ -210,7 +290,7 @@ public class UserService implements IUserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new Exception("User not found");
+            throw new Exception("Không tìm thấy người dùng");
         }
     }
 
@@ -224,7 +304,7 @@ public class UserService implements IUserService {
     @Transactional
     public User updateUser(String userId, UpdateUserDto updatedUserDTO) throws Exception {
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User not found"));
+                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy người dùng"));
 
         if (updatedUserDTO.getName() != null) {
             existingUser.setName(updatedUserDTO.getName());
@@ -245,27 +325,6 @@ public class UserService implements IUserService {
     public User updatePicture(String url, User user) throws Exception {
         user.setPicture(url);
         return userRepository.save(user);
-    }
-
-    @Override
-    @Transactional
-    public void resetPassword(String userId, String newPassword) throws InvalidPasswordException, DataNotFoundException {
-        User existingUser = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
-        if (!existingUser.isActive()) throw new DataNotFoundException("User account is locked");
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        if (existingUser.getPassword() != null) {
-            existingUser.setPassword(encodedPassword);
-        } else {
-            throw new DataNotFoundException("Google account cannot change the account password");
-        }
-        userRepository.save(existingUser);
-
-        //reset password => clear token
-        List<Token> tokens = tokenRepository.findByUser(existingUser);
-        for (Token token : tokens) {
-            tokenRepository.delete(token);
-        }
-
     }
 
     @Override

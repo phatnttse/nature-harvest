@@ -73,19 +73,26 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private boolean isBypassToken(@NonNull HttpServletRequest request) {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
+                //Endpoint that does not require authentication
                 Pair.of(String.format("%s/users/signup", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/login-google", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
+                Pair.of(String.format("%s/health-check/health", apiPrefix), "GET"),
+                Pair.of(String.format("%s/actuator/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/products**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/products/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/categories**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/categories/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/subcategories/**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/users/details", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/confirm-email**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/resend-verification-email**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/payment/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/comments/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/blogs/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/blogs**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/blogs/tags**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/forgot-password", apiPrefix), "PATCH"),
 
                 //swagger
                 Pair.of("/api-docs", "GET"),

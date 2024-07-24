@@ -46,13 +46,12 @@ public class JwtTokenUtils {
         claims.put("email", user.getEmail());
         claims.put("userId", user.getId());
         try {
-            String token = Jwts.builder()
+            return Jwts.builder()
                     .setClaims(claims)
                     .setSubject(user.getEmail())
                     .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                     .compact();
-            return token;
         } catch (Exception e) {
             throw new InvalidParamException("Cannot create jwt token, error: " + e.getMessage());
         }
@@ -68,8 +67,7 @@ public class JwtTokenUtils {
         SecureRandom random = new SecureRandom();
         byte[] keyBytes = new byte[32]; // 256-bit key
         random.nextBytes(keyBytes);
-        String secretKey = Encoders.BASE64.encode(keyBytes);
-        return secretKey;
+        return Encoders.BASE64.encode(keyBytes);
     }
 
     public Claims extractAllClaims(String token) {
@@ -104,7 +102,7 @@ public class JwtTokenUtils {
             String email = extractEmail(token);
             Token existingToken = tokenRepository.findByToken(token);
             if (existingToken == null ||
-                    existingToken.isRevoked() == true ||
+                    existingToken.isRevoked() ||
                     !userDetails.isActive()
             ) {
                 return false;

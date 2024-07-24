@@ -81,7 +81,7 @@
           <div class="mb-10">
             <h1
               class="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl"
-              style="text-align: center; color: #00401c"
+              style="text-align: center"
             >
               Sign in
             </h1>
@@ -92,40 +92,42 @@
               Welcome to Nature's Harvest
             </p>
           </div>
-          <form class="space-y-4 dark:text-white">
+          <form
+            [formGroup]="loginForm"
+            (submit)="login()"
+            class="space-y-4 dark:text-white"
+          >
             <div>
               <label for="Email">Email</label>
               <div class="relative text-white-dark">
                 <input
-                  id="Email"
                   type="email"
                   class="form-input ps-10 placeholder:text-white-dark"
-                  [formControl]="emailFormControl"
+                  formControlName="email"
                   placeholder="Ex. pat@example.com"
                   style="line-height: 2; padding-inline-start: 3rem"
+                  [class.is-invalid]="
+                    loginForm.get('email')?.invalid &&
+                    loginForm.get('email')?.touched
+                  "
                 />
 
                 <span class="absolute start-4 top-1/2 -translate-y-1/2">
                   <mat-icon style="margin-top: 6px">mail</mat-icon>
                 </span>
               </div>
-              <div style="margin-top: 4px; font-size: 14px; color: red">
-                @if (emailFormControl.hasError('email') &&
-                !emailFormControl.hasError('required')) {
-                <mat-error
-                  style="font-size: 13px; color: red; visibility: visible"
-                  >Vui lòng nhập đúng định dạng email</mat-error
+              <div style="margin-top: 4px; font-size: 13px; color: red">
+                @if (loginForm.get('email')!.hasError('email')) {
+                <mat-error style="visibility: visible">
+                  Email không đúng định dạng. Ex: vit&#64;gmail.com</mat-error
                 >
-                } @else if (emailFormControl.hasError('required')) {
-                <mat-error
-                  style="font-size: 13px; color: red; visibility: visible"
+                } @else if (loginForm.get('email')!.hasError('required')&&
+                loginForm.get('email')!.touched) {
+                <mat-error style="visibility: visible"
                   >Vui lòng nhập email</mat-error
                 >
                 }@else {
-                <mat-error
-                  style="font-size: 13px; color: red; visibility: hidden"
-                  >hidden</mat-error
-                >
+                <mat-error style="visibility: hidden">hidden</mat-error>
                 }
               </div>
             </div>
@@ -133,24 +135,23 @@
               <label for="Password">Password</label>
               <div class="relative text-white-dark">
                 <input
-                  id="Password"
                   type="password"
                   placeholder="Enter Password"
-                  [formControl]="passwordFormControl"
+                  formControlName="password"
                   class="form-input ps-10 placeholder:text-white-dark"
                   style="line-height: 2; padding-inline-start: 3rem"
+                  [class.is-invalid]="
+                    loginForm.get('password')?.invalid &&
+                    loginForm.get('password')?.touched
+                  "
                 />
                 <span class="absolute start-4 top-1/2 -translate-y-1/2">
                   <mat-icon style="margin-top: 4px">lock</mat-icon>
                 </span>
               </div>
               <div style="font-size: 13px; color: red">
-                @if (passwordFormControl.hasError('email') &&
-                !passwordFormControl.hasError('required')) {
-                <mat-error style="visibility: visible"
-                  >Nhập đúng định dạng</mat-error
-                >
-                } @else if (passwordFormControl.hasError('required')) {
+                @if (loginForm.get('password')!.hasError('required') &&
+                loginForm.get('password')!.touched) {
                 <mat-error style="visibility: visible"
                   >Vui lòng nhập mật khẩu</mat-error
                 >
@@ -160,7 +161,7 @@
               </div>
             </div>
             <div class="flex justify-end">
-              <a href="">
+              <a routerLink="/forgot-password">
                 <span class="text-white-dark" style="font-size: 12px"
                   >Quên mật khẩu ?</span
                 >
@@ -173,7 +174,6 @@
                 background-image: linear-gradient(to right, #34c3c5, #45a049);
                 color: rgb(255, 255, 255);
               "
-              (click)="login()"
             >
               Sign in
             </button>
@@ -184,7 +184,7 @@
               class="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"
             ></span>
             <span
-              class="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light"
+              class="relative px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light"
               >or</span
             >
           </div>
@@ -202,9 +202,6 @@
             </a>
           </div>
         </div>
-        <p class="absolute bottom-6 w-full text-center dark:text-white">
-          © 2024 .Website of phatnttse.
-        </p>
       </div>
     </div>
   </div>

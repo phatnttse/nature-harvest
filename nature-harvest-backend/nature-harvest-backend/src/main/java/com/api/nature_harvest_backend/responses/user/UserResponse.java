@@ -17,6 +17,7 @@ public class UserResponse {
     private String picture;
     private String address;
     private Date dateOfBirth;
+    private String googleId;
     private com.api.nature_harvest_backend.models.Role role;
 
     public static UserResponse fromUser(com.api.nature_harvest_backend.models.User user) {
@@ -28,6 +29,7 @@ public class UserResponse {
                 .address(user.getAddress())
                 .picture(user.getPicture())
                 .dateOfBirth(user.getDateOfBirth())
+                .googleId(user.getGoogleId())
                 .role(user.getRole())
                 .build();
     }

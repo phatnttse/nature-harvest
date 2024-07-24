@@ -11,11 +11,12 @@ import {
   switchMap,
 } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
 })
@@ -23,21 +24,34 @@ export class SearchComponent implements OnInit {
   keyword: string = '';
   searchProductsResult: ProductResponse[] = [];
   private searchTerms = new Subject<string>();
+  selectedCategoryId: number = 0;
+  selectedSubCategoryId: number = 0;
+  sortBy: string = '';
+  arrange: string = '';
+  currentPage: number = 0;
 
   constructor(private productService: ProductService, private router: Router) {}
 
   ngOnInit(): void {
     this.searchTerms
       .pipe(
-        debounceTime(300),
+        debounceTime(500),
         distinctUntilChanged(),
-        switchMap((term: string) => {
-          if (term.trim() === '') {
+        switchMap((keyword: string) => {
+          if (keyword.trim() === '') {
             this.searchProductsResult = [];
             return of({ products: [] });
           } else {
             return this.productService
-              .getProducts(term, 0, 0, '', '', 0, 5)
+              .getProducts(
+                keyword,
+                this.selectedCategoryId,
+                this.selectedSubCategoryId,
+                this.sortBy,
+                this.arrange,
+                this.currentPage,
+                3
+              )
               .pipe(
                 catchError((err) => {
                   console.error(err);
@@ -68,19 +82,9 @@ export class SearchComponent implements OnInit {
       this.searchProductsResult = [];
       return;
     }
-    this.productService
-      .getProducts(this.keyword, 0, 0, '', '', 0, 100)
-      .subscribe({
-        next: (response) => {
-          this.searchProductsResult = response.products;
-          this.router.navigate(['/products/search'], {
-            queryParams: { q: this.keyword },
-          });
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
+    this.router.navigate(['/products/search'], {
+      queryParams: { q: this.keyword },
+    });
   }
   viewProduct(slug: string) {
     this.router.navigate([`/product-detail/${slug}`]);

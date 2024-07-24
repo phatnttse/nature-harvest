@@ -79,54 +79,56 @@ public class ProductController {
 
         PageRequest pageRequest;
 
-        if (arrange.equals("ascending")) {
-            pageRequest = PageRequest.of(
-                    page, limit,
-                    Sort.by(sortBy).ascending()
-            );
-        } else {
+        if (arrange.equals("descending")) {
             pageRequest = PageRequest.of(
                     page, limit,
                     Sort.by(sortBy).descending()
             );
+        } else {
+            pageRequest = PageRequest.of(
+                    page, limit,
+                    Sort.by(sortBy).ascending()
+            );
         }
+        List<ProductResponse> productResponses = productRedisService
+                .getAllProducts(keyword, categoryId,
+                        subcategoryId,
+                        categorySlug,
+                        subcategorySlug,
+                        minPrice,
+                        maxPrice,
+                        pageRequest);
+        if (productResponses != null) {
+            totalPages = productResponses.get(0).getTotalPages();
+        }
+        if (productResponses == null) {
+            Page<ProductResponse> productPage = productService
+                    .getAllProducts(keyword, categoryId,
+                            subcategoryId,
+                            categorySlug,
+                            subcategorySlug,
+                            minPrice,
+                            maxPrice,
+                            pageRequest);
 
-//        logger.info(String.format("keyword = %s, categoryId = %d, page = %d, limit = %d",
-//                keyword, categoryId, page, limit));
-
-//        List<ProductResponse> productResponses = productRedisService
-//                .getAllProducts(keyword, categoryId,
-//                        subcategoryId,
-//                        minPrice,
-//                        maxPrice,
-//                        pageRequest);
-//        if (productResponses != null) {
-//            totalPages = productResponses.get(0).getTotalPages();
-//        }
-//        if (productResponses == null) {
-//            Page<ProductResponse> productPage = productService
-//                    .getAllProducts(keyword, categoryId,
-//                            subcategoryId,
-//                            minPrice,
-//                            maxPrice,
-//                            pageRequest);
-//
-//            totalPages = productPage.getTotalPages();
-//            productResponses = productPage.getContent();
-//            // Bổ sung totalPages vào các đối tượng ProductResponse
-////            for (ProductResponse product : productResponses) {
-////                product.setTotalPages(totalPages);
-////            }
-//            productRedisService.saveAllProducts(
-//                    productResponses,
-//                    keyword,
-//                    categoryId,
-//                    subcategoryId,
-//                    minPrice,
-//                    maxPrice,
-//                    pageRequest
-//            );
-//        }
+            totalPages = productPage.getTotalPages();
+            productResponses = productPage.getContent();
+            // Bổ sung totalPages vào các đối tượng ProductResponse
+            for (ProductResponse product : productResponses) {
+                product.setTotalPages(totalPages);
+            }
+            productRedisService.saveAllProducts(
+                    productResponses,
+                    keyword,
+                    categoryId,
+                    subcategoryId,
+                    categorySlug,
+                    subcategorySlug,
+                    minPrice,
+                    maxPrice,
+                    pageRequest
+            );
+        }
         Page<ProductResponse> productPage = productService
                 .getAllProducts(keyword, categoryId,
                         subcategoryId,
@@ -135,9 +137,6 @@ public class ProductController {
                         minPrice,
                         maxPrice,
                         pageRequest);
-
-        totalPages = productPage.getTotalPages();
-        List<ProductResponse> productResponses = productPage.getContent();
 
         return ResponseEntity.ok(ProductListResponse
                 .builder()

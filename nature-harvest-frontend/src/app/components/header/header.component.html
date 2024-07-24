@@ -26,11 +26,6 @@
   </div>
   <div class="container px-0">
     <nav class="navbar navbar-light navbar-expand-xl bg-white">
-      <!-- <a routerLink="/" class="navbar-brand"
-        ><h1 class="display-6 text-primary" style="font-size: 22px">
-          Nature'sHarvest
-        </h1></a
-      > -->
       <a routerLink="/" class="navbar-brand">
         <img
           width="120px"
@@ -67,11 +62,7 @@
               >Sản phẩm
               <i class="fa-solid fa-caret-down"></i>
             </a>
-            <!-- [ngClass]="{ show: showProductNavbar }"
-            (mouseover)="showProductNavbar = true"
-            (mouseleave)="showProductNavbar = false" -->
             <div class="dropdown-menu w-100 show" style="min-width: 320px">
-              <!-- Tab content -->
               <div class="card card-lg">
                 <div class="card-body">
                   <div class="tab-content">
@@ -81,7 +72,12 @@
                           @for (category of categoriesWithSubcategories$ |
                           async; track $index) {
                           <div class="col-6 col-md">
-                            <div class="fw-bold mb-2">{{ category.name }}</div>
+                            <a
+                              href="javascript:;"
+                              (click)="selectCategory(category.slug)"
+                              class="fw-bold mb-2 text-dark"
+                              >{{ category.name }}</a
+                            >
                             <ul
                               class="list-styled"
                               style="padding: 0 !important"
@@ -92,14 +88,8 @@
                                 <a
                                   class="list-styled-link"
                                   href="javascript:;"
-                                  (click)="
-                                    getProductsByCondition(
-                                      category.id,
-                                      subcategory.id,
-                                      category.slug,
-                                      subcategory.slug
-                                    )
-                                  "
+                                  style="font-size: 14px"
+                                  (click)="selectSubcategory(subcategory.slug)"
                                   >{{ subcategory.name }}
                                 </a>
                               </li>
@@ -109,30 +99,13 @@
                           }
 
                           <div class="col-3 d-none d-lg-block">
-                            <!-- Card -->
                             <div class="card">
-                              <!-- Image -->
                               <img
                                 class="card-img"
                                 src="https://res.cloudinary.com/dl3rsgucq/image/upload/v1718188106/megamenu_banner_mtdsdy.jpg"
                                 alt="Banner"
                                 height="300px"
                               />
-
-                              <!-- Overlay -->
-                              <!-- <div
-                                class="card-img-overlay bg-dark-0 bg-hover align-items-center"
-                              >
-                                <div class="text-center">
-                                  <a
-                                    class="btn btn-white stretched-link"
-                                    href="#"
-                                  >
-                                    Shop Sweaters
-                                    <i class="fas fa-arrow-right ms-2"></i>
-                                  </a>
-                                </div>
-                              </div> -->
                             </div>
                           </div>
                         </div>
@@ -144,9 +117,11 @@
             </div>
           </li>
 
-          <a href="#" class="nav-item nav-link fw-bold">Liên hệ</a>
-          <a href="#" class="nav-item nav-link fw-bold">Tin tức</a>
-          <a href="#" class="nav-item nav-link fw-bold">Khuyến mãi</a>
+          <a routerLink="/contact" class="nav-item nav-link fw-bold">Liên hệ</a>
+          <a routerLink="/blogs" class="nav-item nav-link fw-bold">Tin tức</a>
+          <a routerLink="/order-tracking" class="nav-item nav-link fw-bold"
+            >Đơn hàng</a
+          >
         </div>
         <div class="d-flex m-3 me-0">
           <button
@@ -172,6 +147,7 @@
           <div
             class="d-inline-flex user-logged nav-item dropdown my-auto"
             data-bs-toggle="dropdown"
+            style="cursor: pointer"
           >
             <img
               [src]="userResponse.picture"
@@ -181,15 +157,16 @@
               data-bs-toggle="dropdown"
               style="height: 33px; object-fit: cover"
             />
-            <p class="my-auto" data-bs-toggle="dropdown">
+            <p
+              class="my-auto"
+              data-bs-toggle="dropdown"
+              (click)="editProfile()"
+            >
               {{ userResponse.name }}
             </p>
             <i class="fa-solid fa-caret-down mb-1 p-2"></i>
             <div class="dropdown-menu rounded-0 m-0">
               <a routerLink="/profile" class="dropdown-item">Tài khoản</a>
-              <a routerLink="/order-tracking" class="dropdown-item"
-                >Đơn hàng của tôi</a
-              >
               <a href="#" (click)="logOut()" class="dropdown-item">Đăng xuất</a>
             </div>
           </div>
@@ -204,8 +181,4 @@
     </nav>
   </div>
 </div>
-<!-- Navbar End -->
-
-<!-- Modal Search Start -->
 <app-search></app-search>
-<!-- Modal Search End -->
