@@ -5,7 +5,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { ProductResponse } from '../../responses/product/product.response';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user.service';
@@ -58,7 +58,8 @@ export class SearchProductsComponent implements OnInit {
     private userService: UserService,
     private cartService: CartService,
     private toastr: ToastrService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -149,29 +150,38 @@ export class SearchProductsComponent implements OnInit {
   }
 
   addProductToCart(productId: number, title: string) {
-    debugger;
     const user = this.userService.getUserResponseFromLocalStorage();
-    const cartDto: CartDto = {
-      userId: user?.id ?? '',
-      productId: productId,
-      quantity: this.quantity,
-    };
-    this.cartService.addProductToCart(cartDto).subscribe({
-      next: (response: CartListResponse) => {
-        debugger;
-        this.cartService.updateCartState(response);
-        this.closeModal();
-        this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
-          closeButton: true,
-          timeOut: 4000,
-          easeTime: 400,
-          progressBar: true,
-        });
-      },
-      error(err) {
-        console.log(err);
-      },
-    });
+    if (user === null) {
+      this.router.navigate(['/login']);
+      this.toastr.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng', '', {
+        closeButton: true,
+        timeOut: 4000,
+        progressBar: true,
+      });
+      return;
+    } else {
+      const cartDto: CartDto = {
+        userId: user?.id ?? '',
+        productId: productId,
+        quantity: this.quantity,
+      };
+      this.cartService.addProductToCart(cartDto).subscribe({
+        next: (response: CartListResponse) => {
+          debugger;
+          this.cartService.updateCartState(response);
+          this.closeModal();
+          this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
+            closeButton: true,
+            timeOut: 4000,
+            easeTime: 400,
+            progressBar: true,
+          });
+        },
+        error(err) {
+          console.log(err);
+        },
+      });
+    }
   }
   quickViewProduct(productId: number) {
     this.productService.getDetailProduct(productId).subscribe({

@@ -329,28 +329,36 @@ export class ProductComponent implements OnInit {
       });
   }
   addProductToCart(productId: number, title: string) {
-    debugger;
     const user = this.userService.getUserResponseFromLocalStorage();
-    const cartDto: CartDto = {
-      userId: user?.id ?? '',
-      productId: productId,
-      quantity: this.quantity,
-    };
-    this.cartService.addProductToCart(cartDto).subscribe({
-      next: (response: CartListResponse) => {
-        debugger;
-        this.cartService.updateCartState(response);
-        this.closeModal();
-        this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
-          closeButton: true,
-          timeOut: 4000,
-          progressBar: true,
-        });
-      },
-      error(err) {
-        console.log(err);
-      },
-    });
+    if (user === null) {
+      this.router.navigate(['/login']);
+      this.toastr.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng', '', {
+        closeButton: true,
+        timeOut: 4000,
+        progressBar: true,
+      });
+      return;
+    } else {
+      const cartDto: CartDto = {
+        userId: user?.id ?? '',
+        productId: productId,
+        quantity: this.quantity,
+      };
+      this.cartService.addProductToCart(cartDto).subscribe({
+        next: (response: CartListResponse) => {
+          this.cartService.updateCartState(response);
+          this.closeModal();
+          this.toastr.success(`Bạn vừa thêm ${title} vào giỏ hàng`, '', {
+            closeButton: true,
+            timeOut: 4000,
+            progressBar: true,
+          });
+        },
+        error(err) {
+          console.log(err);
+        },
+      });
+    }
   }
   quickViewProduct(productId: number) {
     this.productService.getDetailProduct(productId).subscribe({

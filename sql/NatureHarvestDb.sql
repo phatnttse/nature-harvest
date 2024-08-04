@@ -219,7 +219,10 @@ INSERT INTO roles (role_id, name) values
  (1,"ADMIN");
   
 INSERT INTO `users` (`user_id`, `email`, `password`, `name`, `phone`, `picture`, `address`,`role_id`, `email_verified`) 
-VALUES (UUID(), 'admin123@gmail.com', '$2a$10$wNGqMyi/jy8aURA1Bbm8.e6l90CY5A6FU0gmqKdLWC7BmWDYkoPpG', 'Phatnttse', '1234567890', 'picture_url2', '', 1, 1);
+VALUES (UUID(), 'admin123@gmail.com', '$2a$10$wNGqMyi/jy8aURA1Bbm8.e6l90CY5A6FU0gmqKdLWC7BmWDYkoPpG', 
+'Phatnttse', '1234567890', 
+'https://res.cloudinary.com/dlpust9lj/image/upload/v1719497920/360_F_208981748_9fbrA3Hy2GGajHn4XDtfzVFMzHiXguYg_kppkjd.jpg', 
+'', 1, 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

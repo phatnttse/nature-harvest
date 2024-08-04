@@ -1,6 +1,7 @@
 package com.api.nature_harvest_backend.services.category;
 
 import com.api.nature_harvest_backend.models.Category;
+import com.api.nature_harvest_backend.responses.category.CategoryProductCountResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +42,21 @@ public class CategoryRedisService implements ICategoryRedisService {
     }
 
     @Override
+    public List<CategoryProductCountResponse> getCategoryProductCount() throws JsonProcessingException {
+        if (useRedisCache == false) {
+            return null;
+        }
+        String key = this.getKeyFrom();
+        String json = (String) redisTemplate.opsForValue().get(key);
+        List<CategoryProductCountResponse> categoryResponses =
+                json != null ?
+                        redisObjectMapper.readValue(json, new TypeReference<List<CategoryProductCountResponse>>() {
+                        })
+                        : null;
+        return categoryResponses;
+    }
+
+    @Override
     public void clear() {
         redisTemplate.getConnectionFactory().getConnection().flushAll();
     }
@@ -50,5 +66,10 @@ public class CategoryRedisService implements ICategoryRedisService {
         String key = this.getKeyFrom();
         String json = redisObjectMapper.writeValueAsString(categoryResponses);
         redisTemplate.opsForValue().set(key, json);
+    }
+
+    @Override
+    public void saveCategoryProductCount(List<CategoryProductCountResponse> categoryResponses) throws JsonProcessingException {
+        
     }
 }
