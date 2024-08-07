@@ -39,7 +39,7 @@ export class AdminGuard {
       return true;
     } else {
       this.router.navigate(['/login']);
-      this.toastr.info('Để tiếp tục, vui lòng đăng nhập', '', {
+      this.toastr.info('Bạn không có quyền truy cập', '', {
         timeOut: 3000,
         progressBar: true,
       });

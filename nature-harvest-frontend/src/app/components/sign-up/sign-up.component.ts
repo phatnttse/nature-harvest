@@ -1,23 +1,15 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import {
-  BrowserPlatformLocation,
-  CommonModule,
-  PlatformLocation,
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
-  FormGroupDirective,
   FormsModule,
-  NgForm,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { SignUpDto } from '../../dtos/user/signup.dto';
 import { ToastrService } from 'ngx-toastr';
-import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,8 +20,7 @@ import { TokenService } from '../../services/token.service';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BaseResponse } from '../../responses/base/base.response';
-import { GOOGLE } from '../../environments/environment.development';
-declare var google: any;
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -51,7 +42,7 @@ declare var google: any;
     MatIconModule,
   ],
 })
-export class SignUpComponent implements OnInit {
+export class SignUpComponent {
   signupForm: FormGroup;
   userResponse?: UserResponse;
 
@@ -59,9 +50,9 @@ export class SignUpComponent implements OnInit {
     private userService: UserService,
     private toastr: ToastrService,
     private router: Router,
-    private platformLocation: PlatformLocation,
     private tokenService: TokenService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private authService: AuthService
   ) {
     this.signupForm = this.formBuilder.group({
       name: [
@@ -86,23 +77,18 @@ export class SignUpComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    if (this.platformLocation instanceof BrowserPlatformLocation) {
-      google.accounts.id.initialize({
-        client_id: GOOGLE.clientId,
-        callback: (response: any) => {
-          this.loginGoogle(response.credential);
-        },
+  async handleLoginGoogle() {
+    this.authService
+      .loginWithGoogle()
+      .then((response) => {
+        const user = response.user;
+        user.getIdToken().then(async (token) => {
+          await this.loginGoogle(token);
+        });
+      })
+      .catch((error) => {
+        console.error('Error during Google login:', error);
       });
-
-      google.accounts.id.renderButton(document.getElementById('google-btn2'), {
-        theme: 'filled_blue',
-        size: 'large',
-        shape: 'rectangular',
-        with: '350',
-        logo_alignment: 'center',
-      });
-    }
   }
 
   signUp() {

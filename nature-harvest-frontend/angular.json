@@ -43,8 +43,7 @@
               "src/assets/js/easing.min.js",
               "src/assets/js/waypoints.min.js",
               "src/assets/js/lightbox.min.js",
-              "src/assets/js/owl.carousel.min.js",
-              "src/assets/js/main.js"
+              "src/assets/js/owl.carousel.min.js"
             ]
           },
           "configurations": {

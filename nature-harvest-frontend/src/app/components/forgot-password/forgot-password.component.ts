@@ -1,9 +1,5 @@
-import {
-  BrowserPlatformLocation,
-  CommonModule,
-  PlatformLocation,
-} from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, ViewEncapsulation } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -19,11 +15,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UserResponse } from '../../responses/user/user.response';
 import { TokenService } from '../../services/token.service';
 import { Router, RouterModule } from '@angular/router';
-import { GOOGLE } from '../../environments/environment.development';
 import { ForgotPasswordDto } from '../../dtos/user/forgot-password.dto';
 import { BaseResponse } from '../../responses/base/base.response';
 import { ToastrService } from 'ngx-toastr';
-declare var google: any;
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -43,39 +38,21 @@ declare var google: any;
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class ForgotPasswordComponent implements OnInit {
+export class ForgotPasswordComponent {
   forgotPasswordForm: FormGroup;
   userResponse?: UserResponse;
 
   constructor(
     private formBuilder: FormBuilder,
-    private platformLocation: PlatformLocation,
     private userService: UserService,
     private tokenService: TokenService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private authService: AuthService
   ) {
     this.forgotPasswordForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
     });
-  }
-  ngOnInit(): void {
-    if (this.platformLocation instanceof BrowserPlatformLocation) {
-      google.accounts.id.initialize({
-        client_id: GOOGLE.clientId,
-        callback: (response: any) => {
-          this.loginGoogle(response.credential);
-        },
-      });
-
-      google.accounts.id.renderButton(document.getElementById('google-btn-3'), {
-        theme: 'filled_blue',
-        size: 'large',
-        shape: 'rectangular',
-        with: '350',
-        logo_alignment: 'center',
-      });
-    }
   }
 
   onSubmit() {
@@ -113,6 +90,20 @@ export class ForgotPasswordComponent implements OnInit {
         });
       },
     });
+  }
+
+  async handleLoginGoogle() {
+    this.authService
+      .loginWithGoogle()
+      .then((response) => {
+        const user = response.user;
+        user.getIdToken().then(async (token) => {
+          await this.loginGoogle(token);
+        });
+      })
+      .catch((error) => {
+        console.error('Error during Google login:', error);
+      });
   }
 
   loginGoogle(googleToken: string) {

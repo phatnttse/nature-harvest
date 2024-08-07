@@ -1,34 +1,20 @@
 // auth.service.ts
 import { Injectable } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { authConfig } from '../configurations/auth.config';
+
+import { Auth, signInWithPopup, GoogleAuthProvider } from '@angular/fire/auth'; // Cập nhật import
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private oauthService: OAuthService) {
-    this.configure();
+  constructor(private auth: Auth) {}
+
+  async loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    return signInWithPopup(this.auth, provider);
   }
 
-  private configure() {
-    this.oauthService.configure(authConfig);
-    this.oauthService.loadDiscoveryDocumentAndTryLogin();
-  }
-
-  login() {
-    this.oauthService.initCodeFlow();
-  }
-
-  logout() {
-    this.oauthService.logOut();
-  }
-
-  get identityClaims() {
-    return this.oauthService.getIdentityClaims();
-  }
-
-  get isLoggedIn() {
-    return this.oauthService.hasValidAccessToken();
+  async logout() {
+    return this.auth.signOut();
   }
 }

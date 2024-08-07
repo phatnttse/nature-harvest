@@ -94,8 +94,12 @@ public class CategoryController {
     }
 
     @GetMapping("product-counts")
-    public ResponseEntity<List<CategoryProductCountResponse>> getCategoryProductCount() {
-        List<CategoryProductCountResponse> categories = categoryService.getCategoryProductCounts();
+    public ResponseEntity<List<CategoryProductCountResponse>> getCategoryProductCount() throws JsonProcessingException {
+        List<CategoryProductCountResponse> categories = categoryRedisService.getCategoryProductCount();
+        if (categories == null) {
+            categories = categoryService.getCategoryProductCounts();
+            categoryRedisService.saveCategoryProductCount(categories);
+        }
         return ResponseEntity.ok(categories);
     }
 

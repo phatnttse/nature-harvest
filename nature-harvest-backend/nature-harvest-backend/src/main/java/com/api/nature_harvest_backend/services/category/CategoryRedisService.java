@@ -21,17 +21,17 @@ public class CategoryRedisService implements ICategoryRedisService {
     @Value("${spring.data.redis.use-redis-cache}")
     private boolean useRedisCache;
 
-    public String getKeyFrom() {
-        String key = String.format("all_categories");
-        return key;
+    public String getKeyFrom(String key) {
+        return String.format("category_%s", key);
     }
+
 
     @Override
     public List<Category> getAllCategories() throws JsonProcessingException {
         if (useRedisCache == false) {
             return null;
         }
-        String key = this.getKeyFrom();
+        String key = this.getKeyFrom("all");
         String json = (String) redisTemplate.opsForValue().get(key);
         List<Category> categoryResponses =
                 json != null ?
@@ -46,7 +46,7 @@ public class CategoryRedisService implements ICategoryRedisService {
         if (useRedisCache == false) {
             return null;
         }
-        String key = this.getKeyFrom();
+        String key = this.getKeyFrom("product_count");
         String json = (String) redisTemplate.opsForValue().get(key);
         List<CategoryProductCountResponse> categoryResponses =
                 json != null ?
@@ -63,13 +63,15 @@ public class CategoryRedisService implements ICategoryRedisService {
 
     @Override
     public void saveAllCategories(List<Category> categoryResponses) throws JsonProcessingException {
-        String key = this.getKeyFrom();
+        String key = this.getKeyFrom("all");
         String json = redisObjectMapper.writeValueAsString(categoryResponses);
         redisTemplate.opsForValue().set(key, json);
     }
 
     @Override
     public void saveCategoryProductCount(List<CategoryProductCountResponse> categoryResponses) throws JsonProcessingException {
-        
+        String key = this.getKeyFrom("product_count");
+        String json = redisObjectMapper.writeValueAsString(categoryResponses);
+        redisTemplate.opsForValue().set(key, json);
     }
 }

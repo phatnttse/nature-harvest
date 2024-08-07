@@ -1,10 +1,13 @@
 import { Routes } from '@angular/router';
-import { AdminComponent } from './admin.component';
+import { AdminGuard } from '../../guards/admin.guard';
 
 export const adminRoutes: Routes = [
   {
     path: 'admin',
-    component: AdminComponent,
+    loadComponent() {
+      return import('./admin.component').then((m) => m.AdminComponent);
+    },
+    canActivate: [AdminGuard],
     children: [
       {
         path: 'products',
@@ -13,6 +16,7 @@ export const adminRoutes: Routes = [
             (m) => m.ProductManagerComponent
           );
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'products/new',
@@ -21,6 +25,7 @@ export const adminRoutes: Routes = [
             './product-manager/create-product/create-product.component'
           ).then((m) => m.CreateProductComponent);
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'products/:slug',
@@ -29,6 +34,7 @@ export const adminRoutes: Routes = [
             './product-manager/edit-product/edit-product.component'
           ).then((m) => m.EditProductComponent);
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'categories',
@@ -37,6 +43,7 @@ export const adminRoutes: Routes = [
             (m) => m.CategoryManagerComponent
           );
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'categories/new',
@@ -45,6 +52,7 @@ export const adminRoutes: Routes = [
             './category-manager/create-category/create-category.component'
           ).then((m) => m.CreateCategoryComponent);
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'categories/:slug',
@@ -53,6 +61,7 @@ export const adminRoutes: Routes = [
             './category-manager/edit-category/edit-category.component'
           ).then((m) => m.EditCategoryComponent);
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'orders',
@@ -61,6 +70,7 @@ export const adminRoutes: Routes = [
             (m) => m.OrderManagerComponent
           );
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'orders/:id',
@@ -69,6 +79,7 @@ export const adminRoutes: Routes = [
             (m) => m.EditOrderComponent
           );
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'coupons',
@@ -77,6 +88,7 @@ export const adminRoutes: Routes = [
             (m) => m.CouponManagerComponent
           );
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'coupons/new',
@@ -85,6 +97,7 @@ export const adminRoutes: Routes = [
             './coupon-manager/create-coupon/create-coupon.component'
           ).then((m) => m.CreateCouponComponent);
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'coupons/:id',
@@ -93,6 +106,7 @@ export const adminRoutes: Routes = [
             './coupon-manager/edit-coupon/edit-coupon.component'
           ).then((m) => m.EditCouponComponent);
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'users',
@@ -101,6 +115,7 @@ export const adminRoutes: Routes = [
             (m) => m.UserManagerComponent
           );
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'blogs',
@@ -109,6 +124,7 @@ export const adminRoutes: Routes = [
             (m) => m.BlogManagerComponent
           );
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'blogs/new',
@@ -117,6 +133,7 @@ export const adminRoutes: Routes = [
             './blog-manager/create-blog/create-blog.component'
           ).then((m) => m.CreateBlogComponent);
         },
+        canActivate: [AdminGuard],
       },
       {
         path: 'blogs/:slug',
@@ -125,6 +142,7 @@ export const adminRoutes: Routes = [
             (m) => m.EditBlogComponent
           );
         },
+        canActivate: [AdminGuard],
       },
     ],
   },

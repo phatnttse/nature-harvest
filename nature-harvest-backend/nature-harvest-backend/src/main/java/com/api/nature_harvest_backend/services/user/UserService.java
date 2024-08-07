@@ -16,14 +16,9 @@ import com.api.nature_harvest_backend.repositories.UserRepository;
 import com.api.nature_harvest_backend.responses.user.LoginResponse;
 import com.api.nature_harvest_backend.services.email.IEmailService;
 import com.api.nature_harvest_backend.services.token.ITokenService;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -52,8 +46,8 @@ public class UserService implements IUserService {
     private final AuthenticationManager authenticationManager;
     private final ITokenService tokenService;
     private final IEmailService emailService;
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String GOOGLE_CLIENT_ID;
+//    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+//    private String GOOGLE_CLIENT_ID;
 
     @Override
     @Transactional
@@ -126,24 +120,30 @@ public class UserService implements IUserService {
 
     //@Override
     @Override
-    public LoginResponse loginGoogle(String googleToken, String userAgent) throws Exception {
-        JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), jsonFactory)
-                .setAudience(Collections.singletonList(GOOGLE_CLIENT_ID))
-                .build();
-
-        String extractedToken = googleToken.substring(7);
-        GoogleIdToken idToken = verifier.verify(extractedToken);
-        if (idToken == null) {
-            throw new IllegalArgumentException("Token không hợp lệ");
-        }
-
-        Payload payload = idToken.getPayload();
-        String email = payload.getEmail();
-
-        String googleId = payload.getSubject();
-        String pictureUrl = (String) payload.get("picture");
-        String name = (String) payload.get("name");
+    public LoginResponse loginGoogle(String firebaseToken, String userAgent) throws Exception {
+//        JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+//        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), jsonFactory)
+//                .setAudience(Collections.singletonList(GOOGLE_CLIENT_ID))
+//                .build();
+//
+//        String extractedToken = googleToken.substring(7);
+//        GoogleIdToken idToken = verifier.verify(extractedToken);
+//        if (idToken == null) {
+//            throw new IllegalArgumentException("Token không hợp lệ");
+//        }
+//
+//        Payload payload = idToken.getPayload();
+//        String email = payload.getEmail();
+//
+//        String googleId = payload.getSubject();
+//        String pictureUrl = (String) payload.get("picture");
+//        String name = (String) payload.get("name");
+        String extractedToken = firebaseToken.substring(7);
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(extractedToken);
+        String uid = decodedToken.getUid();
+        String email = decodedToken.getEmail();
+        String name = decodedToken.getName();
+        String pictureUrl = decodedToken.getPicture();
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty()) {
@@ -156,7 +156,7 @@ public class UserService implements IUserService {
                     .emailVerified(true)
                     .name(name)
                     .role(role)
-                    .googleId(googleId)
+                    .googleId(uid)
                     .active(true)
                     .picture(pictureUrl)
                     .build();

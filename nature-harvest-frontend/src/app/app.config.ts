@@ -18,12 +18,13 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TokenInterceptor } from './interceptors/token.interceptors';
 import { provideClientHydration } from '@angular/platform-browser';
-import { provideStore } from '@ngrx/store';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { FeatherModule } from 'angular-feather';
 import { allIcons } from 'angular-feather/icons';
 import { adminRoutes } from './components/admin/admin-routes';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { FIRE_BASE } from './environments/environment.development';
 
 const tokenInterceptorProvider: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -46,7 +47,18 @@ export const appConfig: ApplicationConfig = {
     tokenInterceptorProvider,
     importProvidersFrom(HttpClientModule),
     provideClientHydration(),
-    provideStore(),
     importProvidersFrom(FeatherModule.pick(allIcons)),
+    provideFirebaseApp(() =>
+      initializeApp({
+        apiKey: FIRE_BASE.firebaseConfig.apiKey,
+        authDomain: FIRE_BASE.firebaseConfig.authDomain,
+        projectId: FIRE_BASE.firebaseConfig.projectId,
+        storageBucket: FIRE_BASE.firebaseConfig.storageBucket,
+        messagingSenderId: FIRE_BASE.firebaseConfig.messagingSenderId,
+        appId: FIRE_BASE.firebaseConfig.appId,
+        measurementId: FIRE_BASE.firebaseConfig.measurementId,
+      })
+    ),
+    provideAuth(() => getAuth()),
   ],
 };
